@@ -31,7 +31,7 @@ async function speak(text,slow=false){
  u.onerror=e=>{if(request!==speechRequest||['canceled','interrupted'].includes(e.error))return;notice='当前英语音色播放失败，请换一个音色或浏览器重试。';render();};
  synth.resume();synth.speak(u);
 }
-function voiceOptions(){const voices=englishVoices(window.speechSynthesis?.getVoices()||[]);return '<option value="">自动选择英语音色</option>'+voices.map(v=>`<option value="${esc(v.voiceURI)}" ${preferredVoice===v.voiceURI?'selected':''}>${esc(v.name)} · ${esc(v.lang)}</option>`).join('');}
+function voiceOptions(){const voices=englishVoices(window.speechSynthesis?.getVoices()||[]);return '<option value="">Google US English（默认，缺失时回退）</option>'+voices.map(v=>`<option value="${esc(v.voiceURI)}" ${preferredVoice===v.voiceURI?'selected':''}>${esc(v.name)} · ${esc(v.lang)}</option>`).join('');}
 function voiceSettings(){return `<div class="voice-settings"><label for="voice-choice">英语音色</label><select id="voice-choice">${voiceOptions()}</select>${btn('试听音色','voice-preview','chip')}<small>使用设备语音，音质因设备而异；可切换音色比较。</small></div>`;}
 
 function goal(){if(!s.started)return'在广场领取寻找 Pip 的任务';if(s.clues.length<3)return`探索校园，收集线索 ${s.clues.length}/3`;if(!s.awake)return'辨认 Pip，并根据说明唤醒它';if(!s.following)return'用英语邀请 Pip 跟你回去';if(!s.complete)return'返回科技节广场，交付任务';return'任务完成！试试新的位置挑战';}

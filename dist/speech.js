@@ -5,7 +5,8 @@ export function chooseVoice(voices, preferred = '') {
   const english = englishVoices(voices);
   const selected = english.find(v => v.voiceURI === preferred);
   if (selected) return selected;
-  const score = v => (/natural|neural|premium|enhanced/i.test(v.name) ? 20 : 0)
+  const score = v => (/google/i.test(v.name) && /^en[-_]US$/i.test(v.lang) ? 100 : 0)
+    + (/natural|neural|premium|enhanced/i.test(v.name) ? 20 : 0)
     + (/^en[-_]US$/i.test(v.lang) ? 4 : 0) + (v.default ? 1 : 0);
   return english.sort((a, b) => score(b) - score(a))[0] || null;
 }
