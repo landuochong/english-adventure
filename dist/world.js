@@ -8,7 +8,9 @@ export const NPCS = [
 ];
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export const bound=p=>({x:Math.max(35,Math.min(965,p.x)),y:Math.max(70,Math.min(550,p.y))});
-export function nearest(p){return NPCS.filter(n=>distance(n,p)<=85).sort((a,b)=>distance(a,p)-distance(b,p))[0]||null;}
+export function visibleNPCs(s){return NPCS.filter(n=>n.id!=='pip'||s.discovered);}
+export function canDiscover(s,p){return s.started&&s.clues.length===3&&!s.discovered&&distance(p,NPCS.find(n=>n.id==='pip'))<=85;}
+export function nearest(p,s){return (s?visibleNPCs(s):NPCS).filter(n=>distance(n,p)<=85).sort((a,b)=>distance(a,p)-distance(b,p))[0]||null;}
 export function step(p,target,amount){const d=distance(p,target);if(d<=amount)return bound(target);return bound({x:p.x+(target.x-p.x)/d*amount,y:p.y+(target.y-p.y)/d*amount});}
 export function hasInformation(n,s){return n.clue?s.started&&!s.clues.includes(n.clue):n.id==='organiser'?!s.started||s.following&&!s.complete:n.id==='pip'?s.clues.length===3&&!s.following:false;}
 export function intent(text){const t=text.toLowerCase().replace(/[’']/g,'').replace(/[^a-z\s]/g,' ');if(/\b(again|repeat|slower|slowly)\b/.test(t))return'repeat';if(/\b(follow|come with|lets go|let us go)\b/.test(t))return'follow';if(/\b(wake|button|turn on|switch on)\b/.test(t))return'wake';if(/\b(where|what|how|which|have|has|did|do|does|can|could|seen|see|tell|know|help|looking|find)\b/.test(t))return'question';return'unknown';}
