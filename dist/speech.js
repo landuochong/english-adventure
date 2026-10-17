@@ -1,24 +1,21 @@
 export function englishVoices(voices) {
   return voices.filter(v => /^en(?:[-_]|$)/i.test(v.lang));
 }
+export const voiceKey = v => JSON.stringify({name:v.name,lang:v.lang.toLowerCase().replace('_','-')});
 export function chooseVoice(voices, preferred = '') {
-  const english = englishVoices(voices);
-  const selected = english.find(v => v.voiceURI === preferred);
-  if (selected) return selected;
-  const score = v => (/google/i.test(v.name) && /^en[-_]US$/i.test(v.lang) ? 100 : 0)
-    + (/natural|neural|premium|enhanced/i.test(v.name) ? 20 : 0)
-    + (/^en[-_]US$/i.test(v.lang) ? 4 : 0) + (v.default ? 1 : 0);
-  return english.sort((a, b) => score(b) - score(a))[0] || null;
+  const english=englishVoices(voices);
+  // Empty means Google US English, not an unspecified system voice.
+  if(!preferred)return english.find(v=>/google/i.test(v.name)&&/^en[-_]US$/i.test(v.lang))||null;
+  // Stable identity survives voiceURI changes. Keep old saved URI selections compatible.
+  return english.find(v=>voiceKey(v)===preferred||v.voiceURI===preferred)||null;
 }
-export function loadVoices(synth, timeout = 1200) {
-  const existing = synth.getVoices();
-  if (existing.length) return Promise.resolve(existing);
-  return new Promise(resolve => {
-    let timer;
-    const finish = () => { clearTimeout(timer); synth.removeEventListener('voiceschanged', changed); resolve(synth.getVoices()); };
-    const changed = () => { if (synth.getVoices().length) finish(); };
-    synth.addEventListener('voiceschanged', changed);
-    timer = setTimeout(finish, timeout);
-    changed();
+export function loadVoices(synth, timeout = 2500, ready = voices => voices.length > 0) {
+  if(ready(synth.getVoices()))return Promise.resolve(synth.getVoices());
+  return new Promise(resolve=>{
+    let timer,poll;
+    const finish=()=>{clearTimeout(timer);clearInterval(poll);synth.removeEventListener('voiceschanged',changed);resolve(synth.getVoices());};
+    const changed=()=>{if(ready(synth.getVoices()))finish();};
+    synth.addEventListener('voiceschanged',changed);
+    timer=setTimeout(finish,timeout);poll=setInterval(changed,100);changed();
   });
 }
