@@ -1,5 +1,5 @@
 export function guidance(s){
- if(s.complete)return{en:'Pip is home! Let’s review your adventure and try one new listening challenge.',zh:'Pip 已经回来了！下一步回顾冒险，再试一道新的听力题。',cta:'查看冒险回顾',view:'review'};
+ if(s.complete)return{en:'Congratulations! You found Pip! Thank you for helping. You completed the mission.',zh:'恭喜你找到 Pip，任务完成！谢谢你的帮助。你可以自由探索，也可以自愿参加冒险回顾。',cta:'查看冒险回顾',view:'review'};
  if(!s.prepared)return{en:'Welcome to the school festival! Our robot Pip is missing. First, learn a few useful words. Then we’ll meet Mia at the plaza to collect our mission. I’ll stay with you.',zh:'欢迎来到校园科技节！迎宾机器人 Pip 不见了。我们先用一分钟准备几个词，再到广场找 Mia 领取寻找任务。我会一直陪着你。',cta:'准备语言背包',view:'prep'};
  if(!s.started)return{en:'We’re ready! First, walk to Mia at the festival plaza and collect our mission. Click Mia or use the arrow keys to move. Ask me whenever you feel unsure.',zh:'准备好了！我们下一步先去广场找 Mia 领取任务。点击 Mia，或用方向键走过去。遇到不清楚的地方，随时点“和教练交谈”。',cta:'标出 Mia 的位置',target:'organiser'};
  if(!s.clues.includes('witness'))return{en:'Let’s ask Ben at the library if he has seen Pip. Walk close to him, look for the red question mark, and ask: Have you seen Pip?',zh:'任务领到了！先去图书馆找 Ben。走近他，点击红色问号就能问：Have you seen Pip? 说完他就会回答。',cta:'标出 Ben 的位置',target:'librarian'};
@@ -11,6 +11,7 @@ export function guidance(s){
  return{en:'Pip is following you. Walk back to Mia at the plaza, then return Pip to the festival.',zh:'Pip 已经跟上你了！下一步走回广场找 Mia，再把 Pip 交回展台。',cta:'标出 Mia 的位置',target:'organiser'};
 }
 export function coachAnswer(s,text){
+ if(s.complete)return /怎么说|表达|phrase|say/.test(text)?{en:"I found Pip! You’re welcome.",zh:"可以说：我找到 Pip 了！不用谢。任务已经完成，不需要再询问它在哪里。"}:guidance(s);
  const t=text.toLowerCase();
  if(/怎么走|如何移动|操作|方向|move|walk|control|keyboard/.test(t))return{en:'Click the ground or a person to walk there. You can also use WASD or the arrow keys. When a red question mark appears, press E or tap Speak to ask a question.',zh:'点击地面或人物就能走过去，也可以用 WASD 或方向键移动。走近人物出现红色问号后，直接点红色问号或按 E。'};
  if(/怎么说|如何问|表达|phrase|how.*(say|ask)|what.*say/.test(t))return{en:s.awake&&!s.following?'Come with me, Pip.':'Have you seen Pip?',zh:s.awake&&!s.following?'这句话是：Pip，跟我来。可以换成 Follow me, Pip.':'这句话是：你见过 Pip 吗？走近场景人物后试着问他。'};
