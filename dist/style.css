@@ -6,3 +6,5 @@
 .quest-marker{cursor:pointer;min-width:34px;min-height:38px;top:-31px;transition:transform .15s}.world-npc.near:hover .quest-marker{transform:scale(1.15);background:#c93f35}.world-npc.near:focus-visible .quest-marker{outline:3px solid #efbd69;outline-offset:3px}
 .quest-marker.replay-marker{background:#fff9e8;border-color:#e7b96c;font-size:20px;line-height:32px}.world-npc.near:hover .replay-marker{background:#fff0c9}
 .voice-summary{padding:10px 18px;background:#fafbf7;border-bottom:1px solid #edf0e6;display:grid;gap:5px;grid-column:1/-1}.voice-summary small{font-size:10px;overflow-wrap:anywhere}
+
+.rate-settings{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0}.rate-settings label{font-weight:600}.rate-settings select{font:inherit;padding:8px;border:1px solid #cbd8ce;border-radius:8px;background:#fff;color:#244a3a;max-width:100%}.rate-settings small{flex-basis:100%;color:#617466}
