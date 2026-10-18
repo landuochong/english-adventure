@@ -11,7 +11,7 @@ let voiceConfirmed=false,voiceTested=false,textOnly=false;try{voiceConfirmed=loc
 const speechRates=[.65,.75,.85,1,1.15];let speechRate=.85;try{const saved=Number(localStorage.getItem('campus-speech-rate'));if(speechRates.includes(saved))speechRate=saved;}catch{}
 let speechRequest=0,voiceStatus="尚未播放",voiceSaveError=false;
 const KEY='campus-quest-v1';let storage=true,s;try{s=restore(localStorage.getItem(KEY));}catch{s=initial();storage=false;}
-let view=voiceConfirmed?'welcome':'voice',subtitles=false,hint=0,message='Hey, explorer! I’m Nova. Ready to find Pip together?',translation='我是 Nova，你的同行教练。你来决定路线，我陪你一起寻找 Pip。',notice='',cluePop='',clueTimer,recording=null,chosen=false,transfer=false;
+let view='welcome',subtitles=false,hint=0,message='Hey, explorer! I’m Nova. Ready to find Pip together?',translation='我是 Nova，你的同行教练。你来决定路线，我陪你一起寻找 Pip。',notice='',cluePop='',clueTimer,recording=null,chosen=false,transfer=false;
 let player={x:150,y:460},companion={x:115,y:480},destination=null,nearby=null,keys=new Set(),lastFrame=0,lastSave=0,micApproved=false;let mapIntroSeen=false;
 let npcLine='',npcZh='',lastQuestion='',heardBy='',micError='';let lastSpoken='';
 let npcReplies={},npcResponses={},npcTopics={};let listeningContext=null,discussionActive=false,discussionChecking=false;
