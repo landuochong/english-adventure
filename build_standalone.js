@@ -21,7 +21,7 @@ for (const f of order){
 
 const css = fs.readFileSync('dist/style.css', 'utf8');
 const html =
-`<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campus Quest · 英语同行冒险【已更新v35】</title><style>${css}</style></head><body><div id="app"></div><script type="module">${code}</script></body></html>`;
+`<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campus Quest · 英语同行冒险【已更新v36】</title><style>${css}</style></head><body><div id="app"></div><script type="module">${code}</script></body></html>`;
 
 fs.writeFileSync('dist/standalone.html', html);
 console.log('standalone.html written,', html.length, 'bytes');
