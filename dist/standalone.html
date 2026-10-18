@@ -117,6 +117,7 @@
 .story-card.main-story .story-go{background:#2f9466;color:#fff}
 .story-card.main-story:hover .story-go{background:#27855a}
 .story-card.main-story.done .story-topic{color:#78926b}
+.story-divider{grid-column:1/-1;display:flex;align-items:center;gap:12px;color:#9aab9f;font-size:11px;letter-spacing:2px;margin:6px 0 2px}.story-divider::before,.story-divider::after{content:"";flex:1;height:1px;background:#e3ead9}
 .story-topic{font-size:10px;font-weight:800;letter-spacing:2px;color:#78926b}
 .story-name{font-size:17px;font-weight:800;color:#244a3a}
 .story-hook{font-size:12px;line-height:1.6;color:#617466;min-height:2.6em}
@@ -769,7 +770,7 @@ function storyBack(){activeStory=null;storyStep=0;storyChecking=false;storyResul
 function storyAnswer(text){if(!activeStory||!text.trim())return;const d=stories[activeStory];const wasChecking=storyChecking;stopSpeech();micError='';const r=discussStory(activeStory,text,storyChecking);storyChecking=r.checking;const right=wasChecking&&!r.checking&&r.en===d.feedback[0];storyResult={en:r.en,zh:r.zh,checking:r.checking,right};render();speak(r.en);}
 function storiesHub(withBack){
  const mainCard=`<button class="story-card main-story${s.complete?' done':''}" data-action="welcome-start"><span class="story-topic">${s.complete?'✅ 主线冒险 · 已完成':'⭐ 主线冒险'}</span><span class="story-name">消失的科技节机器人</span><span class="story-hook">集齐 3 条线索，找到 Pip，开口完成任务</span><span class="story-go">${s.complete?'重玩冒险 ↻':s.prepared?'继续冒险 ▶':'开始冒险 ▶'}</span></button>`;
- return `<section class="card stories"><p class="muted">选一个场景开始：主线冒险随时继续；日常故事先听故事、学重点词，再开口回答。</p><div class="story-list">${mainCard}${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}</div>${withBack?(s.prepared?btn('◈ 返回冒险地图','map','chip'):btn('← 返回欢迎页','welcome-home','chip')):''}</section>`;
+ return `<section class="card stories"><p class="muted">选一个场景开始：先挑一个日常故事，听故事、学重点词、再开口回答；想挑战更大的校园任务，可玩下方的「主线冒险」。</p><div class="story-list">${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}<div class="story-divider"><span>或挑战主线冒险</span></div>${mainCard}</div>${withBack?(s.prepared?btn('◈ 返回冒险地图','map','chip'):btn('← 返回欢迎页','welcome-home','chip')):''}</section>`;
 }
 function storyDetail(){
  const d=stories[activeStory];

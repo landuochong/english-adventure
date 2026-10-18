@@ -117,6 +117,7 @@
 .story-card.main-story .story-go{background:#2f9466;color:#fff}
 .story-card.main-story:hover .story-go{background:#27855a}
 .story-card.main-story.done .story-topic{color:#78926b}
+.story-divider{grid-column:1/-1;display:flex;align-items:center;gap:12px;color:#9aab9f;font-size:11px;letter-spacing:2px;margin:6px 0 2px}.story-divider::before,.story-divider::after{content:"";flex:1;height:1px;background:#e3ead9}
 .story-topic{font-size:10px;font-weight:800;letter-spacing:2px;color:#78926b}
 .story-name{font-size:17px;font-weight:800;color:#244a3a}
 .story-hook{font-size:12px;line-height:1.6;color:#617466;min-height:2.6em}
