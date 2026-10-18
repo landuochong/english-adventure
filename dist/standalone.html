@@ -1,0 +1,886 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campus Quest · 英语同行冒险【已更新v30】</title><style>/* 字体通过 index.html 的 preconnect + 非阻塞 <link> 加载；加载失败回退系统字体 */
+:root{font-family:'Outfit','Noto Sans SC',system-ui,sans-serif;color:#253d33;background:#f6f7f2;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer;border:0}button:focus-visible,input:focus-visible{outline:3px solid #ed9a50;outline-offset:3px}button:disabled{opacity:.5;cursor:not-allowed}.shell{display:grid;grid-template-columns:210px 1fr;min-height:100vh}.shell.no-sidebar{grid-template-columns:1fr}.shell.no-sidebar .workspace{max-width:1080px;margin:0 auto}.layout.story-layout{grid-template-columns:minmax(0,1fr)}.sidebar{background:#244a3a;color:white;padding:32px 22px;display:flex;flex-direction:column;gap:38px}.brand{font-size:24px;line-height:1.1;font-weight:700;letter-spacing:-.8px}.brand span{color:#bada92}.brand small{display:block;font-size:10px;letter-spacing:2px;margin-top:12px;color:#c2d3c8}.nav{display:grid;gap:12px}.nav button{padding:14px;text-align:left;background:transparent;color:#d2dfd7;border-radius:10px}.nav button.active{background:#41634f;color:white}.story-nav .home{background:#bada92;color:#1d3326;font-weight:700;border:1px solid #a4c97f}.story-nav .home:hover{background:#cdeaa6}.nav-sep{height:1px;background:#3c5a49;margin:2px 0 6px}.side-note{margin-top:auto;background:#315541;padding:18px;border-radius:14px;font-size:12px;line-height:1.9;color:#d2dfd7}.workspace{padding:26px 34px;max-width:1600px;width:100%;margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;color:#77877c;font-size:12px;margin-bottom:30px}.pill{border:1px solid #dce3d7;border-radius:30px;padding:8px 12px;background:#fff;font-size:11px}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}.eyebrow{color:#78926b;font-size:11px;letter-spacing:2px;font-weight:600}h1{font-size:32px;letter-spacing:-1px;margin:8px 0 10px}h2{font-size:20px;margin:0 0 12px}p{line-height:1.8}small,.muted{color:#7c887f;font-size:12px}.heading p{font-size:13px;margin:0;color:#7a877e}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px}.card{background:#fff;border:1px solid #e5e8de;border-radius:18px;overflow:hidden}.maphead{padding:17px 22px;display:flex;justify-content:space-between;align-items:center;font-size:12px}.map{position:relative;height:380px;background:#e6eddb;overflow:hidden}.map:before{content:'';position:absolute;inset:0;background-image:radial-gradient(#b8cbaa 1px,transparent 1px);background-size:20px 20px;opacity:.35}.path{position:absolute;background:#f8f5df;border:2px solid #e1dfc6;border-radius:30px}.path.h{height:34px;left:12%;right:12%;top:53%}.path.v{width:34px;left:49%;top:13%;bottom:10%}.pond{position:absolute;width:100px;height:53px;background:#bfdde0;border:6px solid #d2e5da;border-radius:58% 42% 60% 40%;left:73%;top:75%;transform:rotate(-15deg)}.tree{position:absolute;font-size:31px;filter:saturate(.6);pointer-events:none}.place{position:absolute;transform:translate(-50%,-50%);background:none;display:flex;align-items:center;flex-direction:column;gap:6px;z-index:2;min-width:94px;padding:7px;border-radius:12px}.building{display:block;font-size:46px;filter:drop-shadow(0 6px 1px #456d3a15);transition:transform .2s}.place:hover .building{transform:translateY(-4px)}.place .label{font-size:11px;background:#fffffff0;border-radius:7px;padding:5px 9px;box-shadow:0 2px 4px #00000009}.place.selected .label{background:#244a3a;color:white}.place.selected:before{content:'';position:absolute;width:90px;height:65px;border:2px dashed #6d8a58;border-radius:50%;top:16px}.actors{position:absolute;z-index:3;display:flex;gap:4px;pointer-events:none;transition:left .6s,top .6s}.actor{width:25px;height:25px;border-radius:50%;background:#f5b769;border:3px solid white;box-shadow:0 3px 8px #30432a30;display:grid;place-items:center;font-size:13px}.actor.coach{background:#b4c5e9}.mapcaption{position:absolute;bottom:12px;left:18px;font-size:10px;letter-spacing:1px;color:#74866c}.scene{padding:22px}.scene-title{display:flex;justify-content:space-between;align-items:center}.scene p{font-size:13px;color:#65746a;margin:8px 0 17px}.actions{display:flex;gap:8px;flex-wrap:wrap}.primary,.secondary,.chip{padding:11px 16px;border-radius:9px;font-size:12px;line-height:1.4}.primary{background:#284f3b;color:white}.secondary{background:#f0f3eb;color:#38553d}.chip{background:white;border:1px solid #dfe5d8;padding:8px 11px}.orange{background:#f4ac65;color:#4a3523}.bottomcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.compact{padding:18px;font-size:12px}.compact p{font-size:12px;color:#7a867c;margin:7px 0}.progress{height:5px;background:#e9ede2;border-radius:8px;margin:14px 0;overflow:hidden}.progress i{display:block;background:#8baa70;height:100%;transition:width .4s}.coachhead{padding:20px;border-bottom:1px solid #eef0e9;display:flex;align-items:center;gap:12px}.avatar{width:45px;height:45px;background:#e7e8f4;border-radius:14px;display:grid;place-items:center;font-size:28px}.coachhead strong{font-size:15px}.online{font-size:10px;color:#7d9474;margin-top:5px}.modes{display:flex;background:#f1f3ec;padding:4px;border-radius:9px;margin:16px}.modes button{flex:1;padding:9px 4px;font-size:11px;background:none;border-radius:6px;color:#758171}.modes button.active{background:white;color:#294631;box-shadow:0 1px 5px #00000008}.conversation{padding:0 18px;min-height:170px}.bubble{background:#f2f5ed;border-radius:0 14px 14px 14px;padding:16px;font-size:14px;line-height:1.7}.translation{font-size:12px;color:#778471;margin-top:10px}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tools button{font-size:11px;background:none;color:#67805c;padding:5px}.composer{padding:16px 18px;border-top:1px solid #edf0e7}.composer label{display:block;font-size:11px;color:#7b877c;margin-bottom:8px}.composer input{width:100%;background:#fafbf7;border:1px solid #e2e7dc;padding:11px;border-radius:9px;font-size:12px;margin-bottom:8px}.composer .actions button{flex:1}.status{min-height:18px;font-size:11px;color:#8a7659;margin-top:9px;line-height:1.5}.taskline{display:flex;gap:10px;font-size:12px;margin:13px 0;align-items:center}.check{width:18px;height:18px;border:1px solid #d8e0d1;border-radius:50%;display:grid;place-items:center;font-size:10px}.done .check{background:#769763;color:white;border:0}.done{color:#78916f}.footnote{font-size:10px;color:#8c978d;margin-top:20px;display:flex;justify-content:space-between}.prep{padding:28px}.vocabgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.word{background:#f5f7ef;border:1px solid #e3e8d9;border-radius:13px;padding:18px;text-align:left;color:#2f4938}.word b{font-size:22px;display:block;margin:10px 0 5px}.word span{font-size:12px;color:#7a8972}.word em{font-size:25px;font-style:normal}.phrases{display:grid;gap:8px;margin:18px 0}.phrase{background:#fff;border:1px solid #e2e6da;border-radius:9px;text-align:left;padding:13px;color:#38553d}.exercise{background:#f9f2e7;border-radius:12px;padding:20px;margin:20px 0}.exercise p{font-size:13px}.notebook{padding:26px;min-height:500px}.clue{border-left:3px solid #94ac79;padding:14px 18px;background:#f6f8f0;margin:14px 0;border-radius:0 10px 10px 0;font-size:14px;line-height:1.7}.hero-icon{font-size:60px;margin:20px 0}.review{padding:32px}.review h2{font-size:30px}.review .stats{display:flex;gap:30px;margin:25px 0}.stats b{display:block;font-size:28px}.toast{background:#fff0d6;padding:12px 18px;margin-bottom:16px;border-radius:10px;font-size:12px}dialog{border:0;border-radius:18px;max-width:400px;padding:26px;color:#294632}dialog::backdrop{background:#17362566}@media(max-width:1150px){.shell{grid-template-columns:160px 1fr}.sidebar{padding:25px 16px}.workspace{padding:24px}.layout{grid-template-columns:minmax(0,1fr) 275px}.brand{font-size:21px}}@media(max-width:900px){.shell{display:block}.sidebar{padding:16px 22px;flex-direction:row;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:18px}.brand small,.side-note{display:none}.nav{display:flex;gap:4px}.nav button{padding:10px;font-size:12px}.layout{grid-template-columns:1fr}.coachpanel{display:grid;grid-template-columns:1fr 1fr}.coachhead,.modes{grid-column:1/-1}.composer{border-left:1px solid #edf0e7}.workspace{padding:20px}.topbar{margin-bottom:22px}.map{height:390px}}@media(max-width:520px){h1{font-size:25px}.heading{align-items:start}.heading>.pill{display:none}.vocabgrid{grid-template-columns:repeat(2,1fr)}.prep,.review{padding:20px}.coachpanel{display:block}.bottomcards{grid-template-columns:1fr}.map{height:340px}.building{font-size:38px}.place{min-width:80px}.label{white-space:nowrap}.footnote{display:block;line-height:2}.topbar>.pill{font-size:9px}.sidebar{padding:14px}.workspace{padding:16px}.nav button{font-size:11px;padding:9px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.voice-settings{display:flex;align-items:center;flex-wrap:wrap;gap:10px;background:#f4f6ef;padding:14px;border-radius:12px;margin-top:20px}.voice-settings label{font-size:12px}.voice-settings select{max-width:100%;min-width:0;flex:1;font:inherit;font-size:12px;padding:9px;border:1px solid #dce3d5;border-radius:7px;background:white;color:#294631}.voice-settings small{flex-basis:100%;line-height:1.7}.voice-settings select:focus-visible{outline:3px solid #ed9a50;outline-offset:2px}
+.world{height:480px;position:relative;overflow:hidden;background-color:#e8eedb;background-image:radial-gradient(#bbcea950 1px,transparent 1px);background-size:19px 19px;cursor:crosshair;touch-action:manipulation;outline-offset:-3px}.world-path{position:absolute;background:#f7f2dc;border:2px solid #e6e1c8;border-radius:45px;pointer-events:none}.world-path.horizontal{left:9%;right:7%;top:57%;height:18%}.world-path.vertical{left:43%;top:14%;bottom:8%;width:15%}.world-building{position:absolute;transform:translate(-50%,-50%);display:grid;text-align:center;pointer-events:none;gap:3px}.world-building>span{font-size:52px}.world-building b{font-size:11px;color:#5f7456}.world-tree{position:absolute;font-size:32px;opacity:.8;pointer-events:none}.world-npc{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;background:none;padding:6px;z-index:3;border-radius:50%;width:68px;height:70px}.sprite{font-size:32px;filter:drop-shadow(0 4px 1px #52664022)}.npc-name{background:#fffdf2;padding:3px 6px;font-size:10px;border-radius:5px;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis}.world-npc.near{background:#fff7d275;box-shadow:0 0 0 2px #b9ca8d}.quest-marker{position:absolute;top:-26px;color:white;background:#e45145;border:2px solid white;font-size:22px;font-weight:800;border-radius:12px 12px 12px 0;width:29px;height:33px;box-shadow:0 3px 8px #9b332233}.world-actor{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;z-index:5;pointer-events:none;line-height:1.2}.world-actor>span{font-size:30px;filter:drop-shadow(0 4px 1px #314d3930)}.world-actor small{background:#244a3a;color:white;border-radius:5px;padding:2px 6px;font-size:9px}.world-actor.follower{opacity:.85;z-index:4}.world-actor.follower small{background:#7a78a3}.world-hud{position:absolute;top:12px;left:14px;right:14px;padding:9px 12px;border-radius:9px;background:#ffffffdb;font-size:12px;pointer-events:none;z-index:6}.destination{position:absolute;transform:translate(-50%,-50%);font-size:25px;color:#ee9952;pointer-events:none}.world [hidden]{display:none!important}.walk-controls{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #edf0e5;font-size:11px;gap:10px}.walk-controls b{color:#d34f43}.walk-controls>div{display:flex;gap:4px}.encounter{padding:20px;min-height:180px}.encounter-idle p{font-size:13px;color:#6b7d63}.encounter-idle span{font-size:12px;color:#8b967d}.encounter-title{display:flex;align-items:center;gap:12px;margin-bottom:14px}.encounter-title h2{font-size:16px;margin:4px 0}.npc-portrait{font-size:32px;background:#f1f3e8;border-radius:12px;padding:8px}.near-badge{margin-left:auto;color:#7c9565;font-size:10px}.npc-response{padding:14px 17px;background:#f3f6ed;border-radius:12px;font-size:14px;line-height:1.8;margin-bottom:14px}.npc-response p{font-size:12px;color:#76886a;margin:6px 0 0}.npc-form{margin-top:14px}.npc-form label{font-size:11px;color:#7c8974}.npc-form>div{display:flex;gap:8px;margin-top:6px}.npc-form input{flex:1;min-width:0;border:1px solid #dde5d5;border-radius:8px;padding:12px;font-size:13px}.heard{font-size:12px;color:#7e8c74;margin:10px 0}@media(max-width:520px){.world{height:380px}.world-building>span{font-size:36px}.world-tree{font-size:23px}.world-npc{width:45px}.sprite{font-size:26px}.world-actor>span{font-size:25px}.world-building b{font-size:9px}.world-hud{font-size:11px}.walk-controls{flex-wrap:wrap}.near-badge{display:none}.encounter{padding:16px}.world-npc.near{box-shadow:0 0 0 1px #b9ca8d}}
+.welcome{padding:40px;min-height:530px;background:linear-gradient(145deg,#fff 35%,#edf3e4)}.welcome-portrait{font-size:74px;margin:24px 0}.welcome h2{font-size:26px;line-height:1.5}.welcome-story{color:#6c7b63;font-size:14px;max-width:530px}.opening-plan{border-left:3px solid #90ab72;padding:14px 20px;margin:24px 0;background:#ffffffa8;border-radius:0 12px 12px 0}.opening-plan p{margin:8px 0 0;font-size:14px}.welcome>.primary{padding:15px 22px}.plan-banner{display:flex;align-items:center;gap:14px;background:#e9f0df;border:1px solid #d9e5c9;padding:16px 20px;border-radius:15px;margin-bottom:16px}.plan-banner>span{font-size:32px}.plan-banner>div{flex:1}.plan-banner p{font-size:12px;line-height:1.8;margin:4px 0}.plan-banner .primary{white-space:nowrap}.coach-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}.coach-quick>.primary,.coach-quick>.chip{grid-column:1/-1}.composer details{font-size:12px}.composer summary{cursor:pointer;color:#637c56;margin:10px 0}.composer details form{margin-top:12px}.world-npc.guide-target{outline:3px solid #eda958;outline-offset:5px;background:#fff3cd}.world-npc.guide-target::after{content:'下一步';position:absolute;top:-30px;white-space:nowrap;background:#efb66d;color:#4c3a21;padding:4px 7px;border-radius:6px;font-size:10px}@media(max-width:900px){.coachpanel .conversation,.coachpanel .composer{grid-column:1/-1}}@media(max-width:520px){.welcome{padding:24px}.welcome h2{font-size:23px}.plan-banner{flex-wrap:wrap;padding:14px}.plan-banner>span{display:none}.plan-banner>.primary{width:100%}.welcome-portrait{font-size:60px}}
+.quest-marker{cursor:pointer;min-width:34px;min-height:38px;top:-31px;transition:transform .15s}.world-npc.near:hover .quest-marker{transform:scale(1.15);background:#c93f35}.world-npc.near:focus-visible .quest-marker{outline:3px solid #efbd69;outline-offset:3px}
+.quest-marker.replay-marker{background:#fff9e8;border-color:#e7b96c;font-size:20px;line-height:32px}.world-npc.near:hover .replay-marker{background:#fff0c9}
+.voice-summary{padding:10px 18px;background:#fafbf7;border-bottom:1px solid #edf0e6;display:grid;gap:5px;grid-column:1/-1}.voice-summary small{font-size:10px;overflow-wrap:anywhere}
+
+.rate-settings{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0}.rate-settings label{font-weight:600}.rate-settings select{font:inherit;padding:8px;border:1px solid #cbd8ce;border-radius:8px;background:#fff;color:#244a3a;max-width:100%}.rate-settings small{flex-basis:100%;color:#617466}
+
+.audio-prompt{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:24px 12px;background:#edf4ee;border-radius:16px;color:#244a3a;margin:12px 0}.audio-prompt span{font-weight:700}.audio-prompt small{flex-basis:100%;text-align:center;color:#617466}.transcript{margin:16px 0;padding:10px 12px;border:1px dashed #c6d5c9;border-radius:10px}.transcript summary,.typing-fallback summary{cursor:pointer;color:#617466;font-size:13px}.transcript p{line-height:1.7}.transcript details{margin-top:8px}.typing-fallback{margin-top:16px}
+
+.victory{padding:0;border:1px solid #e4c786;border-radius:28px;background:#fffaf0;color:#244a3a;width:min(520px,calc(100vw - 32px));max-height:90dvh;overflow:auto;box-shadow:0 28px 100px #0b291f55;animation:victory-arrive .5s ease-out}.victory::backdrop{background:#102c27b8;backdrop-filter:blur(5px)}.victory-body{position:relative;padding:40px 24px 28px;text-align:center;z-index:1}.victory h2{font-size:clamp(26px,5vw,38px);margin:12px 0}.victory p{color:#617466}.victory .actions{justify-content:center;margin:24px 0 12px}.victory-seal{display:flex;align-items:center;justify-content:center;gap:22px;margin:6px 0 26px}.victory-seal b{display:grid;place-items:center;font-size:76px;width:132px;height:132px;border-radius:50%;background:#e4f0da;border:8px solid #f5d18c;box-shadow:0 0 0 10px #fff0cd;animation:pip-celebrate 1s ease-in-out 3}.victory-seal span{font-size:30px;animation:star-celebrate .8s ease-out 3 alternate}.victory-badge{display:inline-block;border:1px solid #e6ca86;border-radius:999px;padding:10px 20px;background:#fff0ca;font-weight:700;margin:12px 0}.victory-stats{display:flex;justify-content:center;gap:24px;margin-top:12px;font-size:14px}.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:inherit}.confetti i{position:absolute;left:var(--x);top:-20px;width:8px;height:16px;background:var(--color);opacity:0;animation:confetti-fall 3.6s ease-in var(--delay) forwards}.confetti i:nth-child(3n){border-radius:50%;height:9px}@keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0);opacity:1}85%{opacity:1}100%{transform:translateY(650px) rotate(var(--turn));opacity:0}}@keyframes victory-arrive{from{transform:translateY(20px) scale(.94);opacity:0}to{transform:none;opacity:1}}@keyframes pip-celebrate{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-9px) rotate(4deg)}}@keyframes star-celebrate{from{transform:scale(.85)}to{transform:scale(1.15)}}@media(prefers-reduced-motion:reduce){.victory,.victory-seal b,.victory-seal span,.confetti i{animation:none}.confetti{display:none}}
+
+/* Guided entry and responsive controls */
+.nav button:disabled{opacity:.4;background:transparent;cursor:not-allowed}.nav button:disabled:hover{background:transparent}.coach-intro{padding:24px;align-self:start;display:grid;justify-items:start;gap:14px}.coach-intro p{font-size:13px;color:#71816c;margin:0}
+.workspace,.layout,.layout>div,.coachpanel{min-width:0}.voice-settings{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:12px}.voice-settings>label{margin:0}.voice-settings>select{width:100%;min-width:0;max-width:100%;flex:none}.voice-settings>.rate-settings,.voice-settings>small,.voice-settings>button{grid-column:1/-1}.voice-settings>button{justify-self:start;max-width:100%;white-space:normal}.rate-settings{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:8px 12px;width:100%;min-width:0;margin:4px 0}.rate-settings select{width:100%;min-width:0;max-width:100%;height:40px;font-size:13px}.rate-settings small{grid-column:1/-1;font-size:11px;line-height:1.6}.coachpanel>.rate-settings{width:auto;margin:16px 18px;grid-template-columns:68px minmax(0,1fr)}.word{min-width:0}.word b{font-size:clamp(16px,1.7vw,22px);overflow-wrap:anywhere}.map-goal{padding:10px 20px;font-size:12px;color:#426148;background:#f4f7ec;border-top:1px solid #e5ebdd;border-bottom:1px solid #e5ebdd}
+.map-hint{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0;padding:12px 16px;background:#fff6e0;border:1px solid #f0d79a;border-radius:12px;font-size:13px;line-height:1.7;color:#6b4f1d}.map-hint b{color:#a8631f}.map-hint .chip{margin-left:auto}.world{height:640px;min-height:600px}.maphead{gap:12px;flex-wrap:wrap}.discussion-tools{padding:0 18px}.discussion-tools .actions{margin:8px 0}
+@media(max-width:1180px){.layout{grid-template-columns:minmax(0,1fr)}.coachpanel{display:block}.world{height:620px;min-height:580px}.coachpanel>.rate-settings{max-width:420px}.coachpanel .conversation{min-height:0}}
+@media(max-width:600px){.sidebar{align-items:flex-start;flex-wrap:wrap}.nav{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.nav button{white-space:normal}.voice-settings{grid-template-columns:1fr}.voice-settings>label,.voice-settings>select{grid-column:1/-1}.rate-settings{grid-template-columns:72px minmax(0,1fr);gap:8px}.world{height:min(62vh,460px);min-height:320px;max-height:480px}.maphead{padding:14px}.map-goal{padding:10px 14px}.world-building>span{font-size:36px}.world-tree{font-size:23px}.vocabgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.voice-settings .rate-settings{grid-template-columns:88px minmax(0,220px)}.coachpanel>.rate-settings{grid-template-columns:68px minmax(0,200px)}
+@media(max-width:600px){.voice-settings .rate-settings{grid-template-columns:72px minmax(0,1fr)}}
+
+.voice-capture{padding:14px;margin:12px 0;background:#edf4f0;border:1px solid #bdd6c7;border-radius:12px;min-width:0}.coachpanel>.voice-capture{margin:12px 18px}.voice-capture strong{font-size:13px;color:#315d44;display:block}.voice-live{min-height:44px;max-height:240px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;line-height:1.7;margin:10px 0}.voice-capture .actions{gap:8px}
+
+/* ===== 游戏化视觉层（gamification） ===== */
+/* 按钮：渐变填充 + 抬起/按压手感 */
+.primary{background:linear-gradient(180deg,#46b884,#2f9466);color:#fff;border-radius:14px;padding:13px 20px;font-size:13px;font-weight:700;box-shadow:0 5px 0 #1f6b48,0 10px 18px #0c3a2822;transition:transform .08s ease,box-shadow .08s ease,filter .15s}
+.primary:hover{filter:brightness(1.06)}
+.primary:active{transform:translateY(4px);box-shadow:0 1px 0 #1f6b48,0 4px 10px #0c3a2822}
+.primary.recording{animation:rec-pulse 1.1s ease-in-out infinite}
+.secondary{background:#eef3ea;border:1.5px solid #cfe0cc;color:#2f5d44;border-radius:14px;padding:12px 18px;font-size:13px;font-weight:600;box-shadow:0 4px 0 #d4e2cf;transition:transform .08s ease,box-shadow .08s ease}
+.secondary:active{transform:translateY(3px);box-shadow:0 1px 0 #d4e2cf}
+.chip{background:#fff;border:1.5px solid #e1e8da;color:#3a5b48;border-radius:999px;padding:9px 15px;font-size:12px;font-weight:600;box-shadow:0 3px 0 #e7eee2;transition:transform .08s ease,box-shadow .08s ease,background .15s}
+.chip:hover{background:#f3f8ef}
+.chip:active{transform:translateY(2px);box-shadow:0 1px 0 #e7eee2}
+@keyframes rec-pulse{0%,100%{box-shadow:0 5px 0 #1f6b48,0 0 0 0 #e2555533}50%{box-shadow:0 5px 0 #1f6b48,0 0 0 9px #e2555500}}
+
+/* 卡片：顶部彩色条 + 悬浮 */
+.card{transition:transform .15s ease,box-shadow .15s ease}
+.card:not(.coachpanel)::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#7bc6a0,#f3c66a);border-radius:18px 18px 0 0;z-index:1}
+@media(hover:hover){.card:not(.coachpanel):hover{transform:translateY(-2px);box-shadow:0 14px 30px #0c3a2822,0 2px 0 #eef2ea}}
+
+/* 提示 toast 入场 + 线索 +1 固定提示 */
+.toast{background:linear-gradient(180deg,#fff6d8,#ffe9a6);border:1.5px solid #f0cd6e;color:#6b4d12;box-shadow:0 8px 20px #b8860b22;animation:toast-in .35s cubic-bezier(.2,1.3,.5,1)}
+@keyframes toast-in{from{transform:translateY(-12px);opacity:0}to{transform:none;opacity:1}}
+.clue-pop{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#fff6d6,#ffdf8f);border:2px solid #f0c44f;color:#6b4d12;font-weight:800;padding:12px 20px;border-radius:16px;box-shadow:0 12px 30px #b8860b44;animation:clue-pop 2.6s ease forwards;pointer-events:none}
+@keyframes clue-pop{0%{transform:translate(-50%,-20px) scale(.9);opacity:0}12%{transform:translate(-50%,0) scale(1.06);opacity:1}82%{opacity:1}100%{transform:translate(-50%,-12px);opacity:0}}
+
+/* 顶部 HUD + 任务追踪条 */
+.topbar.hud{flex-wrap:wrap;gap:12px 16px;align-items:center}
+.hud-left{display:flex;align-items:center;gap:10px}
+.hud-avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(180deg,#bfe6cb,#8fcaa6);box-shadow:0 3px 0 #6fae8b}
+.hud-meta{display:flex;flex-direction:column;line-height:1.15}
+.hud-meta b{font-size:13px;color:#2f5d44}
+.hud-meta small{font-size:10px;color:#7c887f;letter-spacing:.5px}
+.quest{display:flex;align-items:center;flex-wrap:wrap;background:#eef5ea;border:1px solid #dce8d6;border-radius:999px;padding:7px 12px}
+.quest-node{display:flex;align-items:center;gap:6px}
+.quest-dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#fff;border:2px solid #cfe0c9;font-size:13px;font-weight:800;color:#7a8a72}
+.quest-node.done .quest-dot{background:#3fae7a;border-color:#2f9466;color:#fff}
+.quest-node.active .quest-dot{background:#f3c66a;border-color:#e0a93f;color:#5a4012;box-shadow:0 0 0 4px #f3c66a33;animation:node-glow 1.6s ease-in-out infinite}
+.quest-label{font-size:12px;font-weight:700;color:#5a6b54;white-space:nowrap}
+.quest-node.todo .quest-label{color:#9aa893}
+.quest-line{flex:1;min-width:16px;height:3px;background:#d6e4d0;border-radius:2px;margin:0 8px}
+.quest-node.done+.quest-line{background:#3fae7a}
+.quest.quest-mini{padding:5px 10px}
+.quest.quest-mini .quest-label{display:none}
+.quest.quest-mini .quest-line{margin:0 5px;min-width:10px}
+@keyframes node-glow{0%,100%{box-shadow:0 0 0 4px #f3c66a33}50%{box-shadow:0 0 0 7px #f3c66a10}}
+.quest-goal{margin:10px 0 6px;font-size:13px;color:#3a5b48}
+
+/* 欢迎页 → 游戏标题屏 */
+.workspace.title-screen{position:relative;overflow:hidden;background:radial-gradient(130% 90% at 50% -15%,#e2f1e6,#f6f7f2)}
+.workspace.title-screen::before,.workspace.title-screen::after{content:'';position:absolute;border-radius:50%;pointer-events:none;z-index:0;filter:blur(1px)}
+.workspace.title-screen::before{width:280px;height:280px;left:-60px;top:-70px;background:radial-gradient(circle,#bfe6cb,transparent 70%);opacity:.6;animation:float-a 9s ease-in-out infinite}
+.workspace.title-screen::after{width:220px;height:220px;right:-50px;bottom:-60px;background:radial-gradient(circle,#f6dca0,transparent 70%);opacity:.55;animation:float-b 11s ease-in-out infinite}
+.workspace.title-screen>.topbar,.workspace.title-screen>.heading,.workspace.title-screen>section{position:relative;z-index:1}
+@keyframes float-a{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,30px)}}
+@keyframes float-b{0%,100%{transform:translate(0,0)}50%{transform:translate(-26px,-22px)}}
+.welcome{border-radius:22px}
+.welcome h2{font-size:clamp(28px,4.4vw,42px);line-height:1.35}
+.welcome-portrait{font-size:clamp(70px,12vw,104px);filter:drop-shadow(0 12px 16px #2f946655);animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.welcome .primary{font-size:17px;padding:16px 30px;animation:cta-pulse 2.2s ease-in-out infinite}
+@keyframes cta-pulse{0%,100%{box-shadow:0 5px 0 #1f6b48,0 10px 18px #0c3a2822}50%{box-shadow:0 5px 0 #1f6b48,0 10px 30px #2f946670}}
+
+/* 地图场景感 */
+.world{background:linear-gradient(180deg,#dff0ea 0%,#e8eedb 40%,#e1eccd 100%);background-image:radial-gradient(#bcd0ad66 1px,transparent 1px);background-size:19px 19px}
+.world-building{background:#fffaf0cc;border:2px solid #e7d9b8;border-radius:14px;padding:8px 12px;box-shadow:0 5px 0 #d8c79e,0 6px 12px #00000012}
+.world-building>span{filter:drop-shadow(0 4px 2px #0002)}
+.world-building b{background:#244a3a;color:#fff;padding:2px 8px;border-radius:8px}
+.world-tree{filter:saturate(.9) drop-shadow(0 3px 1px #0001)}
+.npc-name{position:relative;background:#fff;color:#2f4a3a;border:1px solid #e3e8da;box-shadow:0 2px 6px #00000012}
+.npc-name::after{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:#fff}
+.world-npc.near{background:#fff7d2;box-shadow:0 0 0 2px #b9ca8d,0 0 0 8px #fff7d233}
+.destination:not([hidden]){animation:dest-pulse 1.2s ease-in-out infinite;text-shadow:0 0 10px #ee995266}
+@keyframes dest-pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.25);opacity:.7}}
+.world-actor.player>span{animation:bob 1.6s ease-in-out infinite}
+
+/* 胜利：关卡完成横幅 + 三星 */
+.victory-banner{display:inline-block;margin:0 auto 10px;background:linear-gradient(90deg,#f3c66a,#f39898);color:#4a2f12;font-weight:800;letter-spacing:1px;padding:8px 18px;border-radius:999px;font-size:13px;box-shadow:0 6px 16px #b8860b33}
+.victory-stars{font-size:34px;letter-spacing:6px;color:#f3b431;margin:10px 0 4px}
+.victory-stars .dim{color:#d9d2c2}
+
+/* ===== 日常故事模式（stories） ===== */
+.stories{padding:26px 30px}
+.stories>h2{margin-top:10px}
+.stories.detail{animation:story-enter .3s ease-out}
+.story-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px;margin:20px 0 22px}
+.story-card{position:relative;display:grid;gap:6px;text-align:left;background:linear-gradient(180deg,#fff,#f7faf2);border:2px solid #e3ead9;border-radius:18px;padding:18px 16px;box-shadow:0 4px 0 #dde7d5;transition:transform .1s ease,box-shadow .1s ease,border-color .15s;animation:story-enter .3s ease-out}
+.story-card:hover{transform:translateY(-3px);border-color:#b9d3ae;box-shadow:0 8px 0 #cbdcc0,0 12px 24px #0c3a2814}
+.story-card:active{transform:translateY(2px);box-shadow:0 1px 0 #dde7d5}
+.story-card.main-story{background:linear-gradient(180deg,#fff,#eaf4e4);border-color:#8fbfa0;box-shadow:0 4px 0 #b5d4ba}
+.story-card.main-story:hover{border-color:#6fae8b;box-shadow:0 8px 0 #a3c9a8,0 12px 24px #0c3a2814}
+.story-card.main-story .story-topic{color:#2f7a4d}
+.story-card.main-story .story-go{background:#2f9466;color:#fff}
+.story-card.main-story:hover .story-go{background:#27855a}
+.story-card.main-story.done .story-topic{color:#78926b}
+.story-topic{font-size:10px;font-weight:800;letter-spacing:2px;color:#78926b}
+.story-name{font-size:17px;font-weight:800;color:#244a3a}
+.story-hook{font-size:12px;line-height:1.6;color:#617466;min-height:2.6em}
+.story-go{justify-self:start;margin-top:4px;background:#e9f4dc;color:#2f5d44;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:800;transition:background .15s}
+.story-card:hover .story-go{background:#d8ecc4}
+.story-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.story-top .story-topic{margin-left:auto}
+.story-narrative,.story-vocab,.story-terms,.story-check{background:#f8faf4;border:1.5px solid #e6ecdc;border-radius:16px;padding:16px 20px;margin:14px 0}
+.story-narrative>b,.story-vocab>b,.story-terms>b,.story-check>b{display:block;margin-bottom:8px;color:#3a5b48;font-size:13px}
+.story-narrative p,.story-vocab p,.story-check p{margin:6px 0}
+.story-narrative p[lang=en],.story-check p[lang=en]{font-size:16px;font-weight:600;color:#244a3a;line-height:1.7}
+.story-narrative .actions,.story-answer .actions{margin:12px 0 0}
+.story-terms .term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.story-terms .word{padding:12px 14px;border-radius:12px;box-shadow:0 3px 0 #e0e8d6;transition:transform .08s ease,background .15s}
+.story-terms .word:hover{background:#eef5e6}
+.story-terms .word:active{transform:translateY(2px);box-shadow:0 1px 0 #e0e8d6}
+.story-terms .word b{font-size:15px;margin:4px 0 2px}
+.story-terms .word em{font-size:16px}
+.story-check{background:#fff8e8;border-color:#f0dfae}
+.story-check p[lang=en]{color:#6b4d12}
+.story-answer{margin-top:16px}
+.story-feedback{margin-top:14px;border-radius:14px;padding:14px 18px;border:1.5px solid}
+.story-feedback p{margin:6px 0}
+.story-feedback .actions{margin-top:10px}
+.story-feedback.right{background:#eaf7ec;border-color:#a9d9b2}
+.story-feedback.right b{color:#1f7a3d}
+.story-feedback.retry{background:#fff6e0;border-color:#f0d79a}
+.story-feedback.retry b{color:#a8631f}
+.story-feedback.info{background:#eef4fb;border-color:#bcd4ee}
+.story-feedback.info b{color:#2f5d8a}
+.stories-aside .story-tips{display:grid;gap:8px;margin-top:4px;width:100%}
+.stories-aside .story-tips small{font-size:12px;line-height:1.6;color:#5a6b54}
+.story-steps{display:flex;align-items:center;gap:6px;margin:14px 0 18px;flex-wrap:wrap}
+.story-step{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #e3ead9;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;color:#5a6b54;box-shadow:0 3px 0 #e0e8d6;transition:transform .08s ease,box-shadow .08s ease,background .15s,border-color .15s}
+.story-step:hover{background:#f3f8ef}
+.story-step:active{transform:translateY(2px);box-shadow:0 1px 0 #e0e8d6}
+.story-step.active{background:linear-gradient(180deg,#46b884,#2f9466);color:#fff;border-color:#2f9466;box-shadow:0 4px 0 #1f6b48}
+.story-step.done{background:#eaf4dc;border-color:#a9d9b2;color:#2f7a4d}
+.step-dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#eef5ea;border:2px solid #cfe0c9;font-size:12px;font-weight:800;flex:none}
+.story-step.active .step-dot{background:#fff;color:#2f9466;border-color:#fff}
+.story-step.done .step-dot{background:#3fae7a;border-color:#2f9466;color:#fff}
+.step-line{flex:1;min-width:18px;height:3px;background:#dbe6d4;border-radius:2px}
+@keyframes story-enter{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:600px){.stories{padding:18px}.story-list{grid-template-columns:1fr}}
+
+@media(prefers-reduced-motion:reduce){.clue-pop,.welcome-portrait,.welcome .primary,.quest-node.active .quest-dot,.destination:not([hidden]),.world-actor.player>span,.primary.recording,.workspace.title-screen::before,.workspace.title-screen::after,.toast,.story-card,.stories.detail{animation:none!important}}
+</style></head><body><div id="app"></div><script type="module">
+/* ===== engine.js ===== */
+const initial = () => ({version:1,entered:false,prepared:false,location:'plaza',mode:'companion',started:false,clues:[],discovered:false,awake:false,following:false,complete:false,practice:0});
+function transition(s,action,value){
+ const n={...s,clues:[...s.clues]};
+ if(action==='enter')n.entered=true;
+ if(action==='prepare'){n.prepared=true;n.entered=true;}
+ if(action==='move'&&['plaza','library','art','greenhouse','gym'].includes(value))n.location=value;
+ if(action==='mode')n.mode=value==='voice'?'voice':'companion';
+ if(action==='start'&&n.prepared&&n.location==='plaza')n.started=true;
+ if(action==='clue'&&n.started&&((value==='witness'&&n.location==='library')||(['record','decoration'].includes(value)&&n.location==='art'))&&!n.clues.includes(value))n.clues.push(value);
+ if(action==='discover'&&n.started&&n.clues.length===3&&n.location==='greenhouse'){n.discovered=true;}
+ if(action==='complete'&&n.discovered&&!n.complete)n.complete=true;
+ if(action==='wake'&&n.discovered&&n.location==='greenhouse'&&n.clues.length===3)n.awake=true;
+ if(action==='follow'&&n.location==='greenhouse'&&n.awake)n.following=true;
+ if(action==='finish'&&n.location==='plaza'&&n.following)n.complete=true;
+ if(action==='practice')n.practice++;
+ return n;
+}
+function restore(raw){try {const s=JSON.parse(raw);if(s?.version!==1||!['plaza','library','art','greenhouse','gym'].includes(s.location)||!Array.isArray(s.clues))return initial();const n=initial();for(const key of ['entered','prepared','started','awake','following','complete'])n[key]=s[key]===true;if(n.prepared)n.entered=true;n.location=s.location;n.mode=s.mode==='voice'?'voice':'companion';n.clues=[...new Set(s.clues.filter(x=>['witness','record','decoration'].includes(x)))];n.practice=Number.isInteger(s.practice)&&s.practice>=0?s.practice:0;if(!n.started)n.clues=[];n.discovered=(s.discovered===true||s.awake===true)&&n.started&&n.clues.length===3;n.awake=n.awake&&n.discovered;n.following=n.following&&n.awake;n.complete=n.discovered&&(s.complete===true||s.complete!==false);return n;}catch{return initial();}}
+
+function canNavigate(s,target){return ['prep','map','notebook','review'].includes(target)&&(s.entered||s.prepared)&&(target==='prep'||s.prepared)||target==='stories';}
+
+
+/* ===== stories.js ===== */
+// 英语日常故事内容模块（standalone content module）
+//
+// 数据结构沿用 guidance.js 中的 `discussions` 形态，便于日后接入 App：
+//   id:        故事键
+//   topic:     主题分类（中文）
+//   name:      故事里的关键人物，用于“和教练讨论”时的称呼
+//   simple:    [英文叙述, 中文叙述] —— 短小的日常生活片段
+//   words:     [英文释义, 中文释义] —— 2 个重点词/短语
+//   terms:     { 词: [英文, 中文] } —— 可在对话中追问的词汇表（可选）
+//   check:     [英文问题, 中文问题] —— 理解检查题
+//   answer:    正则 —— 匹配“答对了”的关键词
+//   feedback:  [英文, 中文] —— 答对时的鼓励
+//   wrong:     [英文, 中文] —— 答错时再听一次的提示（可选）
+//
+// discussStory(id, text, checking) 与 discussClue 风格一致，但不含 mission 门控，
+// 可直接用于“日常故事”练习模式。
+
+const stories = {
+  school: {
+    topic: '校园与课堂',
+    name: 'Tom',
+    simple: [
+      'Tom forgot his maths book at home. At the break, he asks Lisa to borrow hers. Lisa says yes and lends it to him.',
+      'Tom 把数学课本忘在家里了。课间他向 Lisa 借课本，Lisa 答应借给他。'
+    ],
+    words: [
+      'Forgot means you did not remember something. Borrow means to take and use something, then give it back.',
+      'forgot 是忘记；borrow 是借入，用完要归还。'
+    ],
+    terms: {
+      forgot: ['Forgot means you did not remember something.', 'forgot 表示忘记。'],
+      borrow: ['Borrow means take something and return it later.', 'borrow 表示借入、以后归还。'],
+      lend: ['Lend means give something to someone for a while.', 'lend 表示把东西借给别人。'],
+      break: ['Break is a short rest between classes.', 'break 是课间休息。']
+    },
+    check: [
+      'What did Tom forget, and did Lisa lend it to him?',
+      'Tom 忘了什么？Lisa 借给他了吗？'
+    ],
+    answer: /\b(book|maths|math|textbook)\b|课本|数学书|书/,
+    feedback: [
+      'Yes. Tom forgot his maths book and Lisa lent it to him. Great listening!',
+      '对，Tom 忘了数学课本，Lisa 借给了他。你听得很准！'
+    ],
+    wrong: [
+      'Listen again: Tom forgot his maths book and Lisa lent it to him. Now try the check question.',
+      '再听一次：Tom 忘了数学课本，Lisa 借给了他。试着回答检查问题。'
+    ]
+  },
+
+  restaurant: {
+    topic: '餐厅点餐',
+    name: 'Waiter',
+    simple: [
+      'Lily goes to a café. She orders a chicken sandwich and says “no onions, please”. She also asks for a glass of water.',
+      'Lily 来到一家咖啡馆。她点了一个鸡肉三明治，并说“请不要放洋葱”。她还点了一杯水。'
+    ],
+    words: [
+      'Order means to ask for food in a shop or café. A sandwich is two pieces of bread with food inside.',
+      'order 是点餐；sandwich 是三明治（两片面包夹食物）。'
+    ],
+    terms: {
+      order: ['Order means to ask for food or a drink.', 'order 表示点餐。'],
+      onion: ['An onion is a strong-tasting vegetable, often white or purple.', 'onion 是洋葱。'],
+      water: ['A glass of water is a drink with no colour or taste.', 'a glass of water 是一杯水。'],
+      sandwich: ['A sandwich is food between two pieces of bread.', 'sandwich 是夹在面包里的食物，即三明治。']
+    },
+    check: [
+      'What did Lily order, and did she want onions?',
+      'Lily 点了什么？她要洋葱吗？'
+    ],
+    answer: /\b(sandwich|chicken)\b|三明治|鸡肉/,
+    feedback: [
+      'Right. Lily ordered a chicken sandwich and asked for no onions. Well done!',
+      '对，Lily 点了鸡肉三明治，并且不要洋葱。很好！'
+    ],
+    wrong: [
+      'Listen again: Lily ordered a chicken sandwich with no onions, and a glass of water. Try the check question.',
+      '再听一次：Lily 点了一份不要洋葱的鸡肉三明治和一杯水。试着回答检查问题。'
+    ]
+  },
+
+  shopping: {
+    topic: '购物',
+    name: 'Shop assistant',
+    simple: [
+      'Jack sees a blue cap in a shop. He asks the shop assistant how much it is. She says 25 yuan. Jack tries size M and it fits.',
+      'Jack 在店里看到一顶蓝色帽子。他问店员多少钱，店员说 25 元。Jack 试了 M 码，很合适。'
+    ],
+    words: [
+      'How much asks about the price. Size tells how big clothes or hats are. Fit means the right size for you.',
+      'how much 问价格；size 是尺码；fit 表示合身。'
+    ],
+    terms: {
+      cap: ['A cap is a soft hat with a curved part at the front.', 'cap 是前面有帽檐的帽子。'],
+      'how much': ['We say “How much is it?” to ask the price.', '用 How much is it? 问价格。'],
+      size: ['Size shows how big or small something is, like S, M, L.', 'size 表示尺码，如 S、M、L。'],
+      fit: ['Fit means the clothes are the right size for you.', 'fit 表示衣服尺码正合适。']
+    },
+    check: [
+      'What colour cap does Jack like, and how much is it?',
+      'Jack 喜欢什么颜色的帽子？多少钱？'
+    ],
+    answer: /\b(blue|cap|25|twenty[- ]?five|yuan)\b|蓝色|帽子|25|元/,
+    feedback: [
+      'Yes. Jack likes the blue cap and it costs 25 yuan. Nice work!',
+      '对，Jack 喜欢那顶蓝帽子，价格是 25 元。做得好！'
+    ],
+    wrong: [
+      'Listen again: Jack likes a blue cap. It is 25 yuan and size M fits him. Try the check question.',
+      '再听一次：Jack 喜欢一顶蓝帽子，25 元，M 码合身。试着回答检查问题。'
+    ]
+  },
+
+  directions: {
+    topic: '问路与出行',
+    name: 'Mr. Chen',
+    simple: [
+      'Anna wants to visit the museum. She asks a man for help. He says: take Bus 5, get off at the library stop, and the museum is next to it.',
+      'Anna 想去博物馆。她向一位男士问路。他说：坐 5 路公交，在图书馆站下车，博物馆就在旁边。'
+    ],
+    words: [
+      'Get off means to leave a bus or train. Next to means very near, on the side of something.',
+      'get off 是下车；next to 是在……旁边。'
+    ],
+    terms: {
+      museum: ['A museum is a building where we see old or beautiful things.', 'museum 是博物馆。'],
+      'get off': ['Get off means to leave a bus or train.', 'get off 表示下车。'],
+      'next to': ['Next to means beside something, very close.', 'next to 表示在……旁边。'],
+      bus: ['A bus is a big car that many people travel in.', 'bus 是公交车。']
+    },
+    check: [
+      'Which bus should Anna take, and where does she get off?',
+      'Anna 该坐几路公交？在哪站下车？'
+    ],
+    answer: /\b(bus|5|five|library)\b|5 路|公交|图书馆|下车/,
+    feedback: [
+      'Correct. Anna takes Bus 5 and gets off at the library stop. The museum is next to it.',
+      '正确。Anna 坐 5 路公交，在图书馆站下车，博物馆就在旁边。'
+    ],
+    wrong: [
+      'Listen again: take Bus 5, get off at the library stop, the museum is next to it. Try the check question.',
+      '再听一次：坐 5 路，在图书馆站下车，博物馆在旁边。试着回答检查问题。'
+    ]
+  },
+
+  weather: {
+    topic: '天气与日常安排',
+    name: 'Mary',
+    simple: [
+      'It is sunny on Saturday. Bob calls Mary and invites her to the park. Mary says yes, and asks to bring a kite.',
+      '星期六天气晴朗。Bob 打电话邀请 Mary 去公园。Mary 答应了，还提出要带一只风筝。'
+    ],
+    words: [
+      'Sunny means the sun is out and it is bright. Invite means to ask someone to come with you.',
+      'sunny 是晴朗的；invite 是邀请。'
+    ],
+    terms: {
+      sunny: ['Sunny means the sun is shining and the sky is clear.', 'sunny 表示阳光明媚、天气晴。'],
+      invite: ['Invite means ask someone to join you.', 'invite 表示邀请。'],
+      kite: ['A kite is a toy that flies in the wind.', 'kite 是风筝。'],
+      park: ['A park is a green open place in a city.', 'park 是公园。']
+    },
+    check: [
+      'What is the weather like, and what does Mary want to bring?',
+      '天气怎么样？Mary 想带什么？'
+    ],
+    answer: /\b(sunny|park|kite)\b|晴天|公园|风筝/,
+    feedback: [
+      'Yes. It is sunny, and Mary wants to bring a kite to the park. Perfect!',
+      '对，天气晴朗，Mary 想带一只风筝去公园。太棒了！'
+    ],
+    wrong: [
+      'Listen again: it is sunny. Bob invites Mary to the park, and she wants to bring a kite. Try the check question.',
+      '再听一次：天气晴朗，Bob 邀请 Mary 去公园，她想带风筝。试着回答检查问题。'
+    ]
+  },
+
+  hobbies: {
+    topic: '爱好与运动',
+    name: 'Sue',
+    simple: [
+      'Tim’s favourite sport is swimming. He asks Sue to swim with him on Sunday. Sue likes basketball, but she says yes and wants to try swimming.',
+      'Tim 最喜欢的运动是游泳。他约 Sue 周日一起去游泳。Sue 喜欢篮球，但她答应了，想试试游泳。'
+    ],
+    words: [
+      'Favourite means the one you like best. Swimming is moving in water with your arms and legs.',
+      'favourite 是最喜欢的；swimming 是游泳。'
+    ],
+    terms: {
+      favourite: ['Favourite means the one you like most.', 'favourite 表示最喜欢的。'],
+      swimming: ['Swimming is moving through water using your body.', 'swimming 是游泳。'],
+      basketball: ['Basketball is a sport with a ball and two hoops.', 'basketball 是篮球。'],
+      join: ['Join means take part with other people.', 'join 表示一起参加。']
+    },
+    check: [
+      'What sport does Tim like, and does Sue like swimming?',
+      'Tim 喜欢什么运动？Sue 喜欢游泳吗？'
+    ],
+    answer: /\b(swim|swimming)\b|游泳/,
+    feedback: [
+      'Right. Tim likes swimming. Sue likes basketball but will try swimming with him.',
+      '对，Tim 喜欢游泳。Sue 喜欢篮球，但愿意试试游泳。'
+    ],
+    wrong: [
+      'Listen again: Tim likes swimming and asks Sue to join. Sue likes basketball but says yes. Try the check question.',
+      '再听一次：Tim 喜欢游泳并约 Sue，Sue 喜欢篮球但答应了。试着回答检查问题。'
+    ]
+  }
+};
+
+const storyIds = Object.keys(stories);
+const storyList = storyIds.map(id => ({ id, topic: stories[id].topic, name: stories[id].name }));
+
+// 与 discussClue 风格一致：处理“检查题 / 问词义 / 请再说一遍 / 答对了 / 答错”等分支。
+// checking=true 时，用 answer 正则判定用户是否答对（排除否定词）。
+function discussStory(id, text, checking = false) {
+  const d = stories[id];
+  if (!d) return { en: 'No story here yet.', zh: '这里还没有故事。', checking: false };
+  const t = text.toLowerCase();
+
+  if (checking && !/意思|解释|听不懂|mean|explain|understand|why/.test(t)) {
+    const negated = /\b(no|not|never|didn't|didn’t)\b|不是|没有|没/.test(t);
+    const matches = d.answer.test(t) && !negated;
+    const pair = matches ? d.feedback : (d.wrong || [d.simple[0] + ' ' + d.check[0], d.simple[1] + ' ' + d.check[1]]);
+    return { en: pair[0], zh: pair[1], checking: !matches };
+  }
+
+  if (/检查|复述|check|test|quiz/.test(t)) return { en: d.check[0], zh: d.check[1], checking: true };
+
+  const term = d.terms && Object.keys(d.terms).find(w => t.includes(w));
+  if (term) return { en: d.terms[term][0], zh: d.terms[term][1], checking: false };
+
+  if (/为什么|why/.test(t)) return {
+    en: 'This story shows one small moment in daily life. What did you hear about the people?',
+    zh: '这个故事展示了日常生活中的一个小片段。你从人物身上听到了什么？'
+  };
+
+  if (/词|意思|mean|word|vocab/.test(t)) return { en: d.words[0], zh: d.words[1], checking: false };
+
+  if (/听不懂|不明白|讨论|解释|换|简单|detail|explain|understand|simpl|rephrase|said|say/.test(t))
+    return { en: d.simple[0], zh: d.simple[1], checking: false };
+
+  return {
+    en: 'Stay with ' + d.name + '’s story. Ask about a word, ask me to say it again, or try the check question.',
+    zh: '我们继续看 ' + d.name + ' 的故事。可以问词义、请我再说一遍，或回答问题。',
+    checking: false
+  };
+}
+
+
+
+
+/* ===== speech.js ===== */
+function englishVoices(voices) {
+  return voices.filter(v => /^en(?:[-_]|$)/i.test(v.lang));
+}
+const voiceKey = v => JSON.stringify({name:v.name,lang:v.lang.toLowerCase().replace('_','-')});
+function chooseVoice(voices, preferred = '') {
+  const english=englishVoices(voices);
+  // Empty means Google US English, not an unspecified system voice.
+  if(!preferred)return english.find(v=>/google/i.test(v.name)&&/^en[-_]US$/i.test(v.lang))||null;
+  // Stable identity survives voiceURI changes. Keep old saved URI selections compatible.
+  return english.find(v=>voiceKey(v)===preferred||v.voiceURI===preferred)||null;
+}
+function loadVoices(synth, timeout = 2500, ready = voices => voices.length > 0) {
+  if(ready(synth.getVoices()))return Promise.resolve(synth.getVoices());
+  return new Promise(resolve=>{
+    let timer,poll;
+    const finish=()=>{clearTimeout(timer);clearInterval(poll);synth.removeEventListener('voiceschanged',changed);resolve(synth.getVoices());};
+    const changed=()=>{if(ready(synth.getVoices()))finish();};
+    synth.addEventListener('voiceschanged',changed);
+    timer=setTimeout(finish,timeout);poll=setInterval(changed,100);changed();
+  });
+}
+
+
+/* ===== dialogue.js ===== */
+const normalise=text=>String(text).toLowerCase().replace(/[’]/g,"'").replace(/\b(where|what|who|how)'s\b/g,'$1 is').replace(/'/g,'').replace(/[^a-z\s]/g,' ').replace(/\s+/g,' ').trim();
+function mentionsTask(text){return /\b(pip|robots?)\b/.test(normalise(text));}
+function assessQuestion(person,text,{topicEstablished=false}={}){
+ const t=normalise(text),explicit=mentionsTask(text);
+ const response=(kind,en,zh)=>({kind,en,zh});
+ if(!t||/[\u3400-\u9fff]/.test(text))return response('clarify','Could you try asking in English? Nova can help you.','试着用英语提问，Nova 可以帮你组织表达。');
+ if(/^(hi|hello|hey|good morning|good afternoon|good evening)( there)?$/.test(t))return response('greeting','Hello! What would you like to ask me?','你好！你想问我什么？');
+ if(/^(thanks|thank you|thank you very much|thanks a lot|bye|goodbye)$/.test(t))return response('social','You’re welcome. Let me know if you have a question.','不用谢，有问题可以再问我。');
+ const question=t.replace(/^(?:hi|hello|hey|excuse me|please)\s+/,'');
+ const asks=/^(?:where|whereabouts|what|which|why|how)\b/.test(question)||/\b(?:have|has|did|do|does|can|could|would|will)\s+(?:you|i|we|they|he|she|it|anyone|anybody|someone|somebody)\b.*\b(?:see|seen|saw|know|find|locate|go|went|gone|happen|happened|help|tell|show|explain|mean|means|flash|flashing|carry|carried|take|took|move|moved|record|records)\b|\b(?:tell|show|explain|describe)\b.*\b(?:me|us|please)\b|^you (?:seen|see|know)\b|^(?:location|whereabouts) please\b/.test(t);
+ const reference=explicit||(topicEstablished&&/\b(it|him|its)\b/.test(t));
+ const appearance=reference&&/\b(?:what colou?r|what does .* look like|describe)\b/.test(t);
+ if(appearance)return response('appearance','Pip is a small white robot with a blue light. What else would you like to know?','Pip 是带蓝灯的小白色机器人。你还想了解什么？');
+ const offTopic=/\b(?:your name|how are you|weather|football|basketball|favo[u]?rite|pizza|birthday|age|joke)\b/.test(t);
+ const observation=/\b(?:seen|see|saw|know|find|locate|looking|missing|go|went|gone|happen|happened|where|whereabouts|location)\b/.test(t);
+ const requestForHelp=/\b(?:looking for|trying to find)\b.*\b(?:pip|robot)\b.*\b(?:can|could|would|will)\b.*\bhelp\b/.test(t);
+ const roleTopic=person.id==='artist'?/\b(?:decoration|decorations|shiny object)\b/.test(t):person.id==='technician'?/\b(?:records?|blue light|flash|flashing)\b/.test(t):false;
+ if(!offTopic&&((reference&&asks&&observation)||requestForHelp||(roleTopic&&asks)))return {kind:'relevant'};
+ if(explicit&&!asks&&!offTopic)return response('clarify','What would you like to know about the missing robot?','你想了解这个失踪机器人的什么信息？');
+ if(asks&&!reference&&!roleTopic&&!offTopic)return response('clarify','Who or what are you asking about?','你问的是谁，或什么东西？');
+ return response('off-topic','I can help with the missing robot. What would you like to ask?','我可以提供与失踪机器人有关的信息，你想问什么？');
+}
+
+
+/* ===== world.js ===== */
+
+const NPCS = [
+ {id:'organiser',name:'Mia · 科技节负责人',icon:'👩‍💼',x:180,y:385,location:'plaza'},
+ {id:'librarian',name:'Ben · 图书管理员',icon:'👨‍🏫',x:465,y:315,location:'library',clue:'witness'},
+ {id:'artist',name:'Amy · 美术社成员',icon:'👩‍🎨',x:815,y:340,location:'art',clue:'decoration'},
+ {id:'technician',name:'Leo · 设备志愿者',icon:'👨‍🔧',x:690,y:410,location:'art',clue:'record'},
+ {id:'pip',name:'Pip · 蓝灯机器人',icon:'🤖',x:510,y:170,location:'greenhouse'},
+ {id:'athlete',name:'Max · 体育社成员',icon:'🧑‍🦱',x:400,y:505,location:'gym'}
+];
+const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const bound=p=>({x:Math.max(35,Math.min(965,p.x)),y:Math.max(70,Math.min(550,p.y))});
+function visibleNPCs(s){return NPCS.filter(n=>n.id!=='pip'||s.discovered);}
+function canDiscover(s,p){return s.started&&s.clues.length===3&&!s.discovered&&distance(p,NPCS.find(n=>n.id==='pip'))<=85;}
+function nearest(p,s){return (s?visibleNPCs(s):NPCS).filter(n=>distance(n,p)<=85).sort((a,b)=>distance(a,p)-distance(b,p))[0]||null;}
+function step(p,target,amount){const d=distance(p,target);if(d<=amount)return bound(target);return bound({x:p.x+(target.x-p.x)/d*amount,y:p.y+(target.y-p.y)/d*amount});}
+function hasInformation(n,s){if(s.complete)return false;return n.clue?s.started&&!s.clues.includes(n.clue):n.id==='organiser'?!s.started||s.following&&!s.complete:n.id==='pip'?s.clues.length===3&&!s.following:false;}
+function intent(text){const t=text.toLowerCase().replace(/[’']/g,'').replace(/[^a-z\s]/g,' ');if(/\b(again|repeat|slower|slowly)\b/.test(t))return'repeat';if(/\b(follow|come with|lets go|let us go)\b/.test(t))return'follow';if(/\b(wake|button|turn on|switch on)\b/.test(t))return'wake';if(/\b(where|what|how|which|have|has|did|do|does|can|could|seen|see|tell|know|help|looking|find)\b/.test(t))return'question';return'unknown';}
+function reply(n,s,text,context={}){if(s.complete)return {en:n.id==='pip'?'You found me! Thank you for your help!':'Congratulations! You found Pip. Thank you for helping!',zh:n.id==='pip'?'你找到我了！谢谢你的帮助！':'恭喜你找到 Pip，任务完成！谢谢你的帮助！'};let i=intent(text);if(i==='repeat')return{repeat:true};if(n.clue&&s.started){const assessment=assessQuestion(n,text,context);if(assessment.kind!=='relevant')return assessment;i='question';}if(i==='unknown')return{en:'Could you ask me a question? Try: Have you seen Pip?',zh:'试着向我提问，比如：Have you seen Pip?'};if(n.id==='organiser')return{en:s.complete?'Thank you for bringing Pip back!':'Pip is a small white robot with a blue light. Ask Ben at the library if he has seen it.',zh:s.complete?'谢谢你把 Pip 带回来！':'Pip 是白色小机器人，有蓝色灯。去图书馆问问 Ben。'};if(!s.started)return{en:'Please talk to Mia at the festival plaza first.',zh:'先到广场找 Mia 领取任务吧。'};if(n.id==='librarian')return{clue:'witness',en:'Yes! Pip went past the library, towards the art room.',zh:'见过！Pip 经过图书馆，向美术教室走去。'};if(n.id==='artist')return{clue:'decoration',en:'We carried a shiny decoration to the greenhouse. Pip followed us!',zh:'我们把闪亮的装饰物搬到了温室，Pip 跟着我们！'};if(n.id==='technician')return{clue:'record',en:'The record says: blue light flashing. Pip flashes blue when it follows something bright.',zh:'记录显示蓝灯闪烁。Pip 追逐明亮的东西时会闪蓝灯。'};if(n.id==='athlete')return{en:'I haven’t seen Pip here. You could ask Ben at the library.',zh:'我在这里没见过 Pip，可以去图书馆问 Ben。'};if(n.id==='pip'){if(s.clues.length<3)return{en:'Check the three witnesses first. Are you sure this is Pip?',zh:'先问过三位目击者，确认这就是 Pip。'};if(!s.awake)return{en:'Press the green button, then wait for the blue light.',zh:'按绿色按钮，等待蓝灯亮起。',reveal:true};if(i==='follow')return{follow:true,en:'Beep! I’ll follow you back to the plaza.',zh:'哔！我跟你回广场。'};return{en:'I’m ready! Say: Come with me, Pip.',zh:'我准备好了！邀请我跟你一起走吧。'};}}
+
+const missionBrief={en:'Hi! Our robot Pip is missing. Pip is a small white robot with a blue light. Please find Pip for the school festival. Start by asking Ben at the library. Thank you for helping!',zh:'你好！科技节的机器人 Pip 不见了。它是一个带蓝色灯的白色小机器人。请你帮我们找到它，先去图书馆向 Ben 打听。谢谢你的帮助！'};
+function interactionMode(n,s){return n?.id==='organiser'?(s.started?'brief-replay':'mission'): 'question';}
+
+
+/* ===== guidance.js ===== */
+function guidance(s){
+ if(s.complete)return{en:'Congratulations! You found Pip! Thank you for helping. You completed the mission.',zh:'恭喜你找到 Pip，任务完成！谢谢你的帮助。你可以自由探索，也可以自愿参加冒险回顾。',cta:'查看冒险回顾',view:'review'};
+ if(!s.prepared)return{en:'Welcome to the school festival! Our robot Pip is missing. First, learn a few useful words. Then we’ll meet Mia at the plaza to collect our mission. I’ll stay with you.',zh:'欢迎来到校园科技节！迎宾机器人 Pip 不见了。我们先用一分钟准备几个词，再到广场找 Mia 领取寻找任务。我会一直陪着你。',cta:'准备语言背包',view:'prep'};
+ if(!s.started)return{en:'We’re ready! First, walk to Mia at the festival plaza and collect our mission. Click Mia or use the arrow keys to move. Ask me whenever you feel unsure.',zh:'准备好了！我们下一步先去广场找 Mia 领取任务。点击 Mia，或用方向键走过去。遇到不清楚的地方，随时点“和教练交谈”。',cta:'标出 Mia 的位置',target:'organiser'};
+ if(!s.clues.includes('witness'))return{en:'Let’s ask Ben at the library if he has seen Pip. Walk close to him, look for the red question mark, and ask: Have you seen Pip?',zh:'任务领到了！先去图书馆找 Ben。走近他，点击红色问号就能问：Have you seen Pip? 说完他就会回答。',cta:'标出 Ben 的位置',target:'librarian'};
+ if(!s.clues.includes('decoration'))return{en:'Ben mentioned the art room. Let’s ask Amy what she saw. You can say: Have you seen Pip?',zh:'Ben 提到了美术教室。下一步去找 Amy，问问她看到了什么。可以说：Have you seen Pip?',cta:'标出 Amy 的位置',target:'artist'};
+ if(!s.clues.includes('record'))return{en:'We have a lead. Leo, the equipment volunteer, may know about Pip’s flashing light. Ask him: What do you know about Pip?',zh:'我们有线索了。设备志愿者 Leo 可能知道 Pip 灯光的含义，下一步向他提问：What do you know about Pip?',cta:'标出 Leo 的位置',target:'technician'};
+ if(!s.discovered)return{en:'We have three clues. What connects the route, the decoration, and the flashing light? You decide where to investigate. I can help you review the clues.',zh:'三条线索齐了。路线、装饰物和闪烁的灯光之间有什么联系？你来判断去哪里调查，我可以帮你回顾线索。',cta:'回顾已收集的线索',view:'notebook'};
+ if(!s.awake)return{en:'We have all three clues. You found Pip! Ask how to wake it up. Listen to the answer before pressing a button.',zh:'你发现 Pip 了！可以询问如何唤醒它。先听清回答，再由你按按钮。',cta:'标出 Pip 的位置',target:'pip'};
+ if(!s.following)return{en:'Pip is awake! Invite it to follow you. Try: Come with me, Pip.',zh:'Pip 醒了！现在邀请它跟你走，可以说：Come with me, Pip.',cta:'标出 Pip 的位置',target:'pip'};
+ return{en:'Pip is following you. Walk back to Mia at the plaza, then return Pip to the festival.',zh:'Pip 已经跟上你了！下一步走回广场找 Mia，再把 Pip 交回展台。',cta:'标出 Mia 的位置',target:'organiser'};
+}
+function coachAnswer(s,text){
+ if(s.complete)return /怎么说|表达|phrase|say/.test(text)?{en:"I found Pip! You’re welcome.",zh:"可以说：我找到 Pip 了！不用谢。任务已经完成，不需要再询问它在哪里。"}:guidance(s);
+ const t=text.toLowerCase();
+ if(/怎么走|如何移动|操作|方向|move|walk|control|keyboard/.test(t))return{en:'Click the ground or a person to walk there. You can also use WASD or the arrow keys. When a red question mark appears, press E or tap Speak to ask a question.',zh:'点击地面或人物就能走过去，也可以用 WASD 或方向键移动。走近人物出现红色问号后，直接点红色问号或按 E。'};
+ if(/怎么说|如何问|表达|phrase|how.*(say|ask)|what.*say/.test(t))return{en:s.awake&&!s.following?'Come with me, Pip.':'Have you seen Pip?',zh:s.awake&&!s.following?'这句话是：Pip，跟我来。可以换成 Follow me, Pip.':'这句话是：你见过 Pip 吗？走近场景人物后试着问他。'};
+ if(/听不懂|中文|不明白|不清楚|下一步|做什么|去哪|help|next|where|what|lost|understand|plan|任务/.test(t))return guidance(s);
+ return{...guidance(s),zh:'我先帮你确认下一步：'+guidance(s).zh};
+}
+
+const discussions={
+ organiser:{name:'Mia',clue:null,simple:['Pip is missing. Pip is white. It has a blue light. Ask Ben for help.','Pip 不见了。它是白色的，有蓝灯。向 Ben 打听。'],words:['Missing means we cannot find something. A mission is a job to do.','missing 表示找不到了，mission 表示要完成的任务。'],check:['What colour is Pip? Tell me one detail.','Pip 是什么颜色？说出一个细节。'],answer:/\bwhite\b|白色/,feedback:['Yes. Pip is white. You remembered a useful detail!','对，Pip 是白色的。你记住了一个有用的细节！']},
+ librarian:{name:'Ben',clue:'witness',simple:['Pip passed the library. Then it moved towards the art room. Towards tells us a direction, not a final stop.','Pip 经过图书馆，然后朝美术教室的方向走。towards 表示方向，不代表最后停在那里。'],words:['Went past means passed a place. Towards means in the direction of a place.','went past 表示经过，towards 表示朝着某个方向。'],check:['Did Ben say Pip stopped at the library, or went past it?','Ben 说 Pip 停在图书馆，还是经过图书馆？'],answer:/\b(past|passed)\b|经过|路过/,feedback:['Yes, it went past the library. Ben told us a direction, not where Pip is now.','对，它经过了图书馆。Ben 告诉我们的是方向，不是 Pip 现在的位置。']},
+ artist:{name:'Amy',clue:'decoration',simple:['Amy carried a shiny decoration. She took it to the greenhouse. Pip went with her.','Amy 搬着一个闪亮的装饰物，把它带到了温室，Pip 跟着她。'],words:['Shiny means it reflects light. Carried means took something from one place to another. Followed means went after someone.','shiny 表示闪亮的，carried 表示搬运，followed 表示跟着。'],check:['What did Amy carry? Tell me what attracted Pip.','Amy 搬了什么？试着说说是什么吸引了 Pip。'],answer:/\b(shiny|decoration)\b|装饰|闪亮/,feedback:['Yes, a shiny decoration. Think about what you heard from the other people too.','对，是闪亮的装饰物。再联系一下你从其他人那里听到的内容。']},
+ technician:{name:'Leo',clue:'record',simple:['The blue light turns on and off. This happens when Pip follows something bright.','蓝灯一亮一灭。当 Pip 跟随明亮的东西时，就会这样。'],words:['Flashing means turning on and off again and again. Bright means giving or reflecting a lot of light.','flashing 表示反复闪烁，bright 表示明亮的。'],check:['What makes Pip flash blue? Think about what it follows.','Pip 跟随什么东西时会闪蓝灯？'],answer:/\b(bright|shiny|light)\b|明亮|闪亮|发光/,feedback:['Yes. Pip follows bright things. How might that connect to another clue you heard?','对，Pip 会跟随明亮的东西。想想这与另一条已听到的线索有什么联系？']}
+};
+function discussClue(s,id,text,checking=false){
+ const d=discussions[id];
+ if(!d||!s.started||(d.clue&&!s.clues.includes(d.clue)))return {en:'First, listen to a person. Then we can discuss what they said together.',zh:'先听一位人物说话，再一起讨论他提供的信息。',checking:false};
+ const t=text.toLowerCase();let pair;
+ if(checking&&!/意思|解释|听不懂|mean|explain|understand|why/.test(t)){const matches=d.answer.test(t)&&!(/\b(no|not|never|didn't|didn’t)\b|不是|没有|没经过/.test(t));pair=matches?d.feedback:['Let’s listen to that part again. '+d.simple[0]+' '+d.check[0],'我们再听听这一部分。'+d.simple[1]+' '+d.check[1]];return {en:pair[0],zh:pair[1],checking:!matches};}
+ if(/检查|复述|check|test|quiz/.test(t))return{en:d.check[0],zh:d.check[1],checking:true};
+ const terms={towards:['Towards means moving in a direction. It does not mean arriving there.','towards 是朝某个方向移动，不代表已经到达。'],past:['Went past means passed a place without stopping there.','went past 是经过某地，没有停在那里。'],flashing:['Flashing means the light turns on and off again and again.','flashing 表示灯反复一亮一灭。'],shiny:['Shiny means something reflects light, like a mirror.','shiny 表示反光、闪亮，比如镜子。'],followed:['Followed means went after someone or something.','followed 表示跟着某个人或物体走。']};
+ const allowed={librarian:['towards','past'],artist:['shiny','followed'],technician:['flashing'],organiser:[]};
+ const term=allowed[id].find(w=>t.includes(w));
+ if(term)pair=terms[term];
+ else if(/为什么|why/.test(t))pair=id==='technician'?d.simple:id==='artist'?['Amy said Pip followed her. She did not explain why. What else have you heard?','Amy 说 Pip 跟着她，但没有解释原因。你还听到过什么？']:['This person told us what they noticed. It is one clue, not the whole story.','这个人物告诉我们他观察到的事情，这只是一条线索，不是完整的故事。'];
+ else if(/词|意思|mean|word|vocab/.test(t))pair=d.words;
+ else if(/听不懂|不明白|讨论|解释|换|简单|detail|explain|understand|simpl|rephrase|said|say|direction|方向/.test(t))pair=d.simple;
+ else pair=['Let’s stay with '+d.name+'’s clue. Ask about a word, ask me to say it another way, or try a check question.','我们继续讨论 '+d.name+' 的线索。可以问词义、请我换个说法，或者检查你的理解。'];
+ return {en:pair[0],zh:pair[1],checking:false};
+}
+
+
+/* ===== voice-turn.js ===== */
+// A recognition result is a revision of the current session, never a new utterance.
+class TranscriptBuffer {
+ constructor(){this.completed=[];this.current=[];}
+ update(results){this.current=Array.from(results,r=>({text:(r[0]?.transcript||'').trim(),final:r.isFinal===true}));}
+ commit(){this.completed.push(...this.current);this.current=[];}
+ snapshot(){const all=[...this.completed,...this.current].filter(r=>r.text);return {text:all.map(r=>r.text).join(' '),needsReview:all.some(r=>!r.final)};}
+}
+class SilenceGate {
+ constructor({silenceMs=2000,threshold=.35}={}){this.silenceMs=silenceMs;this.threshold=threshold;this.heard=false;this.lastSpeech=null;this.lastFrame=null;}
+ speechStart(now){this.heard=true;this.lastSpeech=now;}
+ frame(probability,now){this.lastFrame=now;if(probability>=this.threshold)this.lastSpeech=now;}
+ state(now){const elapsed=this.lastSpeech===null?0:Math.max(0,now-this.lastSpeech);return {heard:this.heard,remaining:this.heard?Math.max(0,this.silenceMs-elapsed):this.silenceMs,ended:this.heard&&elapsed>=this.silenceMs,stale:this.lastFrame!==null&&now-this.lastFrame>1000};}
+}
+
+// Browser adapters are injected, so pause/restart/late-result races can be tested.
+function createVoiceTurn({Recognition,createVAD,onUpdate=()=>{},onComplete=()=>{},onError=()=>{},silenceMs=2000,clock={now:()=>performance.now(),setTimeout:(fn,ms)=>globalThis.setTimeout(fn,ms),clearTimeout:id=>globalThis.clearTimeout(id),setInterval:(fn,ms)=>globalThis.setInterval(fn,ms),clearInterval:id=>globalThis.clearInterval(id)}}){
+ const buffer=new TranscriptBuffer(),gate=new SilenceGate({silenceMs});
+ let phase='preparing',vad=null,recognizer=null,recognitionRunning=false,poll=null,restart=null,drain=null,startTimer=null,initialised=false,startedAt=null,restarts=0,closed=false,settled=false,releasePromise=Promise.resolve();
+ const active=()=>!closed&&phase!=='finalizing';
+ const emit=()=>{const state=gate.state(clock.now());onUpdate({...buffer.snapshot(),phase,remaining:state.remaining});};
+ function clearTimers(){for(const id of [restart,drain,startTimer])if(id!==null)clock.clearTimeout(id);if(poll!==null)clock.clearInterval(poll);}
+ function releaseVAD(){const current=vad;vad=null;if(current)releasePromise=Promise.resolve().then(()=>current.destroy()).catch(()=>{});return releasePromise;}
+ function finish(){if(closed||settled)return;settled=true;closed=true;clearTimers();buffer.commit();recognizer?.abort();recognizer=null;const result=buffer.snapshot();void releaseVAD().then(()=>{onComplete(result);});}
+ function fail(code){if(closed)return;closed=true;clearTimers();recognizer?.abort();recognizer=null;void releaseVAD().then(()=>onError(code,buffer.snapshot().text));}
+ function beginRecognition(){
+  if(!active())return;
+  const r=new Recognition();recognizer=r;recognitionRunning=true;
+  r.lang='en-US';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
+  startTimer=clock.setTimeout(()=>{if(recognizer===r)fail('recognition-timeout');},8000);
+  r.onstart=()=>{if(closed||recognizer!==r)return;clock.clearTimeout(startTimer);if(!initialised)gate.frame(0,clock.now());initialised=true;startedAt=startedAt??clock.now();phase='listening';emit();};
+  r.onresult=e=>{if(closed||recognizer!==r)return;buffer.update(e.results);emit();};
+  r.onerror=e=>{if(closed||recognizer!==r)return;if(e.error==='no-speech')return;if(e.error==='aborted'&&phase==='finalizing')return;fail(e.error||'recognition-error');};
+  r.onend=()=>{
+   if(closed||recognizer!==r)return;clock.clearTimeout(startTimer);recognitionRunning=false;recognizer=null;buffer.commit();
+   if(phase==='finalizing'){finish();return;}
+   if(++restarts>12){fail('recognition-restarts');return;}
+   // The browser's endpoint is not the user's endpoint. Keep VAD and transcript alive.
+   phase='reconnecting';emit();restart=clock.setTimeout(beginRecognition,120);
+  };
+  try{r.start();}catch{fail('recognition-start');}
+ }
+ function stop(){
+  if(!active())return;
+  if(!initialised){fail('not-ready');return;}
+  phase='finalizing';if(restart!==null)clock.clearTimeout(restart);if(poll!==null)clock.clearInterval(poll);emit();void releaseVAD();
+  // stop(), unlike abort(), allows the recognizer to flush its last final result.
+  if(recognizer&&recognitionRunning){drain=clock.setTimeout(finish,2000);try{recognizer.stop();}catch{finish();}}else finish();
+ }
+ function abort(){if(closed)return;closed=true;clearTimers();recognizer?.abort();recognizer=null;void releaseVAD();}
+ async function start(){
+  emit();
+  try{
+   const loaded=await createVAD({onFrameProcessed:p=>{if(active()&&initialised)gate.frame(p.isSpeech,clock.now());},onSpeechRealStart:()=>{if(active()&&initialised){gate.speechStart(clock.now());phase='speaking';emit();}}});
+   if(closed){await loaded.destroy();return;}vad=loaded;await vad.start();if(closed)return;
+   beginRecognition();
+   poll=clock.setInterval(()=>{
+    if(!active()||!initialised)return;const now=clock.now(),g=gate.state(now);
+    // A suspended audio pipeline is not three seconds of observed silence.
+    if(g.stale){fail('vad-stalled');return;}
+    if(g.ended){stop();return;}
+    if(!g.heard&&now-startedAt>=15000){fail('no-speech');return;}
+    phase=g.heard?(g.remaining<2700?'waiting':'speaking'):'listening';emit();
+   },100);
+  }catch(error){fail(error.name==='NotAllowedError'?'not-allowed':'vad-unavailable');}
+ }
+ return {start,stop,abort};
+}
+
+
+/* ===== vad-loader.js ===== */
+let loading;
+const base=new URL('./vendor/vad/',import.meta.url);
+function script(file){return new Promise((resolve,reject)=>{const tag=document.createElement('script');tag.src=new URL(file,base).href;tag.onload=resolve;tag.onerror=()=>{tag.remove();reject(new Error('VAD asset loading failed'));};document.head.append(tag);});}
+async function load(){if(!loading)loading=(async()=>{if(!window.ort)await script('ort.wasm.min.js');if(!window.vad)await script('bundle.min.js');window.ort.env.wasm.numThreads=1;window.ort.env.wasm.proxy=false;})().catch(error=>{loading=null;throw error;});return loading;}
+export async function createBrowserVAD(callbacks,{getStream}={}){
+ const Audio=window.AudioContext||window.webkitAudioContext;
+ if(!Audio||!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone/VAD not supported');
+ const context=new Audio(),streams=new Set();let destroyed=false;
+ const acquire=async()=>{const stream=await(getStream?getStream(context):navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,autoGainControl:true,noiseSuppression:true}}));if(destroyed){stream.getTracks().forEach(t=>t.stop());throw new DOMException('Capture cancelled','AbortError');}streams.add(stream);return stream;};
+ try{
+  await context.resume();await load();
+  const mic=await window.vad.MicVAD.new({model:'v5',startOnLoad:false,audioContext:context,baseAssetPath:base.href,onnxWASMBasePath:base.href,positiveSpeechThreshold:.5,negativeSpeechThreshold:.35,minSpeechMs:160,redemptionMs:3000,submitUserSpeechOnPause:false,getStream:acquire,...callbacks});
+  return {start:()=>mic.start(),destroy:async()=>{if(destroyed)return;destroyed=true;streams.forEach(stream=>stream.getTracks().forEach(t=>t.stop()));try{await mic.destroy();}finally{if(context.state!=='closed')await context.close();}}};
+ }catch(error){if(context.state!=='closed')await context.close();throw error;}
+}
+
+
+/* ===== app.js ===== */
+
+
+
+
+
+
+
+
+let preferredVoice='';try{preferredVoice=localStorage.getItem('campus-voice')||'';}catch{}
+let voiceConfirmed=false,voiceTested=false,textOnly=false;try{voiceConfirmed=localStorage.getItem('campus-voice-confirmed')==='1';}catch{}
+const speechRates=[.65,.75,.85,1,1.15];let speechRate=.85;try{const saved=Number(localStorage.getItem('campus-speech-rate'));if(speechRates.includes(saved))speechRate=saved;}catch{}
+let speechRequest=0,voiceStatus="尚未播放",voiceSaveError=false;
+const KEY='campus-quest-v1';let storage=true,s;try{s=restore(localStorage.getItem(KEY));}catch{s=initial();storage=false;}
+let view=voiceConfirmed?'welcome':'voice',subtitles=false,hint=0,message='Hey, explorer! I’m Nova. Ready to find Pip together?',translation='我是 Nova，你的同行教练。你来决定路线，我陪你一起寻找 Pip。',notice='',cluePop='',clueTimer,recording=null,chosen=false,transfer=false;
+let player={x:150,y:460},companion={x:115,y:480},destination=null,nearby=null,keys=new Set(),lastFrame=0,lastSave=0,micApproved=false;let mapIntroSeen=false;
+let npcLine='',npcZh='',lastQuestion='',heardBy='',micError='';let lastSpoken='';
+let npcReplies={},npcResponses={},npcTopics={};let listeningContext=null,discussionActive=false,discussionChecking=false;
+let activeStory=null,storyStep=0,storyChecking=false,storyResult=null;
+function rememberSpeaker(n){if(n&&(n.id==='organiser'||n.clue&&s.clues.includes(n.clue))){if(listeningContext!==n.id){discussionActive=false;discussionChecking=false;}listeningContext=n.id;}}
+function discuss(id,text='换个说法'){const n=NPCS.find(n=>n.id===id);if(!n)return;rememberSpeaker(n);discussionActive=true;const answer=discussClue(s,n.id,text);discussionChecking=answer.checking;coachStatus='正在讨论 '+n.name.split(' · ')[0]+' 的线索 · 可继续开口追问';say(answer.en,answer.zh);speak(answer.en,true);document.querySelector('#coach-panel')?.scrollIntoView({block:'center',behavior:'smooth'});}
+function npcAudio(n){if(s.complete)return reply(n,s,'');if(n.id==='organiser'&&s.started)return missionBrief;if(npcReplies[n.id])return npcReplies[n.id];if(n.clue&&s.clues.includes(n.clue)){const r=reply(n,s,'Have you seen Pip?');return {en:r.en,zh:r.zh};}return null;}
+function replayNpc(n){const audio=npcAudio(n);if(!audio)return;rememberSpeaker(n);heardBy=n.id;npcLine=audio.en;npcZh=audio.zh;lastQuestion='';render();speak(audio.en);}
+try{const p=JSON.parse(localStorage.getItem('campus-position'));if(Number.isFinite(p?.x)&&Number.isFinite(p?.y))player=bound(p);}catch{}
+nearby=nearest(player,s);
+message=guidance(s).en;translation=guidance(s).zh;let guideHighlight='',coachStatus='';
+const places={plaza:{name:'科技节广场',en:'Festival Plaza',icon:'🎪',x:17,y:52},library:{name:'图书馆',en:'Library',icon:'🏛️',x:51,y:46},art:{name:'美术教室',en:'Art Room',icon:'🎨',x:82,y:49},greenhouse:{name:'温室',en:'Greenhouse',icon:'🌿',x:51,y:17},gym:{name:'体育馆',en:'Gym',icon:'🏀',x:51,y:80}};
+const clues={witness:['目击记录','Pip went past the library, towards the art room.','Pip 经过图书馆，向美术教室走去。'],record:['设备记录','10:20 — blue light flashing.','10:20，蓝灯闪烁。Pip 追逐明亮物品时会闪蓝灯。'],decoration:['装饰物的去向','We carried a shiny decoration to the greenhouse.','美术社把闪亮的装饰物搬到了温室。']};
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const btn=(text,act,cls='secondary',extra='')=>`<button class="${cls}" data-action="${act}" ${extra}>${text}</button>`;
+function transcript(en,zh){return `<details class="transcript" ${textOnly?'open':''}><summary>需要文字帮助</summary><p lang="en">${esc(en)}</p><details ${textOnly?'open':''}><summary>查看中文意思</summary><p>${esc(zh)}</p></details></details>`;}
+function audioPrompt(){return '<div class="audio-prompt" aria-label="听力优先">🎧 <span>先听一听，再开口</span><small>没听清？重听一次，或放慢语速。</small></div>';}
+function openTyping(target){const form=document.querySelector(target==='coach'?'#talk':target==='story'?'#story-talk':'#npc-talk');if(form){form.closest('details').open=true;form.querySelector('input')?.focus();}}
+function commit(a,v){const prev=guidance(s).en;s=transition(s,a,v);if(guidance(s).en!==prev){message=guidance(s).en;translation=guidance(s).zh;}try{localStorage.setItem(KEY,JSON.stringify(s));}catch{storage=false;}}
+function say(en,zh){message=en;translation=zh;render();}
+function stopSpeech(){speechRequest++;window.speechSynthesis?.cancel();}
+async function speak(text,slow=false,onEnd){
+ lastSpoken=text;
+ if(recording)cancelVoice(true);
+ if(textOnly)return;
+ if(!('speechSynthesis' in window)){notice='此浏览器不支持语音播放，可以阅读文字继续。';render();return;}
+ const request=++speechRequest,synth=window.speechSynthesis;
+ synth.cancel();
+ voiceStatus='正在等待所选音色加载…';updateVoiceStatus();
+ const voices=await loadVoices(synth,2500,vs=>!!chooseVoice(vs,preferredVoice));
+ if(request!==speechRequest)return;
+ const voice=chooseVoice(voices,preferredVoice);
+ if(!voice){voiceStatus='所选音色不可用：已停止播放，没有切换到其他声音。';notice=preferredVoice?'保存的音色未被此浏览器提供，请在语言背包中选择一个可用音色。':'此浏览器没有提供 Google US English。已停止播放，避免偷偷换成其他声音。请在语言背包选择可用音色，或用提供 Google US English 的浏览器打开。';render();return;}
+ const u=new SpeechSynthesisUtterance(text);
+ u.voice=voice;u.lang=voice.lang;u.rate=slow?Math.max(.5,speechRate*.8):speechRate;u.pitch=1;u.volume=1;
+ voiceStatus='本次指定音色：'+voice.name+' · '+voice.lang+' · '+u.rate.toFixed(2)+'×';updateVoiceStatus();
+ u.onerror=e=>{if(request!==speechRequest||['canceled','interrupted'].includes(e.error))return;notice='当前英语音色播放失败，请换一个音色或浏览器重试。';render();};
+ u.onend=()=>{if(request===speechRequest){voiceTested=true;const b=document.querySelector('[data-action=voice-confirm]');if(b)b.disabled=false;}if(typeof onEnd==='function')onEnd();};
+ synth.resume();synth.speak(u);
+}
+function voiceOptions(){const voices=englishVoices(window.speechSynthesis?.getVoices()||[]),selected=chooseVoice(voices,preferredVoice);let html=`<option value="" ${!preferredVoice?'selected':''}>Google US English · 默认${chooseVoice(voices)?'':'（当前不可用）'}</option>`;if(preferredVoice&&!selected)html+=`<option value="${esc(preferredVoice)}" selected>已保存的音色（当前不可用）</option>`;return html+voices.map(v=>`<option value="${esc(voiceKey(v))}" ${preferredVoice&&selected===v?'selected':''}>${esc(v.name)} · ${esc(v.lang)}</option>`).join('');}
+function selectedVoiceLabel(){const v=chooseVoice(window.speechSynthesis?.getVoices()||[],preferredVoice);return v?v.name+' · '+v.lang:(preferredVoice?'已保存的音色不可用':'Google US English 当前不可用');}
+function updateVoiceStatus(){document.querySelectorAll('[data-voice-status]').forEach(el=>el.textContent=voiceStatus);document.querySelectorAll('[data-selected-voice]').forEach(el=>el.textContent='所选音色：'+selectedVoiceLabel());}
+function rateSettings(id){return `<div class="rate-settings"><label for="${id}">英语语速</label><select id="${id}" data-rate-choice aria-label="英语语速">${speechRates.map(r=>`<option value="${r}" ${speechRate===r?'selected':''}>${r.toFixed(2)}× · ${({0.65:'很慢',0.75:'慢速',0.85:'舒缓（默认）',1:'正常',1.15:'稍快'})[r]}</option>`).join('')}</select><small>随时可调，所有英语播放共用。</small></div>`;}
+function voiceSettings(){return `<div class="voice-settings"><label for="voice-choice">英语音色</label><select id="voice-choice">${voiceOptions()}</select>${rateSettings('voice-rate')}${btn('试听音色和语速','voice-preview','chip')}<small data-selected-voice>所选音色：${esc(selectedVoiceLabel())}</small><small data-voice-status>${esc(voiceStatus)}</small><small>${voiceSaveError?'浏览器未允许保存，关闭页面后可能需要重新选择。':'选择会保存在此浏览器，刷新和重玩都不需要重设。'} 所选音色缺失时停止播放，不自动替换。</small></div>`;}
+
+function goal(){if(s.complete)return'🎉 任务完成！你找到了 Pip';if(!s.started)return'在广场领取寻找 Pip 的任务';if(s.clues.length<3)return`探索校园，收集线索 ${s.clues.length}/3`;if(!s.discovered)return'根据收集到的线索，探索可能的藏身处';if(!s.complete)return'🤖 你发现了 Pip！点击它，听它的感谢';return'任务完成！试试新的位置挑战';}
+function prep(){return `<section class="card prep"><div class="eyebrow">BEFORE THE ADVENTURE</div><h2 style="margin-top:10px">装好你的语言背包</h2><p class="muted">先认识本关会遇到的词。点卡片听发音，冒险时也能回来查看。</p>${voiceSettings()}<div class="vocabgrid">${[['🤖','robot','机器人'],['🏛️','library','图书馆'],['🌿','greenhouse','温室'],['↩','behind','在……后面'],['✨','flashing','闪烁的'],['🟢','button','按钮']].map(([i,w,z])=>`<button class="word" data-speak="${w}"><em>${i}</em><b>${w} <small>◖))</small></b><span>${z}</span></button>`).join('')}</div><div class="phrases">${['Have you seen a small robot?','Could you say that again?','Let’s check the library.'].map(t=>`<button class="phrase" data-speak="${t}">◖)) &nbsp; ${t}</button>`).join('')}</div><div class="actions">${btn(s.prepared?'返回探索 →':'准备好了，出发 →','begin','primary')}</div></section>`;}
+function celebrate(){
+ if(!s.complete||document.querySelector('#victory'))return;
+ const stars=s.practice<=4?3:s.practice<=8?2:1;
+ destination=null;keys.clear();cancelVoice();
+ const d=document.createElement('dialog');d.id='victory';d.className='victory';d.setAttribute('aria-labelledby','victory-title');
+ d.innerHTML=`<div class="confetti" aria-hidden="true">${Array.from({length:48},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%8)*.12}s;--turn:${i%2?720:-540}deg;--color:${['#f3c66a','#71c8b0','#f39898','#a4a5ea'][i%4]}"></i>`).join('')}</div><div class="victory-body"><div class="victory-banner">🏆 关卡完成 · LEVEL CLEAR</div><div class="victory-seal" aria-hidden="true"><span>⭐</span><b>🤖</b><span>⭐</span></div><div class="eyebrow">MISSION COMPLETE</div><h2 id="victory-title">你找到了 Pip！</h2><p>任务完成 · 探索员，干得漂亮！</p><div class="victory-stars" aria-label="评分 ${stars} 星">${'★'.repeat(stars)}<span class="dim">${'☆'.repeat(3-stars)}</span></div><div class="victory-badge">🏅 校园寻踪者</div><div class="victory-stats"><span>🎧 3 / 3 线索</span><span>🎙 ${s.practice} 次交流</span></div><div class="actions"><button class="primary" id="victory-explore" autofocus>继续探索</button><button class="secondary" id="victory-review">冒险回顾</button></div><button class="chip" id="victory-listen">🔊 再听祝贺</button></div>`;
+ document.body.append(d);d.addEventListener('close',()=>{stopSpeech();d.remove();document.querySelector('#world')?.focus({preventScroll:true});},{once:true});
+ d.querySelector('#victory-explore').onclick=()=>{d.close();view='map';render();};
+ d.querySelector('#victory-review').onclick=()=>{d.close();view='review';render();};
+ d.querySelector('#victory-listen').onclick=()=>speak('Congratulations! You found Pip! Thank you for helping. You are a great explorer!');
+ d.showModal();speak('Congratulations! You found Pip! Thank you for helping. You are a great explorer!');
+}
+function winPip(){
+ if(s.complete||document.querySelector('#victory'))return;
+ destination=null;keys.clear();cancelVoice();
+ commit('complete');
+ const pip=NPCS.find(n=>n.id==='pip');
+ const r=reply(pip,s,'');
+ heardBy='pip';npcLine=r.en;npcZh=r.zh;npcReplies.pip=r;
+ render();
+ if(textOnly||!('speechSynthesis' in window)){celebrate();return;}
+ speak(r.en,false,()=>{if(s.complete&&!document.querySelector('#victory'))celebrate();});
+}
+function encounter(){
+ const n=nearest(player,s);
+ if(s.complete){const r=reply(n||NPCS[0],s,'');return `<h2>🎉 任务完成！</h2>${audioPrompt()}<div class="actions">${btn('🔊 听感谢','completion-replay','primary')}${btn('慢速重听','completion-slow')}${btn('冒险回顾','review','chip')}${btn('🎉 重播庆祝','celebrate','chip')}</div>${transcript(r.en,r.zh)}`;}
+ if(!s.prepared)return `<h2>先准备语言背包</h2>${btn('开始准备','prep','primary')}`;
+ if(!n)return `<div class="encounter-idle"><b>走近人物，开始交流</b><p>点击地面 / WASD 移动 · ? 交谈 · 🔊 重听</p></div>`;
+ const title=`<div class="encounter-title"><span class="npc-portrait">${n.icon}</span><div><small>${n.id==='organiser'?'任务发布者':'面对面交流'}</small><h2>${n.name}</h2></div></div>`;
+ if(n.id==='organiser')return `${title}${audioPrompt()}<div class="actions">${btn(s.started?'🔊 重听任务':'🔊 听取并领取任务',s.started?'mission-replay':'start','primary')}${s.started?btn('慢速重听','mission-slow')+btn('和教练讨论','discuss','chip','data-value="organiser"'):''}</div>${s.started?transcript(missionBrief.en,missionBrief.zh):'<small>点击问号或按 E，听她介绍。</small>'}`;
+ const audio=npcResponses[n.id]||npcAudio(n);
+ return `${title}${voicePanel('npc',n.id)}${audioPrompt()}<div class="actions">${voiceTriggerButton('npc','开口提问')}${btn('🔊 重听回答','npc-replay','secondary',audio?'':'disabled')}${btn('慢速重听','npc-slow','secondary',audio?'':'disabled')}${audio&&n.clue&&s.clues.includes(n.clue)?btn('和教练讨论','discuss','chip',`data-value="${n.id}"`):''}</div>${audio?transcript(audio.en,audio.zh):''}<details class="typing-fallback" ${textOnly?'open':''}><summary>暂时无法开口？打字交流</summary><form id="npc-talk" class="npc-form"><label for="npc-question">输入英语问题</label><div><input id="npc-question" name="question" maxlength="300" placeholder="输入你想说的话" autocomplete="off"><button class="secondary" type="submit">发送 ↗</button></div></form></details>${lastQuestion&&heardBy===n.id?`<details><summary>查看语音识别结果</summary><p>${esc(lastQuestion)}</p></details>`:''}<p class="muted" role="status">${esc(micError||'按 E 开口交流')}</p>`;
+}
+function map(){return `<section class="card adventure"><div class="maphead"><strong>校园自由探索</strong><span class="muted">WASD / ↑↓←→ · 点击地面移动</span></div><div class="map-goal">${goal()}</div>${!mapIntroSeen?`<div class="map-hint" role="status">👟 走近人物才能交谈：用方向键 / WASD 或点击地面移动，靠近后点红色 <b>?</b> 即可对话。<button class="chip" data-action="map-hint-dismiss">知道了</button></div>`:''}<div id="world" class="world" tabindex="0" role="group" aria-label="校园探索区域，使用方向键或 WASD 移动，E 键提问"><div class="world-path horizontal"></div><div class="world-path vertical"></div>${Object.entries(places).map(([id,p])=>`<div class="world-building" style="left:${p.x}%;top:${p.y-9}%"><span>${p.icon}</span><b>${p.name}</b></div>`).join('')}${[[8,15],[26,14],[72,13],[90,17],[9,77],[27,88],[87,81],[65,86]].map(([x,y])=>`<span class="world-tree" style="left:${x}%;top:${y}%">🌳</span>`).join('')}${visibleNPCs(s).map(n=>`<button class="world-npc" data-npc="${n.id}" style="left:${n.x/10}%;top:${n.y/6}%" aria-label="走向${n.name}"><span class="quest-marker" title="点击这里，直接提问" hidden>?</span><span class="sprite">${n.icon}</span><span class="npc-name">${n.name.split(' · ')[0]}</span></button>`).join('')}<div id="destination" class="destination" hidden>◎</div><div id="player" class="world-actor player" style="left:${player.x/10}%;top:${player.y/6}%"><span>🧑‍🚀</span><small>你</small></div><div id="companion" class="world-actor follower" ${s.mode==='voice'?'hidden':''}><span>👩🏻‍🚀</span><small>Nova</small></div><div id="following-pip" class="world-actor" ${!s.following?'hidden':''}><span>🤖</span></div></div><div class="walk-controls"><span>${s.complete?"任务完成 · 点 🔊 重听感谢":s.discovered?"点击 Pip 🤖，听它的感谢":s.started?"点红色 <b>?</b> 提问 · 点 <b>🔊</b> 重听回答":"点 Mia 的 <b>?</b>，听取并领取任务"}</span><div>${btn('↑','walk','chip','data-value="up" aria-label="向上走"')}${btn('←','walk','chip','data-value="left" aria-label="向左走"')}${btn('↓','walk','chip','data-value="down" aria-label="向下走"')}${btn('→','walk','chip','data-value="right" aria-label="向右走"')}</div></div><section id="encounter" class="encounter">${encounter()}</section></section><div class="bottomcards"><section class="card compact"><b>🎯 任务追踪</b>${questTracker(false)}<p class="quest-goal">${goal()}</p><span class="muted">你来行动，Nova 只提供指导。</span></section><section class="card compact"><b>▤ 线索 ${s.clues.length} / 3</b><p>亲自询问人物，回答会自动播放。</p>${btn('打开线索本 ↗','notebook','chip')}</section></div>`;}
+function refreshEncounter(){const el=document.querySelector('#encounter');if(el)el.innerHTML=encounter();}
+function targetNpc(id){const n=visibleNPCs(s).find(n=>n.id===id);if(!n)return;destination=bound({x:n.x-42,y:n.y+42});document.querySelector('#world')?.focus({preventScroll:true});}
+function npcSubmit(text){if(recording)cancelVoice();const n=nearest(player,s);if(!n||!s.prepared||!text.trim())return;stopSpeech();commit('move',n.location);commit('practice');heardBy=n.id;lastQuestion=text;micError='';const r=reply(n,s,text,{topicEstablished:npcTopics[n.id]===true});if(mentionsTask(text))npcTopics[n.id]=true;if(r.repeat){const prior=npcResponses[n.id]||npcAudio(n);npcLine=prior?.en||'I haven’t shared a clue yet. What would you like to ask?';npcZh=prior?.zh||'我还没提供线索，你想问什么？';npcResponses[n.id]={en:npcLine,zh:npcZh};render();speak(npcLine,true);return;}if(r.clue){commit('clue',r.clue);cluePop='🎉 新线索 +1 · '+n.name.split(' · ')[0]+' 提供了 Pip 的踪迹';clearTimeout(clueTimer);clueTimer=setTimeout(()=>{cluePop='';render();},2600);}if(r.follow)commit('follow');if(r.reveal)chosen=true;npcLine=r.en;npcZh=r.zh;npcResponses[n.id]={en:r.en,zh:r.zh};if(r.clue||!n.clue)npcReplies[n.id]={en:r.en,zh:r.zh};if(r.clue)rememberSpeaker(n);render();speak(r.en);}
+function frame(time){const dt=Math.min((time-lastFrame)/1000||0,.05);lastFrame=time;
+ if(view==='map'&&!document.querySelector('dialog')&&!recording){let dx=(keys.has('arrowright')||keys.has('d')?1:0)-(keys.has('arrowleft')||keys.has('a')?1:0),dy=(keys.has('arrowdown')||keys.has('s')?1:0)-(keys.has('arrowup')||keys.has('w')?1:0);const before={...player};if(dx||dy){destination=null;const len=Math.hypot(dx,dy);player=bound({x:player.x+dx/len*175*dt,y:player.y+dy/len*175*dt});}else if(destination){player=step(player,destination,175*dt);if(distance(player,destination)<1)destination=null;}
+ if(distance(companion,player)>45)companion=step(companion,player,185*dt);
+ if(view==='map'&&canDiscover(s,player)){commit('move','greenhouse');commit('discover');notice='🤖 你根据线索找到了 Pip！走近一点，点一下 Pip，听听它的感谢。';guideHighlight='';destination=null;keys.clear();render();}
+ const n=nearest(player,s);if(n?.id!==nearby?.id){nearby=n;chosen=false;npcLine='';npcZh='';lastQuestion='';heardBy='';micError='';refreshEncounter();}if(n&&s.location!==n.location)commit('move',n.location);
+ if(distance(before,player)>.01&&time-lastSave>500){lastSave=time;try{localStorage.setItem('campus-position',JSON.stringify(player));}catch{}}
+ }
+ const set=(id,p)=>{const el=document.getElementById(id);if(el){el.style.left=p.x/10+'%';el.style.top=p.y/6+'%';}};set('player',player);set('companion',companion);set('following-pip',bound({x:companion.x-28,y:companion.y+30}));const dest=document.querySelector('#destination');if(dest){dest.hidden=!destination;if(destination)set('destination',destination);}
+ document.querySelectorAll('.world-npc').forEach(el=>{const n=NPCS.find(n=>n.id===el.dataset.npc);const near=nearest(player,s)?.id===n.id;el.classList.toggle('near',near);el.classList.toggle('guide-target',n.id===guideHighlight);if(near&&n.id===guideHighlight)guideHighlight='';const issuing=interactionMode(n,s)==='mission',audio=npcAudio(n),marker=el.querySelector('.quest-marker'),pipWin=n.id==='pip'&&s.discovered&&!s.complete;marker.hidden=!(near&&(audio||hasInformation(n,s)||pipWin));marker.textContent=pipWin?'🤖':audio?'🔊':'?';marker.classList.toggle('replay-marker',!!audio);marker.title=pipWin?'点击 Pip，听它的感谢':audio?'点击重听这个人物的回答':issuing?'点击听取并领取任务':'点击这里，直接提问';el.setAttribute('aria-label',near&&s.prepared?(pipWin?'点击 Pip，听它的感谢':audio?'重听'+n.name+'的回答':issuing?'听取并领取 Mia 的任务':'向'+n.name+'提问'):'走向'+n.name);el.title=near?(pipWin?'点击 Pip 🤖，听它的感谢':audio?'点击喇叭重听人物的话':issuing?'点击问号，领取任务':'点击人物或问号，直接提问'):'走到人物身边';});requestAnimationFrame(frame);
+}
+function notebook(){return `<section class="card notebook"><div class="eyebrow">AUDIO CLUES</div><h2>我的语音线索</h2><p class="muted">重新听听他们说了什么，再决定去哪里。</p>${s.clues.length?s.clues.map(c=>{const n=NPCS.find(n=>n.clue===c),r=reply(n,s.complete?{...s,complete:false}:s,'Have you seen Pip?');return `<div class="clue"><b>${n.icon} ${n.name.split(' · ')[0]}</b><div class="actions">${btn('🔊 重听线索','clue-listen','primary',`data-value="${c}"`)}${btn('慢速重听','clue-slow','secondary',`data-value="${c}"`)}${btn('和教练讨论','discuss','chip',`data-value="${n.id}"`)}</div>${transcript(r.en,r.zh)}</div>`;}).join(''):'<div class="hero-icon">🎧</div><p>还没有收集到语音线索。</p>'}${btn('返回地图','map','primary')}</section>`;}
+
+function review(){if(!s.complete)return `<section class="card review"><h2>冒险还在继续</h2><p>${goal()}</p>${btn('继续探索','map','primary')}</section>`;return `<section class="card review"><div class="eyebrow">MISSION ACCOMPLISHED</div><div class="hero-icon">🤖 🌟</div><h2>恭喜！你找到了 Pip！</h2><p>你询问了目击者，连接起线索，亲手完成了任务。</p><div class="stats"><div><b>3 / 3</b><small>收集线索</small></div><div><b>${s.practice}</b><small>英语提交次数（含文字）</small></div></div><div class="clue">🎙 可选：用英语和 Nova 分享你的发现。</div><div class="exercise"><b>换个场景，还能听懂吗？</b><p>播放新的位置描述，再选择目的地。</p>${btn('◖)) 听新线索','transfer-audio')} ${btn('慢速重听','transfer-slow','chip')}<div class="actions" style="margin-top:14px">${btn('体育馆后面','transfer-right')}${btn('图书馆前面','transfer-wrong')}</div><p role="status">${transfer?'✓ 正确，你理解了新地点的位置关系。':''}</p></div><p class="muted">原型不评估发音或语言等级。这里展示的是实际任务与练习记录。</p>${btn('🎉 重播庆祝','celebrate','primary')}${btn('再玩一次','reset','secondary')}</section>`;}
+function voiceSetup(){return `<section class="card prep"><div class="eyebrow">FIRST · CHOOSE YOUR VOICE</div><h2>先选适合你的音色和语速</h2><p>选择音色和语速，再点击试听。默认 0.85×，你可以调慢或调快，听清楚后再开始冒险。</p>${voiceSettings()}<div class="actions">${btn('听清楚了，使用这些设置 →','voice-confirm','primary',voiceTested?'':'disabled')}${btn('暂时使用文字进入','voice-skip')}</div><p class="muted">确认后会记住选择。冒险中可在教练面板随时调速，语言背包可更换音色；暂用文字不会跳过下次的音色设置。</p></section>`;}
+function welcome(){return activeStory?storyDetail():storiesHub(false);}
+
+function storySelect(id){activeStory=id;storyStep=0;storyChecking=false;storyResult=null;micError='';render();if(!textOnly&&stories[id])speak(stories[id].simple[0]);}
+function storyBack(){activeStory=null;storyStep=0;storyChecking=false;storyResult=null;micError='';render();}
+function storyAnswer(text){if(!activeStory||!text.trim())return;const d=stories[activeStory];const wasChecking=storyChecking;stopSpeech();micError='';const r=discussStory(activeStory,text,storyChecking);storyChecking=r.checking;const right=wasChecking&&!r.checking&&r.en===d.feedback[0];storyResult={en:r.en,zh:r.zh,checking:r.checking,right};render();speak(r.en);}
+function storiesHub(withBack){
+ const mainCard=`<button class="story-card main-story${s.complete?' done':''}" data-action="welcome-start"><span class="story-topic">${s.complete?'✅ 主线冒险 · 已完成':'⭐ 主线冒险'}</span><span class="story-name">消失的科技节机器人</span><span class="story-hook">集齐 3 条线索，找到 Pip，开口完成任务</span><span class="story-go">${s.complete?'重玩冒险 ↻':s.prepared?'继续冒险 ▶':'开始冒险 ▶'}</span></button>`;
+ return `<section class="card stories"><p class="muted">选一个场景开始：主线冒险随时继续；日常故事先听故事、学重点词，再开口回答。</p><div class="story-list">${mainCard}${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}</div>${withBack?(s.prepared?btn('◈ 返回冒险地图','map','chip'):btn('← 返回欢迎页','welcome-home','chip')):''}</section>`;
+}
+function storyDetail(){
+ const d=stories[activeStory];
+ const top=`<div class="story-top">${btn('← 故事列表','story-back','chip')}<span class="story-topic">${esc(d.topic)}</span></div>`;
+ let body='';
+ if(storyStep===0){
+  body=`<div class="story-narrative"><b>📜 听故事</b><p lang="en">${esc(d.simple[0])}</p><p>${esc(d.simple[1])}</p><div class="actions">${btn('🔊 播放提示语','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}${btn('下一步：学单词 →','story-step','primary','data-value="1"')}</div></div>`;
+ } else if(storyStep===1){
+  body=`<div class="story-vocab"><b>🔑 重点词与短语</b><p lang="en">${esc(d.words[0])}</p><p>${esc(d.words[1])}</p></div><div class="story-terms"><b>🗂 点词卡可直接听发音</b><div class="term-grid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div></div><div class="actions">${btn('← 上一步','story-step','chip','data-value="0"')}${btn('下一步：开口答 →','story-step','primary','data-value="2"')}</div>`;
+ } else if(storyStep===2){
+  body=`<div class="story-check"><b>📝 理解检查</b><p lang="en">${esc(d.check[0])}</p><p>${esc(d.check[1])}</p></div><div class="story-answer"><div class="audio-prompt" aria-label="听力优先">🎧 <span>先听懂故事，再用英语回答</span><small>没听清？重听故事或慢速重听。</small></div>${voicePanel('story')}<div class="actions">${voiceTriggerButton('story','🎙 开口回答')}</div>${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}<details class="typing-fallback" ${textOnly?'open':''}><summary>暂时无法开口？打字回答</summary><form id="story-talk"><label for="story-answer">用英语回答理解检查题</label><div><input id="story-answer" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form></details>${storyResult?`<div class="story-feedback ${storyResult.right?'right':(storyResult.checking?'retry':'info')}"><b>${storyResult.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(storyResult.en)}</p><p>${esc(storyResult.zh)}</p><div class="actions">${btn('🔊 再听','story-listen','chip')}</div></div>`:'<small class="muted">用英语说说看：故事里发生了什么？按上面的问题回答即可。</small>'}</div><div class="actions">${btn('← 上一步','story-step','chip','data-value="1"')}${btn('🔊 再听故事','story-listen','chip')}</div>`;
+ } else {
+  body=`<div class="story-review"><b>☆ 回顾</b><p>再听一遍，巩固今天学到的表达。</p><div class="actions">${btn('🔊 重听故事','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}</div><div class="story-vocab"><b>🔑 今天的重点词</b><p lang="en">${esc(d.words[0])}</p><p>${esc(d.words[1])}</p></div><div class="actions">${btn('← 回到听故事','story-step','chip','data-value="0"')}${btn('返回故事列表','story-back','primary')}</div></div>`;
+ }
+ return `<section class="card stories detail">${top}<h2>📖 ${esc(d.name)} 的故事</h2>${body}</section>`;
+}
+function storiesView(){return activeStory?storyDetail():storiesHub(true);}
+function storiesAside(){return `<aside class="card coach-intro stories-aside"><div class="avatar">🎧</div><strong>听说小练习</strong><p>1 个主线冒险 + 6 个日常场景，随时来练。</p><div class="story-tips"><small>🎧 先听故事，可常速或慢速重听</small><small>🗂 点词卡直接听发音</small><small>🎙 开口回答，也可以打字提交</small><small>💡 答错会给出提示，可以再试</small></div></aside>`;}
+function storyNav(){
+ const home=btn('🏠 返回主页','story-back','home');
+ const steps=[['listen','📜 听故事'],['words','🔑 学单词'],['game','🎙 开口答'],['review','☆ 回顾']];
+ return `<nav class="nav story-nav" aria-label="本故事导航">${home}<span class="nav-sep" role="separator" aria-hidden="true"></span>${steps.map(([,label],i)=>btn((i<storyStep?'✓ ':'')+label,'story-step',i===storyStep?'active':'',`data-value="${i}"`)).join('')}</nav>`;
+}
+function planBanner(){return `<div class="plan-banner"><span>👩🏻‍🚀</span><div><small>NOVA · 随时陪你</small><p>不知道下一步？听听教练的建议。</p></div>${btn('🔊 听下一步','coach-next','primary')}</div>`;}
+
+function coach(){const g=guidance(s);return `<aside class="card coachpanel" id="coach-panel"><div class="coachhead"><div class="avatar">👩🏻‍🚀</div><div><strong>Nova / 同行教练</strong><div class="online">● 听说优先</div></div></div>${rateSettings('coach-rate')}${voicePanel('coach')}${listeningContext?`<div class="discussion-tools"><small>讨论 ${esc(NPCS.find(n=>n.id===listeningContext).name.split(' · ')[0])} 的线索</small><div class="actions">${btn('换个说法','discuss-simple','chip')}${btn('解释关键词','discuss-words','chip')}${btn('检查我的理解','discuss-check','chip')}</div><small>本关预设线索讨论</small></div>`:''}<div class="conversation">${audioPrompt()}<div class="tools">${btn('🔊 重听','listen','primary')}${btn('慢速重听','slow')}${btn('停止','stop')}</div>${transcript(message,translation)}<div class="coach-quick">${voiceTriggerButton('coach','和教练说话')}${btn('听下一步','coach-next')}${btn('听表达示范','phrase-help')}</div></div><div class="composer"><p class="status" id="voice-status" role="status">${esc(coachStatus||'')}</p><details id="coach-typing" ${textOnly?'open':''}><summary>暂时无法开口？打字交流</summary><form id="talk"><label for="utterance">问问教练</label><input id="utterance" name="utterance" autocomplete="off" maxlength="300" placeholder="输入你想说的话" aria-label="向教练提问"><button type="submit" class="secondary">发送 ↗</button></form></details><details><summary>更多帮助与设置</summary>${btn(g.cta,'guide-target','chip')}<div class="voice-summary"><small data-selected-voice>所选音色：${esc(selectedVoiceLabel())}</small><small data-voice-status>${esc(voiceStatus)}</small></div><div class="modes">${btn('同行陪伴','mode',s.mode==='companion'?'active':'','data-value="companion"')}${btn('语音陪伴','mode',s.mode==='voice'?'active':'','data-value="voice"')}</div>${btn('更换音色','prep','chip')}</details></div></aside>`;}
+
+const isHub=()=>activeStory===null&&(view==='stories'||view==='welcome');
+const inStory=()=>activeStory!==null;
+function navEnabled(target){return view!=='voice'&&canNavigate(s,target);}
+function navHint(target){return !s.entered&&!s.prepared?'点击开始后解锁':target!=='prep'&&!s.prepared?'完成语言准备后解锁':'';}
+function questTracker(mini=false){
+ const steps=[['领取任务','📋'],['收集线索','🔎'],['找到 Pip','🤖'],['通关','🏁']];
+ const cur=!s.started?0:s.discovered?(!s.complete?2:3):1;
+ return `<div class="quest${mini?' quest-mini':''}" role="list" aria-label="任务进度">${steps.map(([label,icon],i)=>`<span class="quest-node ${i<cur?'done':''} ${i===cur?'active':''} ${i>cur?'todo':''}" role="listitem"><span class="quest-dot">${i<cur?'✓':icon}</span><span class="quest-label">${label}</span></span>${i<steps.length-1?'<span class="quest-line"></span>':''}`).join('')}</div>`;
+}
+function render(){const hub=isHub(),story=inStory();document.querySelector('#app').innerHTML=`<div class="shell ${hub?'no-sidebar':''}">${hub?'':`<aside class="sidebar"><div class="brand">campus<span>quest.</span><small>英语同行冒险</small></div>${story?storyNav():`<nav class="nav" aria-label="主导航">${[['prep','▧ 语言背包'],['map','◈ 冒险地图'],['notebook','▤ 线索手记'],['stories','📖 日常故事'],['review','☆ 冒险回顾']].map(([v,t])=>btn(t,v,view===v?'active':'')).join('')}</nav>`}<div class="side-note">${story?'本故事 · 听说练习<br><b>听 → 学 → 说 → 回顾</b><br>按自己的节奏，随时切换。':'YOUR ADVENTURE<br><b>每一次开口，<br>都是新的发现。</b><br>你来探索，教练与你同行。'}</div></aside>`}<main class="workspace ${hub?'title-screen':''}"><div class="topbar hud"><div class="hud-left"><span class="hud-avatar">${hub?'🎧':story?'📖':'🧑‍🚀'}</span><span class="hud-meta"><b>${hub?'听说练习员':story?'故事练习员':'探索员'}</b><small>${hub?'日常故事 · 独立练习':story?'本故事听说练习':'第 01 关 · 校园篇'}</small></span></div>${hub?'<span class="pill">📖 7 个场景 · 随时可玩</span>':story?'<span class="pill">🗂 故事四步</span>':questTracker(true)+'<span class="pill">🌱 A1–A2</span>'}</div>${hub?`<header class="heading"><div><div class="eyebrow">DAILY STORIES</div><h1>日常英语小故事</h1><p>听生活故事，学重点词，开口回答。包含主线冒险与 6 个日常场景。</p></div><span class="pill">◷ 每篇约 5 分钟</span></header>`:story?`<header class="heading"><div><div class="eyebrow">DAILY STORY</div><h1>${esc(stories[activeStory].name)} 的故事</h1><p>${esc(stories[activeStory].topic)} · 听故事、学单词、开口答、回顾。</p></div></header>`:`<header class="heading"><div><div class="eyebrow">THE MISSING ROBOT</div><h1>消失的科技节机器人</h1><p>跟随线索，找到 Pip。校园里的冒险，从你开口开始。</p></div><span class="pill">◷ 约 20 分钟 · 无倒计时</span></header>`}${!storage?'<div class="toast">浏览器存储不可用，本次进度仅保留到页面关闭。</div>':''}${notice?`<div class="toast" role="status">${esc(notice)}</div>`:''}${cluePop?`<div class="clue-pop" role="status">${esc(cluePop)}</div>`:''}<div class="layout ${story?'story-layout':''}"><div>${hub?welcome():story?storyDetail():view==='voice'?voiceSetup():view==='prep'?prep():view==='notebook'?notebook():view==='map'?planBanner()+map():review()}</div>${hub?storiesAside():(story?'':(s.entered||s.prepared?coach():'<aside class="card coach-intro"><div class="avatar">👩🏻‍🚀</div><strong>Nova · 同行教练</strong><p>准备好后，点击开始。</p></aside>'))}</div><footer class="footnote"><span>${hub?'DAILY STORIES · 听说小练习':story?'DAILY STORY · 听说练习':'EPISODE 01 · GREENFIELD CAMPUS'}</span><span>进度保存在此浏览器 · 脚本互动，不含真人联机 &nbsp; ${btn('重置进度','reset','chip')}</span></footer></main></div>`;}
+function focusInput(){document.querySelector('#utterance')?.focus();}
+function submit(text){if(recording)cancelVoice();if(!text.trim())return;if(/repeat|again|slow|再说|重听/i.test(text)){speak(message,true);return;}const contextual=listeningContext&&!/下一步|next|怎么走|如何移动|keyboard|control|这句话怎么说/.test(text)&&(discussionActive||/听不懂|意思|解释|词|why|mean|understand|detail|said|towards|past|flashing|shiny|followed/i.test(text));const answer=contextual?discussClue(s,listeningContext,text,discussionChecking):coachAnswer(s,text);if(contextual){discussionActive=true;discussionChecking=answer.checking;coachStatus='继续围绕这条线索追问';}else{discussionActive=false;discussionChecking=false;coachStatus='';}say(answer.en,answer.zh);speak(answer.en,contextual);}
+function action(a,v){notice='';if(a==='map-hint-dismiss'){mapIntroSeen=true;render();return;}
+if(a==='voice-finish'){recording?.stop();return;}
+if(a==='voice-cancel'){cancelVoice(true);return;}
+if(a==='voice-retry'){if(voiceDisplay)mic(voiceDisplay.target);return;}
+if(a==='voice-confirm-text'){if(voiceDisplay?.phase==='review'){voiceDisplay.phase='done';render();deliverVoice(voiceDisplay);}return;}
+if(a==='voice-confirm'){if(!voiceTested||!chooseVoice(window.speechSynthesis?.getVoices()||[],preferredVoice))return;voiceConfirmed=true;try{localStorage.setItem('campus-voice-confirmed','1');}catch{voiceSaveError=true;}view='welcome';render();return;}
+if(a==='voice-skip'){textOnly=true;stopSpeech();view='welcome';render();return;}
+if(view==='voice'&&!['voice-preview','stop','subtitle'].includes(a))return;
+if(a==='celebrate'){celebrate();return;}
+if(a==='completion-replay'||a==='completion-slow'){speak(reply(nearest(player,s)||NPCS[0],s,'').en,a==='completion-slow');return;}
+if(a==='clue-listen'||a==='clue-slow'){const n=NPCS.find(n=>n.clue===v);if(n&&s.clues.includes(v)){rememberSpeaker(n);render();speak(reply(n,{...s,complete:false},'Have you seen Pip?').en,a==='clue-slow');}return;}
+if(a==='welcome-start'){commit('enter');view=s.complete?'review':s.prepared?'map':'prep';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}
+if(a==='discuss'){discuss(v);return;}
+if(['discuss-simple','discuss-words','discuss-check'].includes(a)){discuss(listeningContext,{'discuss-simple':'换个说法','discuss-words':'解释关键词','discuss-check':'检查理解'}[a]);return;}
+if(a==='coach-next'||a==='hint'){submit('下一步做什么');return;}
+if(a==='coach-talk'){mic('coach');return;}
+if(a==='guide-target'){const g=guidance(s);if(!navEnabled(g.view||'map'))return;if(g.view){view=g.view;render();}else{view='map';guideHighlight=g.target;render();document.querySelector('#world')?.scrollIntoView({block:'center',behavior:'smooth'});}return;}
+
+if(a==='walk'){const d={up:[0,-90],down:[0,90],left:[-90,0],right:[90,0]}[v];destination=bound({x:player.x+d[0],y:player.y+d[1]});return;}
+if(a==='mission-replay'||a==='mission-slow'){rememberSpeaker(NPCS.find(n=>n.id==='organiser'));render();speak(missionBrief.en,a==='mission-slow');return;}
+if(a==='npc-mic'){mic('npc');return;}
+if(a==='npc-replay'||a==='npc-slow'){const n=nearest(player,s),audio=n&&(npcResponses[n.id]||npcAudio(n));if(audio){rememberSpeaker(n);render();speak(audio.en,a==='npc-slow');}return;}
+if(['start','finish','green','wrong-button'].includes(a)){const n=nearest(player,s);if(!n||(['start','finish'].includes(a)?n.id!=='organiser':n.id!=='pip'))return;commit('move',n.location);}
+if(['map','prep','notebook','review','stories'].includes(a)){if(a==='stories'){keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(!navEnabled(a)){commit('enter');view='prep';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view=a;render();return;}if(a==='welcome-home'){cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(a==='story-select'){storySelect(v);return;}if(a==='story-back'){storyBack();return;}if(a==='story-step'){storyStep=Number(v);render();return;}if(a==='story-listen'){if(storyResult&&storyResult.en)speak(storyResult.en);else if(activeStory)speak(stories[activeStory].simple[0]);return;}if(a==='story-slow'){if(activeStory)speak(stories[activeStory].simple[0],true);return;}if(a==='story-mic'){mic('story');return;}if(a==='move'){const n=NPCS.find(n=>n.location===v);if(n)targetNpc(n.id);return;}if(a==='mode'){commit('mode',v);render();return;}if(a==='begin'){if(!navEnabled('prep'))return;commit('prepare');view='map';guideHighlight='organiser';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}if(a==='start'){if(!s.prepared)return;cancelVoice();destination=null;keys.clear();commit('start');notice='✓ 任务已领取';heardBy='organiser';lastQuestion='';npcLine=missionBrief.en;npcZh=missionBrief.zh;npcReplies.organiser={en:npcLine,zh:npcZh};rememberSpeaker(NPCS.find(n=>n.id==='organiser'));render();speak(npcLine);return;}if(a==='brief'){say('Pip is a small white robot. It has a blue light.','Pip 是白色小机器人，有一盏蓝灯。');return;}if(a==='record'){commit('clue','record');say('The note says: blue light flashing. Pip flashes blue when it follows something bright.','设备记录已收集：蓝灯闪烁。Pip 追逐明亮的物品时会闪蓝灯。');return;}if(a==='ask-library'||a==='ask-art'||a==='ask-follow'){say(a==='ask-library'?'The librarian is listening. What would you like to ask?':a==='ask-art'?'The art club member is here. Ask where the decoration went.':'Pip is ready. Tell it to come with you.',a==='ask-library'?'管理员在听。试着问她是否见过机器人。':a==='ask-art'?'美术社成员就在这里，问问装饰物去了哪里。':'Pip 准备好了，用英语邀请它跟你走。');focusInput();return;}if(a==='example-library'){speak('Have you seen a small robot?');return;}if(a==='gym'){say('I haven’t seen a robot here. Try asking at the library.','工作人员说这里没见过机器人，可以去图书馆问问。');return;}if(a==='blue'){if(s.clues.length<3){say('We need more evidence. Let’s check our notes before choosing.','还需要收集三条线索，才能确认目标。');return;}chosen=true;say('That’s Pip! Press the green button, then wait for the blue light.','找到 Pip 了！按绿色按钮，等待蓝灯亮起。');return;}if(a==='red'||a==='wrong-button'){say('Take another look. What colour did the instructions mention?','再想一想，描述或说明里提到的是哪种颜色？可以重听。');return;}if(a==='green'&&chosen){commit('wake');heardBy='pip';npcLine='I’m awake! Ask me to come with you.';npcZh='我醒了！邀请我跟你一起走吧。';npcReplies.pip={en:npcLine,zh:npcZh};render();speak(npcLine);return;}if(a==='finish'){commit('finish');if(s.complete){view='review';say('You did it! Where did you find Pip?','你完成了任务！试着用英语讲讲在哪里找到了 Pip。');}return;}if(a==='voice-preview'){textOnly=false;speak('Hello! I’m Nova, your English coach. Let’s explore together.');return;}if(a==='transfer-audio'||a==='transfer-slow'){speak('The robot is behind the gym.',a==='transfer-slow');return;}if(a==='transfer-right'){transfer=true;notice='正确！这次地点换成了体育馆。';render();return;}if(a==='transfer-wrong'){notice='再听一次，注意 gym 和 behind。';render();return;}if(a==='listen'||a==='slow'){speak(message,a==='slow');return;}if(a==='stop'){stopSpeech();return;}if(a==='subtitle'){subtitles=!subtitles;render();return;}if(a==='phrase-help'){submit('这句话怎么说');return;}if(a==='hint'){const h=!s.started?['Where does our mission start?','Look for the festival organiser.','Go to the plaza and collect the mission.']:s.clues.length<3?['What evidence do we have so far?','A witness and the art room may help.','Ask the librarian about Pip. Check the art room note and ask about the decoration.']:!s.awake?['What does Pip look like?','Remember the blue light.','Visit the greenhouse, select the blue-light robot, and press the green button.']:!s.following?['Pip is ready to move.','How can you invite it along?','Try saying: Follow me, Pip.']:['Where did we start?','The festival needs Pip back.','Return to the plaza and hand in the mission.'];say(h[Math.min(hint++,2)],`提示 ${Math.min(hint,3)}/3 · ${goal()}。由你决定并完成操作。`);return;}if(a==='mic'){mic('coach');return;}if(a==='reset'){const d=document.createElement('dialog');d.innerHTML='<h2>重新开始冒险？</h2><p>这会清除本浏览器里的当前关卡进度。</p><div class="actions"><button class="secondary" id="cancel-reset">继续冒险</button><button class="primary" id="confirm-reset">确认重置</button></div>';document.body.append(d);d.showModal();d.querySelector('#cancel-reset').onclick=()=>d.remove();d.querySelector('#confirm-reset').onclick=()=>{cancelVoice();stopSpeech();s=initial();player={x:150,y:460};companion={x:115,y:480};destination=null;keys.clear();nearby=null;npcLine='';npcZh='';heardBy='';lastQuestion='';npcReplies={};npcResponses={};npcTopics={};listeningContext=null;discussionActive=false;discussionChecking=false;try{localStorage.removeItem('campus-position');localStorage.removeItem(KEY);}catch{}view='welcome';transfer=false;chosen=false;hint=0;guideHighlight='';coachStatus='';d.remove();notice='🔄 进度已重置，我们重新出发。';const g=guidance(s);say(g.en,g.zh);};return;}}
+let voiceDisplay=null;
+function voiceMessage(state){
+ if(state.error)return state.error;
+ return ({preparing:'正在准备麦克风和语音检测…',listening:'正在听，请开始说话',speaking:'正在听，你可以继续说',waiting:`等待你继续 · 静音 ${((2000-state.remaining)/1000).toFixed(1)} / 2 秒`,reconnecting:'正在继续识别，已保留前面的话',finalizing:'正在整理完整转写…',review:'有一部分文字尚未定稿，请确认或重说',done:'本次完整识别结果',empty:'没有识别到内容，请重说',cancelled:'已取消，本次内容没有提交'})[state.phase]||'';
+}
+function voiceTriggerButton(target,idleLabel){return btn(recording?'■ 说完了':'🎙 '+idleLabel,target==='story'?'story-mic':target==='coach'?'coach-talk':'npc-mic','primary'+(recording?' recording':''));}
+function voicePanel(target,npcId=''){
+ const d=voiceDisplay;if(!d||d.target!==target||(target==='npc'&&d.npcId!==npcId))return '';
+ const live=recording&&d.phase!=='review';
+ return `<section class="voice-capture" aria-label="本次语音输入"><strong data-voice-state role="status">${esc(voiceMessage(d))}</strong><p class="voice-live" data-voice-live>${esc(d.text||'识别内容会显示在这里')}</p><div class="actions">${live?btn('说完了','voice-finish','primary','data-voice-stop '+(['preparing','finalizing'].includes(d.phase)?'disabled':''))+btn('取消','voice-cancel'):''}${d.phase==='review'?btn('确认并发送','voice-confirm-text','primary'):''}${!live?btn('重新说一次','voice-retry','chip'):''}</div></section>`;
+}
+function updateVoiceLive(){if(!voiceDisplay)return;document.querySelectorAll('[data-voice-state]').forEach(el=>el.textContent=voiceMessage(voiceDisplay));document.querySelectorAll('[data-voice-live]').forEach(el=>el.textContent=voiceDisplay.text||'识别内容会显示在这里');document.querySelectorAll('[data-voice-stop]').forEach(el=>el.disabled=['preparing','finalizing'].includes(voiceDisplay.phase));}
+function cancelVoice(renderUI=false){const turn=recording;recording=null;turn?.abort();if(turn&&voiceDisplay)voiceDisplay={...voiceDisplay,phase:'cancelled'};if(renderUI)render();}
+function deliverVoice(d){
+ if(d.target==='npc'){if(view==='map'&&nearest(player,s)?.id===d.npcId)npcSubmit(d.text);else{d.phase='cancelled';render();}}
+ else if(d.target==='story'){if(activeStory)storyAnswer(d.text);else{d.phase='cancelled';render();}}
+ else submit(d.text);
+}
+function mic(target='npc'){
+ if(recording){if(voiceDisplay?.phase!=='preparing')recording.stop();return;}
+ if(target==='story'&&!activeStory)return;
+ const contact=nearest(player,s);if(target==='npc'&&s.prepared&&contact?.id==='organiser'&&!s.complete){if(interactionMode(contact,s)==='mission')action('start');else replayNpc(contact);return;}
+ if(s.complete&&target==='npc'){speak(reply(nearest(player,s)||NPCS[0],s,'').en);return;}
+ const R=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!R){const error='此浏览器不支持语音识别，请使用文字交流。';if(target==='coach')coachStatus=error;else micError=error;render();openTyping(target);return;}
+ if(target==='npc'&&(!contact||!s.prepared))return;
+ const start=()=>{
+  micApproved=true;stopSpeech();destination=null;keys.clear();micError='';coachStatus='';
+  voiceDisplay={target,npcId:contact?.id||'',phase:'preparing',text:'',remaining:2000};
+  const turn=createVoiceTurn({Recognition:R,createVAD:createBrowserVAD,
+   onUpdate:update=>{if(recording!==turn)return;voiceDisplay={...voiceDisplay,...update};updateVoiceLive();},
+   onComplete:result=>{if(recording!==turn)return;recording=null;voiceDisplay={...voiceDisplay,...result,phase:!result.text?'empty':result.needsReview?'review':'done'};render();if(result.text&&!result.needsReview)deliverVoice(voiceDisplay);},
+   onError:(code,text)=>{if(recording!==turn)return;recording=null;const errors={'not-allowed':'麦克风权限未开启，请允许后重试或打字。','no-speech':'没有检测到说话，请重新说一次。','vad-unavailable':'语音检测未能启动，请重试或打字，不会提前提交。','vad-stalled':'语音检测中断，本次没有提交，请重说。','not-ready':'语音还没准备好，请重新开启。','network':'浏览器语音服务连接失败，本次没有提交。','recognition-restarts':'识别服务多次中断，本次没有提交，请重试。','recognition-timeout':'识别服务启动超时，请重试或打字。'};voiceDisplay={...voiceDisplay,text,phase:'error',error:errors[code]||'语音识别中断，本次没有提交，请重新说一次或打字。'};render();}
+  });
+  recording=turn;render();void turn.start();
+ };
+ if(micApproved){start();return;}
+ const d=document.createElement('dialog');d.innerHTML='<h2>开启语音交谈</h2><p>说话时持续识别，连续静音 2 秒后才回答，也可以点“说完了”。语音活动检测在本地运行；浏览器可能使用其远程语音服务。本应用不保存录音。</p><div class="actions"><button class="secondary" id="no-mic">改用文字</button><button class="primary" id="yes-mic">开启麦克风</button></div>';document.body.append(d);d.showModal();d.querySelector('#no-mic').onclick=()=>{d.remove();openTyping(target);};d.querySelector('#yes-mic').onclick=()=>{d.remove();start();};
+}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.speak){speak(b.dataset.speak);return;}if(b.dataset.action)action(b.dataset.action,b.dataset.value);});document.addEventListener('submit',e=>{if(e.target.id==='npc-talk'){e.preventDefault();npcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='story-talk'){e.preventDefault();storyAnswer(new FormData(e.target).get('answer')||'');return;}if(e.target.id!=='talk')return;e.preventDefault();submit(new FormData(e.target).get('utterance')||'');});render();
+
+document.addEventListener('change',e=>{if(e.target.matches('[data-rate-choice]')){const rate=Number(e.target.value);if(!speechRates.includes(rate))return;stopSpeech();speechRate=rate;voiceTested=false;voiceStatus='语速已设为 '+speechRate.toFixed(2)+'×，下次播放生效';try{localStorage.setItem('campus-speech-rate',String(speechRate));}catch{notice='浏览器未允许保存语速，本次设置仅在当前页面有效。';}render();return;}if(e.target.id==='voice-choice'){stopSpeech();voiceTested=false;preferredVoice=e.target.value;voiceStatus='音色已更改，点击试听确认';try{localStorage.setItem('campus-voice',preferredVoice);voiceSaveError=false;}catch{voiceSaveError=true;}render();}});
+window.speechSynthesis?.addEventListener('voiceschanged',()=>{const select=document.querySelector('#voice-choice');if(select)select.innerHTML=voiceOptions();updateVoiceStatus();});
+
+document.addEventListener('click',e=>{const world=e.target.closest('#world');if(!world||view!=='map')return;const npc=e.target.closest('[data-npc]');if(npc){const id=npc.dataset.npc;if(id==='pip'&&s.discovered&&!s.complete){winPip();return;}if(s.prepared&&nearest(player,s)?.id===id){destination=null;keys.clear();const n=nearest(player,s);if(npcAudio(n)){if(recording){cancelVoice();}replayNpc(n);}else mic('npc');}else if(!recording){targetNpc(id);}return;}if(recording)return;const rect=world.getBoundingClientRect();destination=bound({x:(e.clientX-rect.left)/rect.width*1000,y:(e.clientY-rect.top)/rect.height*600});world.focus({preventScroll:true});});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const d=document.querySelector('dialog[open]');if(d)d.close();else document.querySelectorAll('.transcript[open],.typing-fallback[open]').forEach(el=>el.open=false);return;}if(view!=='map'||document.querySelector('dialog')||e.target.closest('input,textarea,select,[contenteditable=true]'))return;const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){if(recording)return;e.preventDefault();if(!e.repeat){const d={arrowup:[0,-8],w:[0,-8],arrowdown:[0,8],s:[0,8],arrowleft:[-8,0],a:[-8,0],arrowright:[8,0],d:[8,0]}[k];player=bound({x:player.x+d[0],y:player.y+d[1]});destination=null;}keys.add(k);}if(k==='e'&&!e.repeat&&s.prepared){const n=nearest(player,s);if(n?.id==='pip'&&s.discovered&&!s.complete){e.preventDefault();winPip();}else if(n){e.preventDefault();mic('npc');}}if(k==='r'&&!e.repeat){e.preventDefault();if(lastSpoken)speak(lastSpoken);}});
+document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();destination=null;});document.addEventListener('visibilitychange',()=>{if(document.hidden){keys.clear();destination=null;if(recording)cancelVoice(true);}});requestAnimationFrame(frame);
+
+document.addEventListener('focusin',e=>{if(e.target.closest('input,textarea,select')){keys.clear();destination=null;}});
+
+</script></body></html>
