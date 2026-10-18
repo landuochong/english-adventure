@@ -1,1 +1,14 @@
-{"name":"campus-quest","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.js","start":"python3 -m http.server 4173 --directory dist"}}
+{
+  "name": "campus-quest",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "start": "python3 -m http.server 4173 --directory dist",
+    "vendor:vad": "node scripts/vendor-vad.mjs"
+  },
+  "devDependencies": {
+    "@ricky0123/vad-web": "0.0.31",
+    "onnxruntime-web": "1.22.0"
+  }
+}

@@ -7,13 +7,14 @@ export function transition(s,action,value){
  if(action==='mode')n.mode=value==='voice'?'voice':'companion';
  if(action==='start'&&n.prepared&&n.location==='plaza')n.started=true;
  if(action==='clue'&&n.started&&((value==='witness'&&n.location==='library')||(['record','decoration'].includes(value)&&n.location==='art'))&&!n.clues.includes(value))n.clues.push(value);
- if(action==='discover'&&n.started&&n.clues.length===3&&n.location==='greenhouse'){n.discovered=true;n.complete=true;}
+ if(action==='discover'&&n.started&&n.clues.length===3&&n.location==='greenhouse'){n.discovered=true;}
+ if(action==='complete'&&n.discovered&&!n.complete)n.complete=true;
  if(action==='wake'&&n.discovered&&n.location==='greenhouse'&&n.clues.length===3)n.awake=true;
  if(action==='follow'&&n.location==='greenhouse'&&n.awake)n.following=true;
  if(action==='finish'&&n.location==='plaza'&&n.following)n.complete=true;
  if(action==='practice')n.practice++;
  return n;
 }
-export function restore(raw){try {const s=JSON.parse(raw);if(s?.version!==1||!['plaza','library','art','greenhouse','gym'].includes(s.location)||!Array.isArray(s.clues))return initial();const n=initial();for(const key of ['entered','prepared','started','awake','following','complete'])n[key]=s[key]===true;if(n.prepared)n.entered=true;n.location=s.location;n.mode=s.mode==='voice'?'voice':'companion';n.clues=[...new Set(s.clues.filter(x=>['witness','record','decoration'].includes(x)))];n.practice=Number.isInteger(s.practice)&&s.practice>=0?s.practice:0;if(!n.started)n.clues=[];n.discovered=(s.discovered===true||s.awake===true)&&n.started&&n.clues.length===3;n.awake=n.awake&&n.discovered;n.following=n.following&&n.awake;n.complete=n.discovered;return n;}catch{return initial();}}
+export function restore(raw){try {const s=JSON.parse(raw);if(s?.version!==1||!['plaza','library','art','greenhouse','gym'].includes(s.location)||!Array.isArray(s.clues))return initial();const n=initial();for(const key of ['entered','prepared','started','awake','following','complete'])n[key]=s[key]===true;if(n.prepared)n.entered=true;n.location=s.location;n.mode=s.mode==='voice'?'voice':'companion';n.clues=[...new Set(s.clues.filter(x=>['witness','record','decoration'].includes(x)))];n.practice=Number.isInteger(s.practice)&&s.practice>=0?s.practice:0;if(!n.started)n.clues=[];n.discovered=(s.discovered===true||s.awake===true)&&n.started&&n.clues.length===3;n.awake=n.awake&&n.discovered;n.following=n.following&&n.awake;n.complete=n.discovered&&(s.complete===true||s.complete!==false);return n;}catch{return initial();}}
 
 export function canNavigate(s,target){return ['prep','map','notebook','review'].includes(target)&&(s.entered||s.prepared)&&(target==='prep'||s.prepared);}

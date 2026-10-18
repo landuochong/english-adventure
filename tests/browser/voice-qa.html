@@ -1,0 +1,26 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>语音回合验证 · 本地测试</title><style>body{font:16px system-ui;background:#f4f7ef;color:#254635;max-width:760px;margin:40px auto;padding:20px}button{padding:14px;background:#28543e;color:white;border:0;border-radius:10px}pre{background:white;border-radius:12px;padding:20px;white-space:pre-wrap}small{color:#617466}#status{font-weight:bold}</style><h1>连续说话与静音结束验证</h1><p>使用本地合成语音测试真实 VAD；文字识别结果为模拟事件，不使用麦克风。</p><button id="run">运行：前半句 → 停顿 1.5 秒 → 后半句 → 静音 3 秒</button><p id="status">尚未运行</p><pre id="text"></pre><pre id="events"></pre><small>此页面仅为本地验收，不随 dist 发布。</small><script type="module">
+import {createVoiceTurn} from '../../dist/voice-turn.js?v=19';
+import {createBrowserVAD} from '../../dist/vad-loader.js?v=19';
+let turn;
+const $=s=>document.querySelector(s);
+$('#run').onclick=async()=>{
+ $('#run').disabled=true;$('#events').textContent='';const start=performance.now();let recognition,phase='',silenceStart=null,source=null;
+ const log=t=>$('#events').textContent+=`${((performance.now()-start)/1000).toFixed(2)}s ${t}\n`;
+ class Recognition{constructor(){recognition=this;}start(){setTimeout(()=>this.onstart?.(),0);}stop(){log('停止识别，最后结果定稿');this.onresult?.({results:[Object.assign([{transcript:'Have you seen the robot?'}],{isFinal:true})]});this.onend?.();}abort(){} }
+ let speechStarts=0,lastSpeech=0;
+ turn=createVoiceTurn({Recognition,
+  createVAD:callbacks=>createBrowserVAD({...callbacks,
+   onFrameProcessed:(p,a)=>{callbacks.onFrameProcessed(p,a);if(p.isSpeech>=.35){lastSpeech=performance.now();silenceStart=null;}else if(lastSpeech&&!silenceStart)silenceStart=performance.now();},
+   onSpeechRealStart:()=>{callbacks.onSpeechRealStart();speechStarts++;log('真实 VAD 确认语音');},
+  },{getStream:async context=>{
+    const buffer=await context.decodeAudioData(await(await fetch('../fixtures/paused-question.wav')).arrayBuffer());const dest=context.createMediaStreamDestination();source=context.createBufferSource();source.buffer=buffer;source.connect(dest);
+    // Start playback only after the simulated recognizer is ready.
+    const wait=setInterval(()=>{if(recognition){clearInterval(wait);source.start(context.currentTime+.1);log('开始输入合成语音（包含中途停顿）');setTimeout(()=>recognition.onresult?.({results:[Object.assign([{transcript:'Have you seen'}],{isFinal:true})]}),1000);setTimeout(()=>recognition.onresult?.({results:[Object.assign([{transcript:'Have you seen'}],{isFinal:true}),Object.assign([{transcript:'the robot?'}],{isFinal:false})]}),3700);}},20);
+    return dest.stream;
+  }}),
+  onUpdate:s=>{const labels={preparing:'正在加载本地 VAD',listening:'正在听',speaking:'检测到说话',waiting:'等待继续',finalizing:'整理完整转写'};$('#status').textContent=(labels[s.phase]||s.phase)+(s.phase==='waiting'?` · 静音 ${((2000-s.remaining)/1000).toFixed(1)} / 2 秒`:'');$('#text').textContent=s.text||'…';if(s.phase!==phase){phase=s.phase;log('状态：'+phase);}},
+  onComplete:r=>{$('#status').textContent='完成：完整一句只提交一次';$('#text').textContent=r.text;log('提交：'+r.text);log('最后语音距离提交：'+((performance.now()-lastSpeech)/1000).toFixed(2)+' 秒');log('VAD 已确认语音次数：'+speechStarts);$('#run').disabled=false;},
+  onError:(code,text)=>{$('#status').textContent='错误：'+code;$('#text').textContent=text;$('#run').disabled=false;log('错误：'+code);}
+ });await turn.start();
+};
+</script></html>
