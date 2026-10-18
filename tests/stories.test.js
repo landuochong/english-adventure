@@ -9,12 +9,13 @@ const samples = {
   shopping: {positive: ['a blue cap', '25 yuan', '蓝色帽子'], negative: ['a red shirt']},
   directions: {positive: ['take Bus 5', 'get off at library', '5 路公交'], negative: ['take a taxi']},
   weather: {positive: ['It is sunny', 'bring a kite', '公园'], negative: ['It is rainy']},
-  hobbies: {positive: ['Tim likes swimming', '游泳'], negative: ['Tim likes running']}
+  hobbies: {positive: ['Tim likes swimming', '游泳'], negative: ['Tim likes running']},
+  pip: {positive: ['Pip the robot is missing', '机器人不见了'], negative: ['The weather is nice']}
 };
 
 test('stories module exposes ids and list', () => {
-  assert.equal(storyIds.length, 6);
-  assert.equal(storyList.length, 6);
+  assert.equal(storyIds.length, 7);
+  assert.equal(storyList.length, 7);
   for (const s of storyList) {
     assert.equal(typeof s.id, 'string');
     assert.equal(typeof s.topic, 'string');

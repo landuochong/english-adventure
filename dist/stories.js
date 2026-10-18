@@ -16,6 +16,38 @@
 // 可直接用于“日常故事”练习模式。
 
 const stories = {
+  pip: {
+    topic: '科技节与机器人',
+    name: 'Pip',
+    simple: [
+      'At the school tech festival, a small robot named Pip goes missing. You ask friends around the campus. Mia says Pip was near the library. Later you find Pip behind the greenhouse, next to a flashing green button.',
+      '在学校科技节上，一个叫 Pip 的小机器人不见了。你在校园里询问同学。Mia 说 Pip 曾在图书馆附近。后来你在温室后面、一个闪烁的绿色按钮旁找到了 Pip。'
+    ],
+    words: [
+      'Missing means lost or not where it should be. Flashing means a light going on and off quickly.',
+      'missing 是失踪、丢失；flashing 是闪烁（灯光快速忽明忽暗）。'
+    ],
+    terms: {
+      missing: ['Missing means lost or not where it should be.', 'missing 表示失踪、找不到了。'],
+      library: ['A library is a quiet place full of books.', 'library 是图书馆。'],
+      greenhouse: ['A greenhouse is a glass building where plants grow.', 'greenhouse 是温室。'],
+      button: ['A button is a small part you press, like on a toy.', 'button 是按钮，可以按压的小部件。']
+    },
+    check: [
+      'What is missing, and where do you find Pip?',
+      '什么不见了？你在哪里找到了 Pip？'
+    ],
+    answer: /\b(robot|pip|library|greenhouse|button|flashing|missing)\b|机器人|图书馆|温室|按钮|闪烁|后面|失踪|不见/,
+    feedback: [
+      'Yes! Pip the robot is missing, and you find it behind the greenhouse, next to a flashing green button. Great work!',
+      '对！Pip 这个小机器人不见了，你在温室后面、一个闪烁的绿色按钮旁找到了它。太棒了！'
+    ],
+    wrong: [
+      'Listen again: Pip the robot is missing. Mia saw it near the library. You find Pip behind the greenhouse, next to a flashing button. Try the check question.',
+      '再听一次：Pip 机器人不见了。Mia 在图书馆附近看到它。你在温室后面、闪烁的按钮旁找到了 Pip。试着回答检查问题。'
+    ]
+  },
+
   school: {
     topic: '校园与课堂',
     name: 'Tom',
