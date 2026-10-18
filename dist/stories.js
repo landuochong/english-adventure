@@ -280,4 +280,47 @@ export function discussStory(id, text, checking = false) {
   };
 }
 
+// 每篇故事的可探索场景：在校园/教室/咖啡馆/商店/街道/公园里走动，走近人物对话，收集线索。
+// 集齐所有人物线索即完成本次冒险。坐标 x:0-1000, y:0-600。
+export const worlds = {
+  pip: { scene:'campus', goal:{en:'Walk around the campus and ask friends about the missing Pip.', zh:'在校园里询问同学，找到走失的 Pip。'},
+    npcs:[
+      {id:'mia', name:'Mia', icon:'👩‍💼', x:140, y:300, line:['Pip is a small white robot with a blue light. Ask Ben at the library.','Pip 是白色小机器人，有一盏蓝灯。去图书馆问问 Ben。']},
+      {id:'ben', name:'Ben', icon:'👨‍🏫', x:430, y:250, line:['Pip went past the library, towards the art room.','Pip 经过图书馆，朝美术教室走去。']},
+      {id:'amy', name:'Amy', icon:'👩‍🎨', x:790, y:300, line:['We carried a shiny decoration to the greenhouse. Pip followed us!','我们把闪亮的装饰物搬到温室，Pip 跟着我们！']},
+      {id:'leo', name:'Leo', icon:'👨‍🔧', x:660, y:420, line:['The record says blue light flashing. Pip flashes blue when it follows bright things.','记录显示蓝灯闪烁。Pip 追随明亮的东西时会闪蓝灯。']},
+      {id:'pip', name:'Pip', icon:'🤖', x:500, y:140, line:['You found me! Thank you for your help!','你找到我了！谢谢你的帮助！']}
+    ]},
+  school: { scene:'classroom', goal:{en:'Talk to Tom and Lisa about the maths book Tom forgot.', zh:'和 Tom、Lisa 聊聊 Tom 忘带的数学课本。'},
+    npcs:[
+      {id:'tom', name:'Tom', icon:'🧒', x:300, y:250, line:['I forgot my maths book at home. Can I borrow yours, Lisa?','我把数学课本忘在家里了。Lisa，能借你的给我吗？']},
+      {id:'lisa', name:'Lisa', icon:'👧', x:700, y:380, line:['Sure! Here is my maths book. You can borrow it.','当然！这是我的数学课本，借给你吧。']}
+    ]},
+  restaurant: { scene:'cafe', goal:{en:'Help Lily order her food at the cafe.', zh:'在咖啡馆帮 Lily 点餐。'},
+    npcs:[
+      {id:'waiter', name:'Waiter', icon:'🧑‍🍳', x:280, y:240, line:['Welcome! What would you like to order?','欢迎光临！您想点些什么？']},
+      {id:'lily', name:'Lily', icon:'👩', x:700, y:360, line:['A chicken sandwich, no onions please, and a glass of water.','一个鸡肉三明治，请不要放洋葱，再来一杯水。']}
+    ]},
+  shopping: { scene:'shop', goal:{en:'Find the blue cap and learn its price.', zh:'找到那顶蓝帽子，了解它的价格。'},
+    npcs:[
+      {id:'assistant', name:'Shop assistant', icon:'🧑‍💼', x:300, y:240, line:['This blue cap is 25 yuan. Would you like to try size M?','这顶蓝帽子 25 元。要试一下 M 码吗？']},
+      {id:'jack', name:'Jack', icon:'🧒', x:700, y:360, line:['I like this blue cap. Size M fits me well.','我喜欢这顶蓝帽子，M 码我戴着正合适。']}
+    ]},
+  directions: { scene:'street', goal:{en:'Ask the way to the museum.', zh:'问去博物馆的路。'},
+    npcs:[
+      {id:'chen', name:'Mr. Chen', icon:'🧓', x:300, y:250, line:['Take Bus 5, get off at the library stop. The museum is next to it.','坐 5 路公交，在图书馆站下车，博物馆就在旁边。']},
+      {id:'anna', name:'Anna', icon:'👩', x:680, y:380, line:['I want to visit the museum. Could you tell me the way?','我想去博物馆，能告诉我怎么走吗？']}
+    ]},
+  weather: { scene:'park', goal:{en:'Plan a sunny-day outing with friends.', zh:'和朋友们计划一个晴天出游。'},
+    npcs:[
+      {id:'bob', name:'Bob', icon:'🧑', x:300, y:250, line:['It is sunny. Would you like to go to the park with me, Mary?','天气晴朗。Mary，和我一起去公园好吗？']},
+      {id:'mary', name:'Mary', icon:'👧', x:680, y:380, line:['Yes! Let us bring a kite to the park.','好呀！我们带一只风筝去公园吧。']}
+    ]},
+  hobbies: { scene:'sports', goal:{en:'Invite a friend to swim together.', zh:'约朋友一起去游泳。'},
+    npcs:[
+      {id:'tim', name:'Tim', icon:'🧒', x:300, y:250, line:['My favourite sport is swimming. Will you swim with me on Sunday?','我最喜欢的运动是游泳。周日你愿意和我一起去游吗？']},
+      {id:'sue', name:'Sue', icon:'👧', x:680, y:380, line:['I like basketball, but I will try swimming with you!','我喜欢篮球，不过我愿意和你试试游泳！']}
+    ]}
+};
+
 export { stories };
