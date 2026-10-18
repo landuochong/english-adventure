@@ -142,6 +142,12 @@
 .story-feedback{margin-top:14px;border-radius:14px;padding:14px 18px;border:1.5px solid}
 .story-feedback p{margin:6px 0}
 .story-feedback .actions{margin-top:10px}
+.story-prep>b,.story-map>b,.story-notebook>b{display:block;margin-bottom:10px;color:#3a5b48;font-size:14px}
+.story-prep,.story-map,.story-notebook,.story-review{background:#f8faf4;border:1.5px solid #e6ecdc;border-radius:16px;padding:16px 20px;margin:14px 0}
+.story-review{text-align:center;background:#fffaf0;border-color:#e4c786}
+.story-review .eyebrow{color:#b8893f}
+.story-review h2{font-size:24px}
+.story-review .actions{justify-content:center;margin-top:18px}
 .story-feedback.right{background:#eaf7ec;border-color:#a9d9b2}
 .story-feedback.right b{color:#1f7a3d}
 .story-feedback.retry{background:#fff6e0;border-color:#f0d79a}

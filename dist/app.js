@@ -15,7 +15,7 @@ let view='welcome',subtitles=false,hint=0,message='Hey, explorer! I’m Nova. Re
 let player={x:150,y:460},companion={x:115,y:480},destination=null,nearby=null,keys=new Set(),lastFrame=0,lastSave=0,micApproved=false;let mapIntroSeen=false;
 let npcLine='',npcZh='',lastQuestion='',heardBy='',micError='';let lastSpoken='';
 let npcReplies={},npcResponses={},npcTopics={};let listeningContext=null,discussionActive=false,discussionChecking=false;
-let activeStory=null,storyStep=0,storyChecking=false,storyResult=null;
+let activeStory=null,storyStep=0,storyChecking=false,storyResult=null,storyTries=0;
 function rememberSpeaker(n){if(n&&(n.id==='organiser'||n.clue&&s.clues.includes(n.clue))){if(listeningContext!==n.id){discussionActive=false;discussionChecking=false;}listeningContext=n.id;}}
 function discuss(id,text='换个说法'){const n=NPCS.find(n=>n.id===id);if(!n)return;rememberSpeaker(n);discussionActive=true;const answer=discussClue(s,n.id,text);discussionChecking=answer.checking;coachStatus='正在讨论 '+n.name.split(' · ')[0]+' 的线索 · 可继续开口追问';say(answer.en,answer.zh);speak(answer.en,true);document.querySelector('#coach-panel')?.scrollIntoView({block:'center',behavior:'smooth'});}
 function npcAudio(n){if(s.complete)return reply(n,s,'');if(n.id==='organiser'&&s.started)return missionBrief;if(npcReplies[n.id])return npcReplies[n.id];if(n.clue&&s.clues.includes(n.clue)){const r=reply(n,s,'Have you seen Pip?');return {en:r.en,zh:r.zh};}return null;}
@@ -113,24 +113,25 @@ function review(){if(!s.complete)return `<section class="card review"><h2>冒险
 function voiceSetup(){return `<section class="card prep"><div class="eyebrow">FIRST · CHOOSE YOUR VOICE</div><h2>先选适合你的音色和语速</h2><p>选择音色和语速，再点击试听。默认 0.85×，你可以调慢或调快，听清楚后再开始冒险。</p>${voiceSettings()}<div class="actions">${btn('听清楚了，使用这些设置 →','voice-confirm','primary',voiceTested?'':'disabled')}${btn('暂时使用文字进入','voice-skip')}</div><p class="muted">确认后会记住选择。冒险中可在教练面板随时调速，语言背包可更换音色；暂用文字不会跳过下次的音色设置。</p></section>`;}
 function welcome(){return activeStory?storyDetail():storiesHub(false);}
 
-function storySelect(id){activeStory=id;storyStep=0;storyChecking=false;storyResult=null;micError='';render();if(!textOnly&&stories[id])speak(stories[id].simple[0]);}
-function storyBack(){activeStory=null;storyStep=0;storyChecking=false;storyResult=null;micError='';render();}
-function storyAnswer(text){if(!activeStory||!text.trim())return;const d=stories[activeStory];const wasChecking=storyChecking;stopSpeech();micError='';const r=discussStory(activeStory,text,storyChecking);storyChecking=r.checking;const right=wasChecking&&!r.checking&&r.en===d.feedback[0];storyResult={en:r.en,zh:r.zh,checking:r.checking,right};render();speak(r.en);}
+function storySelect(id){activeStory=id;storyStep=0;storyChecking=false;storyResult=null;storyTries=0;micError='';render();if(!textOnly&&stories[id])speak(stories[id].simple[0]);}
+function storyBack(){activeStory=null;storyStep=0;storyChecking=false;storyResult=null;storyTries=0;micError='';render();}
+function storyAnswer(text){if(!activeStory||!text.trim())return;const d=stories[activeStory];storyTries++;stopSpeech();micError='';const r=discussStory(activeStory,text,true);storyChecking=r.checking;const right=!r.checking&&r.en===d.feedback[0];storyResult={en:r.en,zh:r.zh,checking:r.checking,right};render();speak(r.en);if(right)setTimeout(storyCelebrate,400);}
 function storiesHub(){
- return `<section class="card stories"><p class="muted">选一个故事开始：听故事、学重点词、开口回答、回顾。每个故事都是一次独立的听说练习，随时可以玩。</p><div class="story-list">${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}</div></section>`;
+ return `<section class="card stories"><p class="muted">选一个故事开始：装好语言背包、进入冒险地图开口回答、翻看线索手记、最后冒险回顾。每个故事都是一次完整的听说冒险。</p><div class="story-list">${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}</div></section>`;
 }
 function storyDetail(){
  const d=stories[activeStory];
  const top=`<div class="story-top">${btn('← 故事列表','story-back','chip')}<span class="story-topic">${esc(d.topic)}</span></div>`;
  let body='';
  if(storyStep===0){
-  body=`<div class="story-narrative"><b>📜 听故事</b><p lang="en">${esc(d.simple[0])}</p><p>${esc(d.simple[1])}</p><div class="actions">${btn('🔊 播放提示语','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}${btn('下一步：学单词 →','story-step','primary','data-value="1"')}</div></div>`;
+  body=`<div class="story-prep"><b>▧ 语言背包</b><p class="muted">先认识本故事会遇到的词。点卡片听发音，冒险时也能回来查看。</p><div class="vocabgrid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div><div class="actions">${btn('下一个：冒险地图 →','story-step','primary','data-value="1"')}</div></div>`;
  } else if(storyStep===1){
-  body=`<div class="story-vocab"><b>🔑 重点词与短语</b><p lang="en">${esc(d.words[0])}</p><p>${esc(d.words[1])}</p></div><div class="story-terms"><b>🗂 点词卡可直接听发音</b><div class="term-grid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div></div><div class="actions">${btn('← 上一步','story-step','chip','data-value="0"')}${btn('下一步：开口答 →','story-step','primary','data-value="2"')}</div>`;
+  body=`<div class="story-map"><b>◈ 冒险地图</b><p class="muted">听故事，再用英语回答下面的问题。</p><div class="story-narrative"><p lang="en">${esc(d.simple[0])}</p><p>${esc(d.simple[1])}</p><div class="actions">${btn('🔊 播放故事','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}</div></div><div class="story-check"><b>📝 ${esc(d.check[1])}</b><p lang="en">${esc(d.check[0])}</p></div><div class="story-answer">${voicePanel('story')}<div class="actions">${voiceTriggerButton('story','🎙 开口回答')}</div>${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}<details class="typing-fallback" ${textOnly?'open':''}><summary>暂时无法开口？打字回答</summary><form id="story-talk"><label for="story-answer">用英语回答</label><div><input id="story-answer" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form></details>${storyResult?`<div class="story-feedback ${storyResult.right?'right':(storyResult.checking?'retry':'info')}"><b>${storyResult.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(storyResult.en)}</p><p>${esc(storyResult.zh)}</p><div class="actions">${btn('🔊 再听','story-listen','chip')}</div></div>`:'<small class="muted">听完故事，用英语回答上面的问题。</small>'}</div><div class="actions">${btn('← 语言背包','story-step','chip','data-value="0"')}</div></div>`;
  } else if(storyStep===2){
-  body=`<div class="story-check"><b>📝 理解检查</b><p lang="en">${esc(d.check[0])}</p><p>${esc(d.check[1])}</p></div><div class="story-answer"><div class="audio-prompt" aria-label="听力优先">🎧 <span>先听懂故事，再用英语回答</span><small>没听清？重听故事或慢速重听。</small></div>${voicePanel('story')}<div class="actions">${voiceTriggerButton('story','🎙 开口回答')}</div>${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}<details class="typing-fallback" ${textOnly?'open':''}><summary>暂时无法开口？打字回答</summary><form id="story-talk"><label for="story-answer">用英语回答理解检查题</label><div><input id="story-answer" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form></details>${storyResult?`<div class="story-feedback ${storyResult.right?'right':(storyResult.checking?'retry':'info')}"><b>${storyResult.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(storyResult.en)}</p><p>${esc(storyResult.zh)}</p><div class="actions">${btn('🔊 再听','story-listen','chip')}</div></div>`:'<small class="muted">用英语说说看：故事里发生了什么？按上面的问题回答即可。</small>'}</div><div class="actions">${btn('← 上一步','story-step','chip','data-value="1"')}${btn('🔊 再听故事','story-listen','chip')}</div>`;
+  body=`<div class="story-notebook"><b>▤ 线索手记</b><p class="muted">回顾一下今天学到的内容。</p><div class="story-narrative"><p lang="en">${esc(d.simple[0])}</p><p>${esc(d.simple[1])}</p><div class="actions">${btn('🔊 重听故事','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}</div></div><div class="vocabgrid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div><div class="actions">${btn('← 冒险地图','story-step','chip','data-value="1"')}${btn('下一个：冒险回顾 →','story-step','primary','data-value="3"')}</div></div>`;
  } else {
-  body=`<div class="story-review"><b>☆ 回顾</b><p>再听一遍，巩固今天学到的表达。</p><div class="actions">${btn('🔊 重听故事','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}</div><div class="story-vocab"><b>🔑 今天的重点词</b><p lang="en">${esc(d.words[0])}</p><p>${esc(d.words[1])}</p></div><div class="actions">${btn('← 回到听故事','story-step','chip','data-value="0"')}${btn('返回故事列表','story-back','primary')}</div></div>`;
+  const stars=storyTries<=4?3:storyTries<=8?2:1;
+  body=`<div class="story-review"><div class="eyebrow">STORY COMPLETE</div><div class="hero-icon">📖 🌟</div><h2>太棒了，你完成了《${esc(d.name)}》！</h2><p>你听懂了故事，说出了自己的理解。</p><div class="victory-stars" aria-label="评分 ${stars} 星">${'★'.repeat(stars)}<span class="dim">${'☆'.repeat(3-stars)}</span></div><div class="actions">${btn('🔊 重听故事','story-listen','primary')}${btn('🎉 重播庆祝','story-celebrate','secondary')}${btn('返回故事列表','story-back','chip')}</div></div>`;
  }
  return `<section class="card stories detail">${top}<h2>📖 ${esc(d.name)} 的故事</h2>${body}</section>`;
 }
@@ -138,8 +139,20 @@ function storiesView(){return activeStory?storyDetail():storiesHub(true);}
 function storiesAside(){return `<aside class="card coach-intro stories-aside"><div class="avatar">🎧</div><strong>听说小练习</strong><p>7 个日常场景，随时来练。</p><div class="story-tips"><small>🎧 先听故事，可常速或慢速重听</small><small>🗂 点词卡直接听发音</small><small>🎙 开口回答，也可以打字提交</small><small>💡 答错会给出提示，可以再试</small></div></aside>`;}
 function storyNav(){
  const home=btn('🏠 返回主页','story-back','home');
- const steps=[['listen','📜 听故事'],['words','🔑 学单词'],['game','🎙 开口答'],['review','☆ 回顾']];
+ const steps=[['prep','▧ 语言背包'],['map','◈ 冒险地图'],['notebook','▤ 线索手记'],['review','☆ 冒险回顾']];
  return `<nav class="nav story-nav" aria-label="本故事导航">${home}<span class="nav-sep" role="separator" aria-hidden="true"></span>${steps.map(([,label],i)=>btn((i<storyStep?'✓ ':'')+label,'story-step',i===storyStep?'active':'',`data-value="${i}"`)).join('')}</nav>`;
+}
+function storyCelebrate(){
+ if(document.querySelector('#victory'))return;
+ const d=stories[activeStory];const stars=storyTries<=4?3:storyTries<=8?2:1;
+ cancelVoice();
+ const el=document.createElement('dialog');el.id='victory';el.className='victory';el.setAttribute('aria-labelledby','victory-title');
+ el.innerHTML=`<div class="confetti" aria-hidden="true">${Array.from({length:48},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${(i%8)*.12}s;--turn:${i%2?720:-540}deg;--color:${['#f3c66a','#71c8b0','#f39898','#a4a5ea'][i%4]}"></i>`).join('')}</div><div class="victory-body"><div class="victory-banner">🏆 故事完成 · LEVEL CLEAR</div><div class="victory-seal" aria-hidden="true"><span>⭐</span><b>📖</b><span>⭐</span></div><div class="eyebrow">STORY COMPLETE</div><h2 id="victory-title">你讲出了《${esc(d.name)}》！</h2><p>任务完成 · 探索员，干得漂亮！</p><div class="victory-stars" aria-label="评分 ${stars} 星">${'★'.repeat(stars)}<span class="dim">${'☆'.repeat(3-stars)}</span></div><div class="victory-stats"><span>🎧 听故事</span><span>🎙 ${storyTries} 次开口</span></div><div class="actions"><button class="primary" id="victory-explore" autofocus>继续探索</button><button class="secondary" id="victory-review">冒险回顾</button></div><button class="chip" id="victory-listen">🔊 再听祝贺</button></div>`;
+ document.body.append(el);el.addEventListener('close',()=>{stopSpeech();el.remove();},{once:true});
+ el.querySelector('#victory-explore').onclick=()=>{el.close();storyStep=2;render();};
+ el.querySelector('#victory-review').onclick=()=>{el.close();storyStep=3;render();};
+ el.querySelector('#victory-listen').onclick=()=>speak('Great job! You finished the story!');
+ el.showModal();speak('Great job! You finished the story!');
 }
 function planBanner(){return `<div class="plan-banner"><span>👩🏻‍🚀</span><div><small>NOVA · 随时陪你</small><p>不知道下一步？听听教练的建议。</p></div>${btn('🔊 听下一步','coach-next','primary')}</div>`;}
 
