@@ -111,6 +111,12 @@
 .story-card{position:relative;display:grid;gap:6px;text-align:left;background:linear-gradient(180deg,#fff,#f7faf2);border:2px solid #e3ead9;border-radius:18px;padding:18px 16px;box-shadow:0 4px 0 #dde7d5;transition:transform .1s ease,box-shadow .1s ease,border-color .15s;animation:story-enter .3s ease-out}
 .story-card:hover{transform:translateY(-3px);border-color:#b9d3ae;box-shadow:0 8px 0 #cbdcc0,0 12px 24px #0c3a2814}
 .story-card:active{transform:translateY(2px);box-shadow:0 1px 0 #dde7d5}
+.story-card.main-story{background:linear-gradient(180deg,#fff,#eaf4e4);border-color:#8fbfa0;box-shadow:0 4px 0 #b5d4ba}
+.story-card.main-story:hover{border-color:#6fae8b;box-shadow:0 8px 0 #a3c9a8,0 12px 24px #0c3a2814}
+.story-card.main-story .story-topic{color:#2f7a4d}
+.story-card.main-story .story-go{background:#2f9466;color:#fff}
+.story-card.main-story:hover .story-go{background:#27855a}
+.story-card.main-story.done .story-topic{color:#78926b}
 .story-topic{font-size:10px;font-weight:800;letter-spacing:2px;color:#78926b}
 .story-name{font-size:17px;font-weight:800;color:#244a3a}
 .story-hook{font-size:12px;line-height:1.6;color:#617466;min-height:2.6em}
