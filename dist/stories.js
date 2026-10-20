@@ -1,19 +1,10 @@
 // 英语日常故事内容模块（standalone content module）
 //
-// 数据结构沿用 guidance.js 中的 `discussions` 形态，便于日后接入 App：
-//   id:        故事键
-//   topic:     主题分类（中文）
-//   name:      故事里的关键人物，用于“和教练讨论”时的称呼
-//   simple:    [英文叙述, 中文叙述] —— 短小的日常生活片段
-//   words:     [英文释义, 中文释义] —— 2 个重点词/短语
-//   terms:     { 词: [英文, 中文] } —— 可在对话中追问的词汇表（可选）
-//   check:     [英文问题, 中文问题] —— 理解检查题
-//   answer:    正则 —— 匹配“答对了”的关键词
-//   feedback:  [英文, 中文] —— 答对时的鼓励
-//   wrong:     [英文, 中文] —— 答错时再听一次的提示（可选）
-//
-// discussStory(id, text, checking) 与 discussClue 风格一致，但不含 mission 门控，
-// 可直接用于“日常故事”练习模式。
+// stories[id]：每篇故事的「听说练习」数据（语言背包 / 教练讨论 / 线索手记 / 冒险回顾）。
+// worlds[id]：每篇故事的「地图冒险」数据，参考 Pip 主线范式——
+//   有地图、有教练(Nova)、有任务(steps)、有交互(asks)、有情节(resolve)。
+//   坐标 x:0-1000, y:0-600；npcs 为场景人物；coach 为同行教练引导；
+//   steps 为任务清单；npc.asks 为该人物处的交互（选择题或打字答），答对即完成对应 step。
 
 const stories = {
   pip: {
@@ -82,7 +73,7 @@ const stories = {
 
   restaurant: {
     topic: '餐厅点餐',
-    name: 'Waiter',
+    name: 'Lily',
     simple: [
       'Lily goes to a café. She orders a chicken sandwich and says “no onions, please”. She also asks for a glass of water.',
       'Lily 来到一家咖啡馆。她点了一个鸡肉三明治，并说“请不要放洋葱”。她还点了一杯水。'
@@ -114,7 +105,7 @@ const stories = {
 
   shopping: {
     topic: '购物',
-    name: 'Shop assistant',
+    name: 'Jack',
     simple: [
       'Jack sees a blue cap in a shop. He asks the shop assistant how much it is. She says 25 yuan. Jack tries size M and it fits.',
       'Jack 在店里看到一顶蓝色帽子。他问店员多少钱，店员说 25 元。Jack 试了 M 码，很合适。'
@@ -146,7 +137,7 @@ const stories = {
 
   directions: {
     topic: '问路与出行',
-    name: 'Mr. Chen',
+    name: 'Anna',
     simple: [
       'Anna wants to visit the museum. She asks a man for help. He says: take Bus 5, get off at the library stop, and the museum is next to it.',
       'Anna 想去博物馆。她向一位男士问路。他说：坐 5 路公交，在图书馆站下车，博物馆就在旁边。'
@@ -280,47 +271,170 @@ export function discussStory(id, text, checking = false) {
   };
 }
 
-// 每篇故事的可探索场景：在校园/教室/咖啡馆/商店/街道/公园里走动，走近人物对话，收集线索。
-// 集齐所有人物线索即完成本次冒险。坐标 x:0-1000, y:0-600。
+// ===== 地图冒险数据（参考 Pip 主线：地图 + 教练 + 任务 + 交互 + 情节）=====
+// coach     : 同行教练 Nova 的引导（开场 intro + 逐步提示 hints）
+// steps     : 任务清单，按顺序完成；npc.asks 答对即点亮对应 step
+// npcs      : 场景人物，meet 为旁白/对话，asks 为交互（choices 选择题 或 expect 打字答）
+// resolve   : 所有任务完成后触发的情节收尾
 export const worlds = {
   pip: { scene:'campus', goal:{en:'Walk around the campus and ask friends about the missing Pip.', zh:'在校园里询问同学，找到走失的 Pip。'},
     npcs:[
-      {id:'mia', name:'Mia', icon:'👩‍💼', x:140, y:300, line:['Pip is a small white robot with a blue light. Ask Ben at the library.','Pip 是白色小机器人，有一盏蓝灯。去图书馆问问 Ben。']},
-      {id:'ben', name:'Ben', icon:'👨‍🏫', x:430, y:250, line:['Pip went past the library, towards the art room.','Pip 经过图书馆，朝美术教室走去。']},
-      {id:'amy', name:'Amy', icon:'👩‍🎨', x:790, y:300, line:['We carried a shiny decoration to the greenhouse. Pip followed us!','我们把闪亮的装饰物搬到温室，Pip 跟着我们！']},
-      {id:'leo', name:'Leo', icon:'👨‍🔧', x:660, y:420, line:['The record says blue light flashing. Pip flashes blue when it follows bright things.','记录显示蓝灯闪烁。Pip 追随明亮的东西时会闪蓝灯。']},
-      {id:'pip', name:'Pip', icon:'🤖', x:500, y:140, line:['You found me! Thank you for your help!','你找到我了！谢谢你的帮助！']}
+      {id:'mia', name:'Mia', icon:'👩‍💼', x:140, y:300, meet:{en:'Pip is a small white robot with a blue light. Ask Ben at the library.', zh:'Pip 是白色小机器人，有一盏蓝灯。去图书馆问问 Ben。'}},
+      {id:'ben', name:'Ben', icon:'👨‍🏫', x:430, y:250, meet:{en:'Pip went past the library, towards the art room.', zh:'Pip 经过图书馆，朝美术教室走去。'}},
+      {id:'amy', name:'Amy', icon:'👩‍🎨', x:790, y:300, meet:{en:'We carried a shiny decoration to the greenhouse. Pip followed us!', zh:'我们把闪亮的装饰物搬到温室，Pip 跟着我们！'}},
+      {id:'leo', name:'Leo', icon:'👨‍🔧', x:660, y:420, meet:{en:'The record says blue light flashing. Pip flashes blue when it follows bright things.', zh:'记录显示蓝灯闪烁。Pip 追随明亮的东西时会闪蓝灯。'}},
+      {id:'pip', name:'Pip', icon:'🤖', x:500, y:140, meet:{en:'You found me! Thank you for your help!', zh:'你找到我了！谢谢你的帮助！'}}
     ]},
-  school: { scene:'classroom', goal:{en:'Talk to Tom and Lisa about the maths book Tom forgot.', zh:'和 Tom、Lisa 聊聊 Tom 忘带的数学课本。'},
+
+  school: { scene:'classroom', goal:{en:'Help Tom borrow Lisa’s maths book during the break.', zh:'课间帮 Tom 向 Lisa 借到数学课本。'},
+    coach:{ name:'Nova', icon:'👩🏻‍🚀',
+      intro:{en:'Tom forgot his maths book at home. Your job: help him borrow Lisa’s book politely, then say thanks.', zh:'Tom 把数学课本忘在家里了。你的任务：帮他礼貌地向 Lisa 借书，再替他说声谢谢。'},
+      hints:[ {en:'First, walk to Tom and find out what he needs.', zh:'先走到 Tom 身边，听清他需要什么。'},
+              {en:'At Lisa, use “Can I borrow … please?” to ask nicely.', zh:'到 Lisa 身边，用 “Can I borrow … please?” 礼貌开口。'},
+              {en:'When Lisa says yes, help Tom say “Thank you! I will give it back.”', zh:'Lisa 答应后，帮 Tom 说 “Thank you! I will give it back.”'} ] },
+    steps:[ {id:'tom',label:'听 Tom 的困难',icon:'🧒'}, {id:'borrow',label:'帮 Tom 向 Lisa 借书',icon:'📚'}, {id:'thanks',label:'Tom 道谢',icon:'🙏'} ],
     npcs:[
-      {id:'tom', name:'Tom', icon:'🧒', x:300, y:250, line:['I forgot my maths book at home. Can I borrow yours, Lisa?','我把数学课本忘在家里了。Lisa，能借你的给我吗？']},
-      {id:'lisa', name:'Lisa', icon:'👧', x:700, y:380, line:['Sure! Here is my maths book. You can borrow it.','当然！这是我的数学课本，借给你吧。']}
-    ]},
-  restaurant: { scene:'cafe', goal:{en:'Help Lily order her food at the cafe.', zh:'在咖啡馆帮 Lily 点餐。'},
+      {id:'tom', name:'Tom', icon:'🧒', x:300, y:250, step:'tom',
+        meet:{en:'I forgot my maths book at home. Can I sit with you, Lisa?', zh:'我把数学课本忘在家里了。Lisa，我能和你坐一起吗？'},
+        asks:[ {q:{en:'Tom 遇到了什么麻烦？', zh:'Tom 遇到了什么麻烦？'},
+          choices:[ {text:'他把数学课本忘在家里了', reply:{en:'Right, he forgot his maths book.', zh:'对，他忘了数学课本。'}, correct:true, step:'tom'},
+                    {text:'他没带午餐', reply:{en:'No, it is about a book, not lunch.', zh:'不对，是书的问题，不是午餐。'}, correct:false} ] } ] },
+      {id:'lisa', name:'Lisa', icon:'👧', x:700, y:380, step:'borrow',
+        meet:{en:'Sure! Here is my maths book. You can borrow it.', zh:'当然！这是我的数学课本，借给你吧。'},
+        asks:[
+          {q:{en:'帮 Tom 向 Lisa 借书，怎么说最礼貌？', zh:'帮 Tom 向 Lisa 借书，怎么说最礼貌？'},
+            choices:[ {text:'Can I borrow your maths book, please?', reply:{en:'Of course! Here you are.', zh:'当然！给你。'}, correct:true, step:'borrow'},
+                      {text:'Give me your book.', reply:{en:'That sounds rude. Try “Can I borrow … please?”.', zh:'这样太不礼貌了。试试 “Can I borrow … please?”。'}, correct:false} ] },
+          {q:{en:'Lisa 借出了课本，Tom 该怎么说？', zh:'Lisa 借出了课本，Tom 该怎么说？'},
+            choices:[ {text:'Thank you! I will give it back tomorrow.', reply:{en:'You are welcome!', zh:'不客气！'}, correct:true, step:'thanks'},
+                      {text:'It is mine now.', reply:{en:'That is not polite. Say thank you and promise to return it.', zh:'这样不礼貌。应该说谢谢并答应归还。'}, correct:false} ] } ] }
+    ],
+    resolve:{en:'Great! Tom borrowed the maths book and said thanks. Class can begin.', zh:'太好了！Tom 借到了数学课本并道了谢，上课没问题了。'} },
+
+  restaurant: { scene:'cafe', goal:{en:'Help Lily order her food at the cafe.', zh:'在咖啡馆帮 Lily 点好她想吃的餐。'},
+    coach:{ name:'Nova', icon:'👩🏻‍🚀',
+      intro:{en:'Lily wants to order but is shy in English. Help her tell the waiter: a chicken sandwich, no onions, and a glass of water.', zh:'Lily 想点餐但不太敢说英语。你帮她告诉服务员：鸡肉三明治、不要洋葱、再加一杯水。'},
+      hints:[ {en:'First, listen to Lily — what does she want?', zh:'先听 Lily 说，她想点什么？'},
+              {en:'At the waiter, say the order clearly: sandwich, no onions, water.', zh:'到服务员面前，清楚地说出：三明治、不要洋葱、水。'},
+              {en:'Confirm: “No onions, please.” so the order is right.', zh:'确认一句 “No onions, please.”，保证订单没错。'} ] },
+    steps:[ {id:'lily',label:'听 Lily 想点什么',icon:'🗣'}, {id:'order',label:'帮 Lily 点餐',icon:'🍽'}, {id:'confirm',label:'确认订单',icon:'✅'} ],
     npcs:[
-      {id:'waiter', name:'Waiter', icon:'🧑‍🍳', x:280, y:240, line:['Welcome! What would you like to order?','欢迎光临！您想点些什么？']},
-      {id:'lily', name:'Lily', icon:'👩', x:700, y:360, line:['A chicken sandwich, no onions please, and a glass of water.','一个鸡肉三明治，请不要放洋葱，再来一杯水。']}
-    ]},
-  shopping: { scene:'shop', goal:{en:'Find the blue cap and learn its price.', zh:'找到那顶蓝帽子，了解它的价格。'},
+      {id:'lily', name:'Lily', icon:'👩', x:300, y:250, step:'lily',
+        meet:{en:'I’d like a chicken sandwich, no onions please, and a glass of water.', zh:'我想要一个鸡肉三明治，请不要放洋葱，再来一杯水。'},
+        asks:[ {q:{en:'Lily 想点什么？', zh:'Lily 想点什么？'},
+          choices:[ {text:'鸡肉三明治（不要洋葱）+ 一杯水', reply:{en:'Yes! A chicken sandwich, no onions, and water.', zh:'对！鸡肉三明治不要洋葱，再加一杯水。'}, correct:true, step:'lily'},
+                    {text:'牛肉汉堡 + 可乐', reply:{en:'No, Lily wants a chicken sandwich, no onions, and water.', zh:'不对，Lily 要的是鸡肉三明治、不要洋葱、一杯水。'}, correct:false} ] } ] },
+      {id:'waiter', name:'Waiter', icon:'🧑‍🍳', x:700, y:380, step:'order',
+        meet:{en:'Welcome! What would you like to order?', zh:'欢迎光临！您想点些什么？'},
+        asks:[
+          {q:{en:'帮 Lily 点餐，怎么说？', zh:'帮 Lily 点餐，怎么说？'},
+            choices:[ {text:'A chicken sandwich, no onions, and a glass of water.', reply:{en:'Got it — chicken sandwich, no onions, and water.', zh:'收到——鸡肉三明治、不要洋葱、一杯水。'}, correct:true, step:'order'},
+                      {text:'A beef burger and a cola.', reply:{en:'That is not what Lily wanted. Try the chicken sandwich, no onions, water.', zh:'那不是 Lily 想要的。试试鸡肉三明治、不要洋葱、水。'}, correct:false} ] },
+          {q:{en:'服务员准备下单，确认一下：要洋葱吗？', zh:'服务员准备下单，确认一下：要洋葱吗？'},
+            choices:[ {text:'No onions, please.', reply:{en:'Perfect, no onions. Your order is set!', zh:'好的，不要洋葱。订单确认！'}, correct:true, step:'confirm'},
+                      {text:'Yes, onions.', reply:{en:'Lily asked for no onions. Say “No onions, please.”', zh:'Lily 说了不要洋葱。请说 “No onions, please.”。'}, correct:false} ] } ] }
+    ],
+    resolve:{en:'Order up! Lily’s chicken sandwich, no onions, and a glass of water. Enjoy your meal!', zh:'出餐啦！Lily 的鸡肉三明治（不要洋葱）和一杯水。用餐愉快！'} },
+
+  shopping: { scene:'shop', goal:{en:'Help Jack find the blue cap, learn the price, and try it on.', zh:'帮 Jack 找到蓝帽子、问清价格并试戴。'},
+    coach:{ name:'Nova', icon:'👩🏻‍🚀',
+      intro:{en:'Jack likes a blue cap. Help him ask the price in English, then try size M and say it fits.', zh:'Jack 喜欢一顶蓝帽子。你帮他用地道英语问价格，再试 M 码并说合身。'},
+      hints:[ {en:'Listen to Jack — what does he like?', zh:'先听 Jack 说，他看中了什么？'},
+              {en:'Ask the assistant: “How much is the blue cap?”', zh:'问店员：“How much is the blue cap?”'},
+              {en:'After trying size M, say “Size M fits me well.”', zh:'试过 M 码后，说 “Size M fits me well.”'} ] },
+    steps:[ {id:'jack',label:'听 Jack 看中什么',icon:'🧒'}, {id:'price',label:'问清价格',icon:'💰'}, {id:'size',label:'试戴并确认合身',icon:'👒'} ],
     npcs:[
-      {id:'assistant', name:'Shop assistant', icon:'🧑‍💼', x:300, y:240, line:['This blue cap is 25 yuan. Would you like to try size M?','这顶蓝帽子 25 元。要试一下 M 码吗？']},
-      {id:'jack', name:'Jack', icon:'🧒', x:700, y:360, line:['I like this blue cap. Size M fits me well.','我喜欢这顶蓝帽子，M 码我戴着正合适。']}
-    ]},
-  directions: { scene:'street', goal:{en:'Ask the way to the museum.', zh:'问去博物馆的路。'},
+      {id:'jack', name:'Jack', icon:'🧒', x:300, y:250, step:'jack',
+        meet:{en:'I like this blue cap. How much is it?', zh:'我喜欢这顶蓝帽子。多少钱呢？'},
+        asks:[ {q:{en:'Jack 看中了什么？', zh:'Jack 看中了什么？'},
+          choices:[ {text:'一顶蓝色帽子', reply:{en:'Yes, a blue cap!', zh:'对，一顶蓝帽子！'}, correct:true, step:'jack'},
+                    {text:'一双蓝色球鞋', reply:{en:'No, it is a cap, not shoes.', zh:'不对，是帽子不是鞋。'}, correct:false} ] } ] },
+      {id:'assistant', name:'Shop assistant', icon:'🧑‍💼', x:700, y:380, step:'price',
+        meet:{en:'This blue cap is 25 yuan. Would you like to try size M?', zh:'这顶蓝帽子 25 元。要试一下 M 码吗？'},
+        asks:[
+          {q:{en:'帮 Jack 问价格，怎么说？', zh:'帮 Jack 问价格，怎么说？'},
+            choices:[ {text:'How much is the blue cap?', reply:{en:'It is 25 yuan.', zh:'25 元。'}, correct:true, step:'price'},
+                      {text:'I want to buy it.', reply:{en:'First ask the price: “How much is the blue cap?”', zh:'先问价格：“How much is the blue cap?”'}, correct:false} ] },
+          {q:{en:'Jack 试了 M 码，怎么确认合身？', zh:'Jack 试了 M 码，怎么确认合身？'},
+            choices:[ {text:'Size M fits me well.', reply:{en:'Great choice! It suits you.', zh:'选得好！很适合你。'}, correct:true, step:'size'},
+                      {text:'It is too small.', reply:{en:'M is too small? Try L, or say it fits if it is right.', zh:'M 太小？可以试 L，或者合适就说合身。'}, correct:false} ] } ] }
+    ],
+    resolve:{en:'Jack buys the blue cap for 25 yuan. Size M fits perfectly!', zh:'Jack 花 25 元买下蓝帽子，M 码刚刚好！'} },
+
+  directions: { scene:'street', goal:{en:'Help Anna ask the way to the museum.', zh:'帮 Anna 问清去博物馆的路。'},
+    coach:{ name:'Nova', icon:'👩🏻‍🚀',
+      intro:{en:'Anna wants to visit the museum but is lost. Help her ask a passer-by for directions, then repeat the route to confirm.', zh:'Anna 想去博物馆但不认路。你帮她向路人问路，再复述路线确认听懂了。'},
+      hints:[ {en:'Listen to Anna — where does she want to go?', zh:'先听 Anna 说，她要去哪儿？'},
+              {en:'Ask Mr. Chen: “Excuse me, how can I get to the museum?”', zh:'问陈先生：“Excuse me, how can I get to the museum?”'},
+              {en:'Repeat the route: Bus 5, get off at the library stop.', zh:'复述路线：坐 5 路，在图书馆站下车。'} ] },
+    steps:[ {id:'anna',label:'听 Anna 想去哪',icon:'👩'}, {id:'way',label:'向路人问路',icon:'🧭'}, {id:'repeat',label:'复述路线确认',icon:'🗺'} ],
     npcs:[
-      {id:'chen', name:'Mr. Chen', icon:'🧓', x:300, y:250, line:['Take Bus 5, get off at the library stop. The museum is next to it.','坐 5 路公交，在图书馆站下车，博物馆就在旁边。']},
-      {id:'anna', name:'Anna', icon:'👩', x:680, y:380, line:['I want to visit the museum. Could you tell me the way?','我想去博物馆，能告诉我怎么走吗？']}
-    ]},
-  weather: { scene:'park', goal:{en:'Plan a sunny-day outing with friends.', zh:'和朋友们计划一个晴天出游。'},
+      {id:'anna', name:'Anna', icon:'👩', x:300, y:250, step:'anna',
+        meet:{en:'I want to visit the museum. Could you tell me the way?', zh:'我想去博物馆，能告诉我怎么走吗？'},
+        asks:[ {q:{en:'Anna 想去哪里？', zh:'Anna 想去哪里？'},
+          choices:[ {text:'博物馆', reply:{en:'Yes, the museum!', zh:'对，博物馆！'}, correct:true, step:'anna'},
+                    {text:'图书馆', reply:{en:'No, she wants the museum, not the library.', zh:'不对，她要去博物馆，不是图书馆。'}, correct:false} ] } ] },
+      {id:'chen', name:'Mr. Chen', icon:'🧓', x:700, y:380, step:'way',
+        meet:{en:'Take Bus 5, get off at the library stop. The museum is next to it.', zh:'坐 5 路公交，在图书馆站下车，博物馆就在旁边。'},
+        asks:[
+          {q:{en:'帮 Anna 问去博物馆的路，怎么说？', zh:'帮 Anna 问去博物馆的路，怎么说？'},
+            choices:[ {text:'Excuse me, how can I get to the museum?', reply:{en:'Take Bus 5, get off at the library stop.', zh:'坐 5 路，在图书馆站下车。'}, correct:true, step:'way'},
+                      {text:'Where is the bus?', reply:{en:'Ask for the museum: “how can I get to the museum?”', zh:'要问博物馆：“how can I get to the museum?”'}, correct:false} ] },
+          {q:{en:'复述一下路线，确认你听懂了？', zh:'复述一下路线，确认你听懂了？'},
+            choices:[ {text:'坐 5 路公交，图书馆站下车，博物馆在旁边', reply:{en:'Exactly right! You understood perfectly.', zh:'完全正确！你听得很准。'}, correct:true, step:'repeat'},
+                      {text:'坐 5 路到公园', reply:{en:'Not the park — get off at the library stop, museum next to it.', zh:'不是公园——在图书馆站下车，博物馆在旁边。'}, correct:false} ] } ] }
+    ],
+    resolve:{en:'Anna now knows: Bus 5, library stop, museum next door. Off she goes!', zh:'Anna 现在知道了：5 路公交、图书馆站下车、博物馆就在旁边。出发吧！'} },
+
+  weather: { scene:'park', goal:{en:'Help Bob invite Mary to the park and bring a kite.', zh:'帮 Bob 邀请 Mary 去公园，并带上风筝。'},
+    coach:{ name:'Nova', icon:'👩🏻‍🚀',
+      intro:{en:'It is sunny. Bob wants to invite Mary to the park and fly a kite. Help him invite her in English, then confirm the kite.', zh:'天气晴朗。Bob 想邀请 Mary 去公园放风筝。你帮他用英语邀请，再确认带上风筝。'},
+      hints:[ {en:'Listen to Bob — what is the plan?', zh:'先听 Bob 说，他的打算是什么？'},
+              {en:'Invite Mary: “Would you like to go to the park with me?”', zh:'邀请 Mary：“Would you like to go to the park with me?”'},
+              {en:'Mary wants a kite — confirm “Let’s bring a kite.”', zh:'Mary 想带风筝——确认 “Let’s bring a kite.”'} ] },
+    steps:[ {id:'bob',label:'听 Bob 的打算',icon:'🧑'}, {id:'invite',label:'帮 Bob 邀请 Mary',icon:'☀️'}, {id:'kite',label:'确认带风筝',icon:'🪁'} ],
     npcs:[
-      {id:'bob', name:'Bob', icon:'🧑', x:300, y:250, line:['It is sunny. Would you like to go to the park with me, Mary?','天气晴朗。Mary，和我一起去公园好吗？']},
-      {id:'mary', name:'Mary', icon:'👧', x:680, y:380, line:['Yes! Let us bring a kite to the park.','好呀！我们带一只风筝去公园吧。']}
-    ]},
-  hobbies: { scene:'sports', goal:{en:'Invite a friend to swim together.', zh:'约朋友一起去游泳。'},
+      {id:'bob', name:'Bob', icon:'🧑', x:300, y:250, step:'bob',
+        meet:{en:'It is sunny. Mary, would you like to go to the park with me?', zh:'天气晴朗。Mary，和我一起去公园好吗？'},
+        asks:[ {q:{en:'天气怎样？Bob 想做什么？', zh:'天气怎样？Bob 想做什么？'},
+          choices:[ {text:'晴天，约去公园', reply:{en:'Yes, a sunny-day park trip!', zh:'对，晴天去公园！'}, correct:true, step:'bob'},
+                    {text:'下雨，待在家', reply:{en:'No, it is sunny, not rainy.', zh:'不对，是晴天不是雨天。'}, correct:false} ] } ] },
+      {id:'mary', name:'Mary', icon:'👧', x:700, y:380, step:'invite',
+        meet:{en:'Yes! Let us bring a kite to the park.', zh:'好呀！我们带一只风筝去公园吧。'},
+        asks:[
+          {q:{en:'帮 Bob 邀请 Mary，怎么说？', zh:'帮 Bob 邀请 Mary，怎么说？'},
+            choices:[ {text:'Mary, would you like to go to the park with me?', reply:{en:'Sure! I’d love to.', zh:'好呀！我很乐意。'}, correct:true, step:'invite'},
+                      {text:'Mary, go home.', reply:{en:'That is not an invitation. Try “Would you like to go … with me?”', zh:'那不是邀请。试试 “Would you like to go … with me?”'}, correct:false} ] },
+          {q:{en:'Mary 想带什么？你帮 Bob 确认。', zh:'Mary 想带什么？你帮 Bob 确认。'},
+            choices:[ {text:'带一只风筝', reply:{en:'Great, a kite for the windy park!', zh:'太好了，公园有风正适合放风筝！'}, correct:true, step:'kite'},
+                      {text:'带一本书', reply:{en:'Mary wants a kite, not a book.', zh:'Mary 想带风筝，不是书。'}, correct:false} ] } ] }
+    ],
+    resolve:{en:'Mary said yes. Sunny park, a kite, and good friends — perfect!', zh:'Mary 答应了。晴朗的公园、一只风筝、好朋友——完美！'} },
+
+  hobbies: { scene:'sports', goal:{en:'Help Tim invite Sue to swim together on Sunday.', zh:'帮 Tim 约 Sue 周日一起去游泳。'},
+    coach:{ name:'Nova', icon:'👩🏻‍🚀',
+      intro:{en:'Tim’s favourite sport is swimming. He wants to invite Sue on Sunday. Help him invite her, even though she likes basketball.', zh:'Tim 最喜欢游泳，想约 Sue 周日一起。你帮他用英语邀请，尽管 Sue 喜欢篮球。'},
+      hints:[ {en:'Listen to Tim — what sport does he love?', zh:'先听 Tim 说，他最喜欢什么运动？'},
+              {en:'Invite Sue: “Would you like to swim with me on Sunday?”', zh:'邀请 Sue：“Would you like to swim with me on Sunday?”'},
+              {en:'Sue likes basketball but will try — confirm she says yes.', zh:'Sue 喜欢篮球但愿意尝试——确认她答应了。'} ] },
+    steps:[ {id:'tim',label:'听 Tim 的爱好',icon:'🧒'}, {id:'invite',label:'帮 Tim 邀请 Sue',icon:'🏊'}, {id:'join',label:'Sue 答应尝试',icon:'🤝'} ],
     npcs:[
-      {id:'tim', name:'Tim', icon:'🧒', x:300, y:250, line:['My favourite sport is swimming. Will you swim with me on Sunday?','我最喜欢的运动是游泳。周日你愿意和我一起去游吗？']},
-      {id:'sue', name:'Sue', icon:'👧', x:680, y:380, line:['I like basketball, but I will try swimming with you!','我喜欢篮球，不过我愿意和你试试游泳！']}
-    ]}
+      {id:'tim', name:'Tim', icon:'🧒', x:300, y:250, step:'tim',
+        meet:{en:'My favourite sport is swimming. Will you swim with me on Sunday?', zh:'我最喜欢游泳。周日你愿意和我一起去游吗？'},
+        asks:[ {q:{en:'Tim 最喜欢什么运动？', zh:'Tim 最喜欢什么运动？'},
+          choices:[ {text:'游泳', reply:{en:'Yes, swimming!', zh:'对，游泳！'}, correct:true, step:'tim'},
+                    {text:'篮球', reply:{en:'No, Tim likes swimming, not basketball.', zh:'不对，Tim 喜欢游泳不是篮球。'}, correct:false} ] } ] },
+      {id:'sue', name:'Sue', icon:'👧', x:700, y:380, step:'invite',
+        meet:{en:'I like basketball, but I will try swimming with you!', zh:'我喜欢篮球，不过我愿意和你试试游泳！'},
+        asks:[
+          {q:{en:'帮 Tim 邀请 Sue，怎么说？', zh:'帮 Tim 邀请 Sue，怎么说？'},
+            choices:[ {text:'Sue, would you like to swim with me on Sunday?', reply:{en:'I like basketball, but I will try!', zh:'我喜欢篮球，不过我愿意试试！'}, correct:true, step:'invite'},
+                      {text:'Sue, play basketball.', reply:{en:'Tim wants to swim, not play basketball. Invite her to swim.', zh:'Tim 想游泳不是打篮球。邀请她去游泳。'}, correct:false} ] },
+          {q:{en:'Sue 喜欢篮球，但她愿意怎样？', zh:'Sue 喜欢篮球，但她愿意怎样？'},
+            choices:[ {text:'愿意试试游泳', reply:{en:'Wonderful! See you on Sunday.', zh:'太好了！周日见。'}, correct:true, step:'join'},
+                      {text:'拒绝了他', reply:{en:'No, Sue says yes to trying swimming.', zh:'不对，Sue 答应尝试游泳。'}, correct:false} ] } ] }
+    ],
+    resolve:{en:'Sue said yes to swimming. Sunday swim, here we come!', zh:'Sue 答应去游泳了。周日泳池见！'} }
 };
 
 export { stories };
