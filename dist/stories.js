@@ -63,8 +63,87 @@ const stories = {
       forgot: ['Forgot means you did not remember something.', 'forgot 表示忘记。'],
       borrow: ['Borrow means take something and return it later.', 'borrow 表示借入、以后归还。'],
       lend: ['Lend means give something to someone for a while.', 'lend 表示把东西借给别人。'],
-      break: ['Break is a short rest between classes.', 'break 是课间休息。']
+      break: ['Break is a short rest between classes.', 'break 是课间休息。'],
+      thank: ['Thank means to say you are grateful.', 'thank 表示感谢、道谢。'],
+      tomorrow: ['Tomorrow is the day after today.', 'tomorrow 表示明天。']
     },
+    scenes: [
+      {
+        title: '第 1 幕 · 课本不见了',
+        icon: '🎒',
+        narration: [
+          'It is the morning break. Tom opens his bag and looks inside. His maths book is not there. He left it at home. The maths class starts in five minutes.',
+          '课间休息时，Tom 打开书包翻找。数学课本不在里面——他把它忘在家里了。还有五分钟就要上数学课。'
+        ],
+        words: ['forgot', 'break'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['What is Tom’s problem?', 'Tom 遇到了什么麻烦？'],
+            options: [
+              { en: 'He forgot his maths book at home.', zh: '他把数学课本忘在家里了。', right: true, reply: ['Yes! Tom forgot his maths book at home.', '对！Tom 把数学课本忘在家里了。'] },
+              { en: 'He lost his pencil case.', zh: '他丢了笔袋。', reply: ['Not quite. Listen again: his maths book is not in his bag.', '不完全对。再听一次：他的数学课本不在书包里。'] },
+              { en: 'He is late for school.', zh: '他上学迟到了。', reply: ['Not quite. The problem is the missing maths book.', '不完全对。问题在于数学课本不见了。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 2 幕 · 向 Lisa 开口',
+        icon: '🙋',
+        narration: [
+          'Tom sees his classmate Lisa. Her maths book is on the desk. Tom thinks: maybe I can borrow it. But he must ask politely.',
+          'Tom 看到同学 Lisa。她的数学课本在桌上。Tom 想：也许我能借来用一下。但他必须礼貌地开口。'
+        ],
+        words: ['borrow', 'lend'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['Help Tom ask Lisa politely.', '帮 Tom 礼貌地向 Lisa 借课本。'],
+            model: 'Can I borrow your maths book, please?',
+            match: /borrow|lend|book/i,
+            reply: ['Yes, of course. Here you are.', '当然可以，给你。'],
+            wrong: ['Try using "borrow": Can I borrow your maths book, please?', '试试用 borrow 来问：Can I borrow your maths book, please?']
+          },
+          {
+            type: 'choose',
+            prompt: ['Does Lisa lend the book to Tom?', 'Lisa 把课本借给 Tom 了吗？'],
+            options: [
+              { en: 'Yes, she lends it to him.', zh: '是的，她借给他了。', right: true, reply: ['Yes! Lisa lends Tom her maths book.', '对！Lisa 把数学课本借给了 Tom。'] },
+              { en: 'No, she says no.', zh: '没有，她拒绝了。', reply: ['Not quite. Listen again: Lisa is happy to help.', '不完全对。再听一次：Lisa 很乐意帮忙。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 3 幕 · 道谢与归还',
+        icon: '🤝',
+        narration: [
+          'Lisa lends Tom her maths book. Tom says thank you and promises to give it back tomorrow. Lisa smiles: "Don’t forget again!" They both laugh.',
+          'Lisa 把数学课本借给 Tom。Tom 道谢，并承诺明天归还。Lisa 笑着说：“别再忘了！”两人都笑了。'
+        ],
+        words: ['lend', 'thank', 'tomorrow'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['How does Tom thank Lisa?', 'Tom 该怎么感谢 Lisa？'],
+            model: 'Thank you! I will give it back tomorrow.',
+            match: /thank|thanks|give.*back|return/i,
+            reply: ['You are welcome. See you tomorrow!', '不客气，明天见！'],
+            wrong: ['Start with "Thank you", then say when you will give it back.', '用 Thank you 开头，再说什么时候归还。']
+          },
+          {
+            type: 'choose',
+            prompt: ['When will Tom give the book back?', 'Tom 什么时候归还课本？'],
+            options: [
+              { en: 'Tomorrow.', zh: '明天。', right: true, reply: ['Yes! He will give it back tomorrow.', '对！他明天归还。'] },
+              { en: 'Next week.', zh: '下星期。', reply: ['Not quite. Listen again: he promises to give it back tomorrow.', '不完全对。再听一次：他承诺明天归还。'] },
+              { en: 'He never gives it back.', zh: '他再也不还了。', reply: ['Not quite. Borrow means you must give it back.', '不完全对。borrow 借入是要归还的。'] }
+            ]
+          }
+        ]
+      }
+    ],
     check: [
       'What did Tom forget, and did Lisa lend it to him?',
       'Tom 忘了什么？Lisa 借给他了吗？'
@@ -97,6 +176,83 @@ const stories = {
       water: ['A glass of water is a drink with no colour or taste.', 'a glass of water 是一杯水。'],
       sandwich: ['A sandwich is food between two pieces of bread.', 'sandwich 是夹在面包里的食物，即三明治。']
     },
+    scenes: [
+      {
+        title: '第 1 幕 · 坐下点餐',
+        icon: '🍽️',
+        narration: [
+          'Lily sits down at a table in the café. A waiter comes with a smile: "Welcome! What would you like to order?" Lily is hungry and looks at the menu.',
+          'Lily 在咖啡馆坐下。服务员微笑着走来：“欢迎光临！您想点些什么？”Lily 有点饿，看看菜单。'
+        ],
+        words: ['order', 'sandwich'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['Help Lily tell the waiter what she wants.', '帮 Lily 告诉服务员她想吃什么。'],
+            model: 'I would like a chicken sandwich, please.',
+            match: /chicken|sandwich|would like|order/i,
+            reply: ['Good choice. Anything to drink?', '好选择。要喝的吗？'],
+            wrong: ['Try: I would like a chicken sandwich, please.', '试试这样说：I would like a chicken sandwich, please.']
+          },
+          {
+            type: 'choose',
+            prompt: ['What sandwich does Lily want?', 'Lily 想要什么三明治？'],
+            options: [
+              { en: 'A chicken sandwich.', zh: '鸡肉三明治。', right: true, reply: ['Yes! She orders a chicken sandwich.', '对！她点了鸡肉三明治。'] },
+              { en: 'A beef sandwich.', zh: '牛肉三明治。', reply: ['Not quite. Listen again: it is a chicken sandwich.', '不完全对。再听一次：是鸡肉三明治。'] },
+              { en: 'An egg sandwich.', zh: '鸡蛋三明治。', reply: ['Not quite. The sandwich is made with chicken.', '不完全对。三明治夹的是鸡肉。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 2 幕 · 特别要求',
+        icon: '🧅',
+        narration: [
+          'The waiter writes down the order. Lily remembers: she does not like onions. She says politely: "No onions, please." Then she asks for a glass of water.',
+          '服务员记下订单。Lily 想起来：她不喜欢洋葱。她礼貌地说：“请不要放洋葱。”然后又要了一杯水。'
+        ],
+        words: ['onion', 'water'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['What does Lily NOT want in her sandwich?', 'Lily 不要三明治里放什么？'],
+            options: [
+              { en: 'Onions.', zh: '洋葱。', right: true, reply: ['Right. She says: no onions, please.', '对。她说：请不要放洋葱。'] },
+              { en: 'Cheese.', zh: '奶酪。', reply: ['Not quite. Listen again: she says no onions.', '不完全对。再听一次：她说不要洋葱。'] },
+              { en: 'Tomatoes.', zh: '西红柿。', reply: ['Not quite. The problem is with onions.', '不完全对。问题出在洋葱上。'] }
+            ]
+          },
+          {
+            type: 'speak',
+            prompt: ['Help Lily order a drink.', '帮 Lily 点一杯喝的。'],
+            model: 'Could I have a glass of water, please?',
+            match: /water|glass|drink/i,
+            reply: ['Sure, one glass of water.', '好的，一杯水。'],
+            wrong: ['Try: Could I have a glass of water, please?', '试试这样说：Could I have a glass of water, please?']
+          }
+        ]
+      },
+      {
+        title: '第 3 幕 · 开动啦',
+        icon: '😋',
+        narration: [
+          'Soon the food comes: a chicken sandwich with no onions and a glass of water. Lily eats and drinks happily. She says: "Thank you. It is delicious!"',
+          '很快餐点来了：不加洋葱的鸡肉三明治和一杯水。Lily 吃得津津有味。她说：“谢谢，太好吃了！”'
+        ],
+        words: ['sandwich', 'water'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['Is Lily happy with her food?', 'Lily 对餐点满意吗？'],
+            options: [
+              { en: 'Yes, she says it is delicious.', zh: '是的，她说太好吃了。', right: true, reply: ['Yes! Lily enjoys her meal.', '对！Lily 吃得很开心。'] },
+              { en: 'No, she is angry.', zh: '不，她生气了。', reply: ['Not quite. Listen again: she says thank you.', '不完全对。再听一次：她说了谢谢。'] }
+            ]
+          }
+        ]
+      }
+    ],
     check: [
       'What did Lily order, and did she want onions?',
       'Lily 点了什么？她要洋葱吗？'
@@ -129,6 +285,75 @@ const stories = {
       size: ['Size shows how big or small something is, like S, M, L.', 'size 表示尺码，如 S、M、L。'],
       fit: ['Fit means the clothes are the right size for you.', 'fit 表示衣服尺码正合适。']
     },
+    scenes: [
+      {
+        title: '第 1 幕 · 发现蓝帽子',
+        icon: '🧢',
+        narration: [
+          'Jack walks into a shop. On the shelf he sees a nice blue cap. "This cap looks great," he thinks. He wants to know the price.',
+          'Jack 走进一家店。他在货架上看到一顶漂亮的蓝帽子。“这帽子真好看，”他想。他想知道价格。'
+        ],
+        words: ['cap', 'how much'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['Help Jack ask about the price.', '帮 Jack 问一下价格。'],
+            model: 'How much is this cap?',
+            match: /how much|price|cost/i,
+            reply: ['It is 25 yuan.', '25 元。'],
+            wrong: ['Try: How much is this cap?', '试试这样说：How much is this cap?']
+          },
+          {
+            type: 'choose',
+            prompt: ['How much is the blue cap?', '蓝帽子多少钱？'],
+            options: [
+              { en: '25 yuan.', zh: '25 元。', right: true, reply: ['Yes! The cap costs 25 yuan.', '对！帽子 25 元。'] },
+              { en: '15 yuan.', zh: '15 元。', reply: ['Not quite. Listen again: it is 25 yuan.', '不完全对。再听一次：是 25 元。'] },
+              { en: '50 yuan.', zh: '50 元。', reply: ['Not quite. It is cheaper than that.', '不完全对。比那个便宜。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 2 幕 · 试戴',
+        icon: '🪞',
+        narration: [
+          'The shop assistant brings a size M cap. "Would you like to try it on?" she asks. Jack puts it on in front of the mirror.',
+          '店员拿了一顶 M 码的帽子。“要试戴一下吗？”她问。Jack 在镜子前戴上帽子。'
+        ],
+        words: ['size', 'fit'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['Which size does Jack try?', 'Jack 试了哪个尺码？'],
+            options: [
+              { en: 'Size M.', zh: 'M 码。', right: true, reply: ['Yes! He tries size M.', '对！他试了 M 码。'] },
+              { en: 'Size S.', zh: 'S 码。', reply: ['Not quite. Listen again: it is size M.', '不完全对。再听一次：是 M 码。'] },
+              { en: 'Size L.', zh: 'L 码。', reply: ['Not quite. The cap is size M.', '不完全对。帽子是 M 码。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 3 幕 · 就买它了',
+        icon: '🛍️',
+        narration: [
+          'Size M fits Jack well. He looks in the mirror and smiles. "I will take it!" He pays 25 yuan and wears his new blue cap home.',
+          'M 码正合适。Jack 照照镜子，笑了。“就买它了！”他付了 25 元，戴着新蓝帽子回家。'
+        ],
+        words: ['fit', 'cap'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['Jack decides to buy it. What does he say?', 'Jack 决定买下帽子，他会怎么说？'],
+            model: 'I will take it, please.',
+            match: /take|buy|will/i,
+            reply: ['Great! That is 25 yuan. Thank you!', '好嘞！一共 25 元，谢谢！'],
+            wrong: ['Try: I will take it, please.', '试试这样说：I will take it, please.']
+          }
+        ]
+      }
+    ],
     check: [
       'What colour cap does Jack like, and how much is it?',
       'Jack 喜欢什么颜色的帽子？多少钱？'
@@ -161,6 +386,85 @@ const stories = {
       'next to': ['Next to means beside something, very close.', 'next to 表示在……旁边。'],
       bus: ['A bus is a big car that many people travel in.', 'bus 是公交车。']
     },
+    scenes: [
+      {
+        title: '第 1 幕 · 想去博物馆',
+        icon: '🏛️',
+        narration: [
+          'Anna is new in the city. She wants to visit the museum, but she does not know the way. She sees a kind man, Mr. Chen, at the bus stop.',
+          'Anna 初来这座城市。她想去博物馆，但不认识路。她在公交站看到一位和气的先生——陈先生。'
+        ],
+        words: ['museum', 'bus'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['Help Anna ask the way politely.', '帮 Anna 礼貌地问路。'],
+            model: 'Excuse me, how can I get to the museum?',
+            match: /museum|way|get to|how/i,
+            reply: ['Sure. Take Bus 5.', '好的。坐 5 路公交。'],
+            wrong: ['Try: Excuse me, how can I get to the museum?', '试试这样说：Excuse me, how can I get to the museum?']
+          },
+          {
+            type: 'choose',
+            prompt: ['What does Anna not know?', 'Anna 不知道的是什么？'],
+            options: [
+              { en: 'The way to the museum.', zh: '去博物馆的路。', right: true, reply: ['Yes! She does not know the way.', '对！她不认识路。'] },
+              { en: 'The time.', zh: '时间。', reply: ['Not quite. Her problem is the way to the museum.', '不完全对。她的问题是去博物馆的路。'] },
+              { en: 'Her own name.', zh: '她自己的名字。', reply: ['Not quite. She knows her name, but not the way.', '不完全对。她知道名字，不知道的是路。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 2 幕 · 陈先生指路',
+        icon: '🚌',
+        narration: [
+          'Mr. Chen says: "Take Bus 5. Ride three stops and get off at the library stop." Anna listens carefully and repeats: "Bus 5, library stop."',
+          '陈先生说：“坐 5 路公交，坐三站，在图书馆站下车。”Anna 认真听完，跟着重复：“5 路，图书馆站。”'
+        ],
+        words: ['get off', 'bus'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['Which bus should Anna take?', 'Anna 该坐几路公交？'],
+            options: [
+              { en: 'Bus 5.', zh: '5 路。', right: true, reply: ['Yes! She takes Bus 5.', '对！她坐 5 路。'] },
+              { en: 'Bus 3.', zh: '3 路。', reply: ['Not quite. Listen again: it is Bus 5.', '不完全对。再听一次：是 5 路。'] },
+              { en: 'Bus 15.', zh: '15 路。', reply: ['Not quite. It is Bus 5, not 15.', '不完全对。是 5 路，不是 15 路。'] }
+            ]
+          },
+          {
+            type: 'choose',
+            prompt: ['Where does she get off?', '她在哪站下车？'],
+            options: [
+              { en: 'At the library stop.', zh: '图书馆站。', right: true, reply: ['Right. She gets off at the library stop.', '对。她在图书馆站下车。'] },
+              { en: 'At the park stop.', zh: '公园站。', reply: ['Not quite. The stop is the library stop.', '不完全对。是图书馆站。'] },
+              { en: 'At the school stop.', zh: '学校站。', reply: ['Not quite. Listen again: the library stop.', '不完全对。再听一次：图书馆站。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 3 幕 · 到达博物馆',
+        icon: '🎉',
+        narration: [
+          'Anna takes Bus 5 and gets off at the library stop. The museum is next to the library! She thanks Mr. Chen in her heart and walks in happily.',
+          'Anna 坐上 5 路公交，在图书馆站下车。博物馆就在图书馆旁边！她心里感谢了陈先生，开心地走了进去。'
+        ],
+        words: ['next to', 'get off'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['Where is the museum?', '博物馆在哪里？'],
+            options: [
+              { en: 'Next to the library.', zh: '在图书馆旁边。', right: true, reply: ['Yes! The museum is next to the library.', '对！博物馆就在图书馆旁边。'] },
+              { en: 'Across from the park.', zh: '在公园对面。', reply: ['Not quite. It is next to the library.', '不完全对。它在图书馆旁边。'] },
+              { en: 'Behind the school.', zh: '在学校后面。', reply: ['Not quite. Listen again: next to the library.', '不完全对。再听一次：图书馆旁边。'] }
+            ]
+          }
+        ]
+      }
+    ],
     check: [
       'Which bus should Anna take, and where does she get off?',
       'Anna 该坐几路公交？在哪站下车？'
@@ -193,6 +497,76 @@ const stories = {
       kite: ['A kite is a toy that flies in the wind.', 'kite 是风筝。'],
       park: ['A park is a green open place in a city.', 'park 是公园。']
     },
+    scenes: [
+      {
+        title: '第 1 幕 · 晴朗的星期六',
+        icon: '☀️',
+        narration: [
+          'It is Saturday morning. The sun is bright and the sky is clear. Bob looks out of the window: "What a sunny day!" He picks up the phone.',
+          '星期六的早晨。阳光明亮，天空晴朗。Bob 看着窗外：“多晴的天啊！”他拿起了电话。'
+        ],
+        words: ['sunny', 'invite'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['What is the weather like on Saturday?', '星期六天气怎么样？'],
+            options: [
+              { en: 'It is sunny.', zh: '天气晴朗。', right: true, reply: ['Yes! The sun is bright and the sky is clear.', '对！阳光明亮，天空晴朗。'] },
+              { en: 'It is rainy.', zh: '下雨。', reply: ['Not quite. Listen again: the sun is bright.', '不完全对。再听一次：阳光明亮。'] },
+              { en: 'It is snowy.', zh: '下雪。', reply: ['Not quite. It is a sunny day.', '不完全对。这是晴天。'] }
+            ]
+          },
+          {
+            type: 'speak',
+            prompt: ['Help Bob invite Mary to the park.', '帮 Bob 邀请 Mary 去公园。'],
+            model: 'Would you like to go to the park with me?',
+            match: /park|go|would|like/i,
+            reply: ['Yes, I would love to!', '好呀，我很乐意！'],
+            wrong: ['Try: Would you like to go to the park with me?', '试试这样说：Would you like to go to the park with me?']
+          }
+        ]
+      },
+      {
+        title: '第 2 幕 · 带上风筝',
+        icon: '🪁',
+        narration: [
+          'Mary says yes on the phone. Then she has an idea: "It is windy in the park. Let us bring a kite!" Bob laughs: "Good idea!"',
+          'Mary 在电话里答应了。接着她有了个主意：“公园里风大，我们带一只风筝吧！”Bob 笑了：“好主意！”'
+        ],
+        words: ['kite', 'park'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['What does Mary want to bring?', 'Mary 想带什么去？'],
+            options: [
+              { en: 'A kite.', zh: '一只风筝。', right: true, reply: ['Yes! She wants to bring a kite.', '对！她想带风筝。'] },
+              { en: 'A ball.', zh: '一个球。', reply: ['Not quite. Listen again: a kite.', '不完全对。再听一次：风筝。'] },
+              { en: 'Some food.', zh: '一些食物。', reply: ['Not quite. She thinks of a kite.', '不完全对。她想到的是风筝。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 3 幕 · 风筝飞高高',
+        icon: '🎈',
+        narration: [
+          'In the park, Bob and Mary run with the kite. The kite flies high in the blue sky. "This is the best sunny day!" Mary says.',
+          '在公园里，Bob 和 Mary 带着风筝奔跑。风筝在蓝蓝的天上飞得很高。“这是最棒的晴天！”Mary 说。'
+        ],
+        words: ['sunny', 'kite'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['How is the kite in the sky?', '天上的风筝怎么样？'],
+            options: [
+              { en: 'It flies high.', zh: '飞得很高。', right: true, reply: ['Yes! The kite flies high in the blue sky.', '对！风筝在蓝天上飞得很高。'] },
+              { en: 'It breaks.', zh: '破了。', reply: ['Not quite. The kite flies well.', '不完全对。风筝飞得很好。'] },
+              { en: 'They forget it.', zh: '他们忘带了。', reply: ['Not quite. They bring it and fly it.', '不完全对。他们带了，而且放飞了。'] }
+            ]
+          }
+        ]
+      }
+    ],
     check: [
       'What is the weather like, and what does Mary want to bring?',
       '天气怎么样？Mary 想带什么？'
@@ -225,6 +599,76 @@ const stories = {
       basketball: ['Basketball is a sport with a ball and two hoops.', 'basketball 是篮球。'],
       join: ['Join means take part with other people.', 'join 表示一起参加。']
     },
+    scenes: [
+      {
+        title: '第 1 幕 · 泳池的邀请',
+        icon: '📞',
+        narration: [
+          'Tim loves water. His favourite sport is swimming. On Sunday he wants to swim, so he calls his friend Sue: "Will you swim with me?"',
+          'Tim 喜欢水。他最喜欢的运动是游泳。周日他想去游泳，于是打电话给朋友 Sue：“你愿意和我一起去游泳吗？”'
+        ],
+        words: ['favourite', 'swimming'],
+        interactions: [
+          {
+            type: 'speak',
+            prompt: ['Help Tim invite Sue to swim.', '帮 Tim 邀请 Sue 一起游泳。'],
+            model: 'Will you swim with me on Sunday?',
+            match: /swim|with|sunday/i,
+            reply: ['Let me think... I like basketball more.', '让我想想……我更喜欢篮球。'],
+            wrong: ['Try: Will you swim with me on Sunday?', '试试这样说：Will you swim with me on Sunday?']
+          },
+          {
+            type: 'choose',
+            prompt: ['What is Tim\'s favourite sport?', 'Tim 最喜欢的运动是什么？'],
+            options: [
+              { en: 'Swimming.', zh: '游泳。', right: true, reply: ['Yes! Tim\'s favourite sport is swimming.', '对！Tim 最喜欢游泳。'] },
+              { en: 'Basketball.', zh: '篮球。', reply: ['Not quite. Basketball is Sue\'s favourite.', '不完全对。篮球是 Sue 最喜欢的。'] },
+              { en: 'Running.', zh: '跑步。', reply: ['Not quite. Tim loves swimming.', '不完全对。Tim 爱的是游泳。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 2 幕 · 不同的爱好',
+        icon: '🏀',
+        narration: [
+          'Sue likes basketball best. She plays it every week. But she looks at Tim and smiles: "I will try swimming with you. It sounds fun!"',
+          'Sue 最喜欢篮球。她每周都打。但她看着 Tim 笑了笑：“我愿意和你试试游泳，听起来很有趣！”'
+        ],
+        words: ['basketball', 'join'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['What sport does Sue like best?', 'Sue 最喜欢什么运动？'],
+            options: [
+              { en: 'Basketball.', zh: '篮球。', right: true, reply: ['Yes! Sue plays basketball every week.', '对！Sue 每周都打篮球。'] },
+              { en: 'Swimming.', zh: '游泳。', reply: ['Not quite. She will try swimming, but she likes basketball.', '不完全对。她会试着游泳，但她喜欢的是篮球。'] },
+              { en: 'Football.', zh: '足球。', reply: ['Not quite. Listen again: basketball.', '不完全对。再听一次：篮球。'] }
+            ]
+          }
+        ]
+      },
+      {
+        title: '第 3 幕 · 尝试新事物',
+        icon: '🏊',
+        narration: [
+          'On Sunday, Tim and Sue go to the pool. Sue learns to float and kick. "Swimming is fun!" she says. Now she has two favourite sports.',
+          '周日，Tim 和 Sue 来到泳池。Sue 学会了漂浮和打水。“游泳真好玩！”她说。现在她有两个最喜欢的运动了。'
+        ],
+        words: ['swimming', 'join'],
+        interactions: [
+          {
+            type: 'choose',
+            prompt: ['How does Sue feel about swimming at last?', '最后 Sue 觉得游泳怎么样？'],
+            options: [
+              { en: 'It is fun.', zh: '很有趣。', right: true, reply: ['Yes! She says swimming is fun.', '对！她说游泳真好玩。'] },
+              { en: 'It is scary.', zh: '很可怕。', reply: ['Not quite. She enjoys it.', '不完全对。她很喜欢。'] },
+              { en: 'She will never swim again.', zh: '她再也不游了。', reply: ['Not quite. Now she has two favourite sports.', '不完全对。她现在有两个最喜欢的运动了。'] }
+            ]
+          }
+        ]
+      }
+    ],
     check: [
       'What sport does Tim like, and does Sue like swimming?',
       'Tim 喜欢什么运动？Sue 喜欢游泳吗？'
