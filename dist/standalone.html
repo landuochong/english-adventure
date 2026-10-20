@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campus Quest · 英语同行冒险【已更新v37】</title><style>/* 字体通过 index.html 的 preconnect + 非阻塞 <link> 加载；加载失败回退系统字体 */
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campus Quest · 英语同行冒险【已更新v36】</title><style>/* 字体通过 index.html 的 preconnect + 非阻塞 <link> 加载；加载失败回退系统字体 */
 :root{font-family:'Outfit','Noto Sans SC',system-ui,sans-serif;color:#253d33;background:#f6f7f2;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer;border:0}button:focus-visible,input:focus-visible{outline:3px solid #ed9a50;outline-offset:3px}button:disabled{opacity:.5;cursor:not-allowed}.shell{display:grid;grid-template-columns:210px 1fr;min-height:100vh}.shell.no-sidebar{grid-template-columns:1fr}.shell.no-sidebar .workspace{max-width:1080px;margin:0 auto}.layout.story-layout{grid-template-columns:minmax(0,1fr)}.sidebar{background:#244a3a;color:white;padding:32px 22px;display:flex;flex-direction:column;gap:38px}.brand{font-size:24px;line-height:1.1;font-weight:700;letter-spacing:-.8px}.brand span{color:#bada92}.brand small{display:block;font-size:10px;letter-spacing:2px;margin-top:12px;color:#c2d3c8}.nav{display:grid;gap:12px}.nav button{padding:14px;text-align:left;background:transparent;color:#d2dfd7;border-radius:10px}.nav button.active{background:#41634f;color:white}.story-nav .home{background:#bada92;color:#1d3326;font-weight:700;border:1px solid #a4c97f}.story-nav .home:hover{background:#cdeaa6}.nav-sep{height:1px;background:#3c5a49;margin:2px 0 6px}.side-note{margin-top:auto;background:#315541;padding:18px;border-radius:14px;font-size:12px;line-height:1.9;color:#d2dfd7}.workspace{padding:26px 34px;max-width:1600px;width:100%;margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;color:#77877c;font-size:12px;margin-bottom:30px}.pill{border:1px solid #dce3d7;border-radius:30px;padding:8px 12px;background:#fff;font-size:11px}.heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}.eyebrow{color:#78926b;font-size:11px;letter-spacing:2px;font-weight:600}h1{font-size:32px;letter-spacing:-1px;margin:8px 0 10px}h2{font-size:20px;margin:0 0 12px}p{line-height:1.8}small,.muted{color:#7c887f;font-size:12px}.heading p{font-size:13px;margin:0;color:#7a877e}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px}.card{background:#fff;border:1px solid #e5e8de;border-radius:18px;overflow:hidden}.maphead{padding:17px 22px;display:flex;justify-content:space-between;align-items:center;font-size:12px}.map{position:relative;height:380px;background:#e6eddb;overflow:hidden}.map:before{content:'';position:absolute;inset:0;background-image:radial-gradient(#b8cbaa 1px,transparent 1px);background-size:20px 20px;opacity:.35}.path{position:absolute;background:#f8f5df;border:2px solid #e1dfc6;border-radius:30px}.path.h{height:34px;left:12%;right:12%;top:53%}.path.v{width:34px;left:49%;top:13%;bottom:10%}.pond{position:absolute;width:100px;height:53px;background:#bfdde0;border:6px solid #d2e5da;border-radius:58% 42% 60% 40%;left:73%;top:75%;transform:rotate(-15deg)}.tree{position:absolute;font-size:31px;filter:saturate(.6);pointer-events:none}.place{position:absolute;transform:translate(-50%,-50%);background:none;display:flex;align-items:center;flex-direction:column;gap:6px;z-index:2;min-width:94px;padding:7px;border-radius:12px}.building{display:block;font-size:46px;filter:drop-shadow(0 6px 1px #456d3a15);transition:transform .2s}.place:hover .building{transform:translateY(-4px)}.place .label{font-size:11px;background:#fffffff0;border-radius:7px;padding:5px 9px;box-shadow:0 2px 4px #00000009}.place.selected .label{background:#244a3a;color:white}.place.selected:before{content:'';position:absolute;width:90px;height:65px;border:2px dashed #6d8a58;border-radius:50%;top:16px}.actors{position:absolute;z-index:3;display:flex;gap:4px;pointer-events:none;transition:left .6s,top .6s}.actor{width:25px;height:25px;border-radius:50%;background:#f5b769;border:3px solid white;box-shadow:0 3px 8px #30432a30;display:grid;place-items:center;font-size:13px}.actor.coach{background:#b4c5e9}.mapcaption{position:absolute;bottom:12px;left:18px;font-size:10px;letter-spacing:1px;color:#74866c}.scene{padding:22px}.scene-title{display:flex;justify-content:space-between;align-items:center}.scene p{font-size:13px;color:#65746a;margin:8px 0 17px}.actions{display:flex;gap:8px;flex-wrap:wrap}.primary,.secondary,.chip{padding:11px 16px;border-radius:9px;font-size:12px;line-height:1.4}.primary{background:#284f3b;color:white}.secondary{background:#f0f3eb;color:#38553d}.chip{background:white;border:1px solid #dfe5d8;padding:8px 11px}.orange{background:#f4ac65;color:#4a3523}.bottomcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.compact{padding:18px;font-size:12px}.compact p{font-size:12px;color:#7a867c;margin:7px 0}.progress{height:5px;background:#e9ede2;border-radius:8px;margin:14px 0;overflow:hidden}.progress i{display:block;background:#8baa70;height:100%;transition:width .4s}.coachhead{padding:20px;border-bottom:1px solid #eef0e9;display:flex;align-items:center;gap:12px}.avatar{width:45px;height:45px;background:#e7e8f4;border-radius:14px;display:grid;place-items:center;font-size:28px}.coachhead strong{font-size:15px}.online{font-size:10px;color:#7d9474;margin-top:5px}.modes{display:flex;background:#f1f3ec;padding:4px;border-radius:9px;margin:16px}.modes button{flex:1;padding:9px 4px;font-size:11px;background:none;border-radius:6px;color:#758171}.modes button.active{background:white;color:#294631;box-shadow:0 1px 5px #00000008}.conversation{padding:0 18px;min-height:170px}.bubble{background:#f2f5ed;border-radius:0 14px 14px 14px;padding:16px;font-size:14px;line-height:1.7}.translation{font-size:12px;color:#778471;margin-top:10px}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tools button{font-size:11px;background:none;color:#67805c;padding:5px}.composer{padding:16px 18px;border-top:1px solid #edf0e7}.composer label{display:block;font-size:11px;color:#7b877c;margin-bottom:8px}.composer input{width:100%;background:#fafbf7;border:1px solid #e2e7dc;padding:11px;border-radius:9px;font-size:12px;margin-bottom:8px}.composer .actions button{flex:1}.status{min-height:18px;font-size:11px;color:#8a7659;margin-top:9px;line-height:1.5}.taskline{display:flex;gap:10px;font-size:12px;margin:13px 0;align-items:center}.check{width:18px;height:18px;border:1px solid #d8e0d1;border-radius:50%;display:grid;place-items:center;font-size:10px}.done .check{background:#769763;color:white;border:0}.done{color:#78916f}.footnote{font-size:10px;color:#8c978d;margin-top:20px;display:flex;justify-content:space-between}.prep{padding:28px}.vocabgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.word{background:#f5f7ef;border:1px solid #e3e8d9;border-radius:13px;padding:18px;text-align:left;color:#2f4938}.word b{font-size:22px;display:block;margin:10px 0 5px}.word span{font-size:12px;color:#7a8972}.word em{font-size:25px;font-style:normal}.phrases{display:grid;gap:8px;margin:18px 0}.phrase{background:#fff;border:1px solid #e2e6da;border-radius:9px;text-align:left;padding:13px;color:#38553d}.exercise{background:#f9f2e7;border-radius:12px;padding:20px;margin:20px 0}.exercise p{font-size:13px}.notebook{padding:26px;min-height:500px}.clue{border-left:3px solid #94ac79;padding:14px 18px;background:#f6f8f0;margin:14px 0;border-radius:0 10px 10px 0;font-size:14px;line-height:1.7}.hero-icon{font-size:60px;margin:20px 0}.review{padding:32px}.review h2{font-size:30px}.review .stats{display:flex;gap:30px;margin:25px 0}.stats b{display:block;font-size:28px}.toast{background:#fff0d6;padding:12px 18px;margin-bottom:16px;border-radius:10px;font-size:12px}dialog{border:0;border-radius:18px;max-width:400px;padding:26px;color:#294632}dialog::backdrop{background:#17362566}@media(max-width:1150px){.shell{grid-template-columns:160px 1fr}.sidebar{padding:25px 16px}.workspace{padding:24px}.layout{grid-template-columns:minmax(0,1fr) 275px}.brand{font-size:21px}}@media(max-width:900px){.shell{display:block}.sidebar{padding:16px 22px;flex-direction:row;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:18px}.brand small,.side-note{display:none}.nav{display:flex;gap:4px}.nav button{padding:10px;font-size:12px}.layout{grid-template-columns:1fr}.coachpanel{display:grid;grid-template-columns:1fr 1fr}.coachhead,.modes{grid-column:1/-1}.composer{border-left:1px solid #edf0e7}.workspace{padding:20px}.topbar{margin-bottom:22px}.map{height:390px}}@media(max-width:520px){h1{font-size:25px}.heading{align-items:start}.heading>.pill{display:none}.vocabgrid{grid-template-columns:repeat(2,1fr)}.prep,.review{padding:20px}.coachpanel{display:block}.bottomcards{grid-template-columns:1fr}.map{height:340px}.building{font-size:38px}.place{min-width:80px}.label{white-space:nowrap}.footnote{display:block;line-height:2}.topbar>.pill{font-size:9px}.sidebar{padding:14px}.workspace{padding:16px}.nav button{font-size:11px;padding:9px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 .voice-settings{display:flex;align-items:center;flex-wrap:wrap;gap:10px;background:#f4f6ef;padding:14px;border-radius:12px;margin-top:20px}.voice-settings label{font-size:12px}.voice-settings select{max-width:100%;min-width:0;flex:1;font:inherit;font-size:12px;padding:9px;border:1px solid #dce3d5;border-radius:7px;background:white;color:#294631}.voice-settings small{flex-basis:100%;line-height:1.7}.voice-settings select:focus-visible{outline:3px solid #ed9a50;outline-offset:2px}
 .world{height:480px;position:relative;overflow:hidden;background-color:#e8eedb;background-image:radial-gradient(#bbcea950 1px,transparent 1px);background-size:19px 19px;cursor:crosshair;touch-action:manipulation;outline-offset:-3px}.world-path{position:absolute;background:#f7f2dc;border:2px solid #e6e1c8;border-radius:45px;pointer-events:none}.world-path.horizontal{left:9%;right:7%;top:57%;height:18%}.world-path.vertical{left:43%;top:14%;bottom:8%;width:15%}.world-building{position:absolute;transform:translate(-50%,-50%);display:grid;text-align:center;pointer-events:none;gap:3px}.world-building>span{font-size:52px}.world-building b{font-size:11px;color:#5f7456}.world-tree{position:absolute;font-size:32px;opacity:.8;pointer-events:none}.world-npc{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;background:none;padding:6px;z-index:3;border-radius:50%;width:68px;height:70px}.sprite{font-size:32px;filter:drop-shadow(0 4px 1px #52664022)}.npc-name{background:#fffdf2;padding:3px 6px;font-size:10px;border-radius:5px;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis}.world-npc.near{background:#fff7d275;box-shadow:0 0 0 2px #b9ca8d}.quest-marker{position:absolute;top:-26px;color:white;background:#e45145;border:2px solid white;font-size:22px;font-weight:800;border-radius:12px 12px 12px 0;width:29px;height:33px;box-shadow:0 3px 8px #9b332233}.world-actor{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;z-index:5;pointer-events:none;line-height:1.2}.world-actor>span{font-size:30px;filter:drop-shadow(0 4px 1px #314d3930)}.world-actor small{background:#244a3a;color:white;border-radius:5px;padding:2px 6px;font-size:9px}.world-actor.follower{opacity:.85;z-index:4}.world-actor.follower small{background:#7a78a3}.world-hud{position:absolute;top:12px;left:14px;right:14px;padding:9px 12px;border-radius:9px;background:#ffffffdb;font-size:12px;pointer-events:none;z-index:6}.destination{position:absolute;transform:translate(-50%,-50%);font-size:25px;color:#ee9952;pointer-events:none}.world [hidden]{display:none!important}.walk-controls{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid #edf0e5;font-size:11px;gap:10px}.walk-controls b{color:#d34f43}.walk-controls>div{display:flex;gap:4px}.encounter{padding:20px;min-height:180px}.encounter-idle p{font-size:13px;color:#6b7d63}.encounter-idle span{font-size:12px;color:#8b967d}.encounter-title{display:flex;align-items:center;gap:12px;margin-bottom:14px}.encounter-title h2{font-size:16px;margin:4px 0}.npc-portrait{font-size:32px;background:#f1f3e8;border-radius:12px;padding:8px}.near-badge{margin-left:auto;color:#7c9565;font-size:10px}.npc-response{padding:14px 17px;background:#f3f6ed;border-radius:12px;font-size:14px;line-height:1.8;margin-bottom:14px}.npc-response p{font-size:12px;color:#76886a;margin:6px 0 0}.npc-form{margin-top:14px}.npc-form label{font-size:11px;color:#7c8974}.npc-form>div{display:flex;gap:8px;margin-top:6px}.npc-form input{flex:1;min-width:0;border:1px solid #dde5d5;border-radius:8px;padding:12px;font-size:13px}.heard{font-size:12px;color:#7e8c74;margin:10px 0}@media(max-width:520px){.world{height:380px}.world-building>span{font-size:36px}.world-tree{font-size:23px}.world-npc{width:45px}.sprite{font-size:26px}.world-actor>span{font-size:25px}.world-building b{font-size:9px}.world-hud{font-size:11px}.walk-controls{flex-wrap:wrap}.near-badge{display:none}.encounter{padding:16px}.world-npc.near{box-shadow:0 0 0 1px #b9ca8d}}
@@ -180,7 +180,6 @@
 @media(max-width:600px){.stories{padding:18px}.story-list{grid-template-columns:1fr}}
 
 @media(prefers-reduced-motion:reduce){.clue-pop,.welcome-portrait,.welcome .primary,.quest-node.active .quest-dot,.destination:not([hidden]),.world-actor.player>span,.primary.recording,.workspace.title-screen::before,.workspace.title-screen::after,.toast,.story-card,.stories.detail{animation:none!important}}
-.story-scene{padding-bottom:6px}.scene-track{display:flex;gap:10px;align-items:center;padding:10px 18px 0}.scene-dot{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#eef3ee;color:#8a9a8f;font-size:17px;border:2px solid transparent}.scene-dot.done{background:#dff0e6;color:#3f7a55;border-color:#9fd3b4}.scene-dot.active{background:#fff4d9;border-color:#e7b96c;color:#a9741f;transform:scale(1.08)}.scene-card{padding:4px 18px 6px}.scene-title{font-weight:700;font-size:17px;margin:8px 0 10px}.scene-narration{background:#f7faf7;border:1px solid #e2ece4;border-radius:12px;padding:14px;margin-bottom:14px}.scene-narration p[lang=en]{font-size:16px;line-height:1.65;margin:0 0 10px}.scene-ix{border-top:1px dashed #dde7de;padding:14px 0}.scene-ix>b{display:block;margin-bottom:4px}.scene-ix>p[lang=en]{margin:0 0 10px;color:#3d5159;font-size:15px}.scene-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.scene-options .option{text-align:left}.scene-options .option.right{background:#dff0e6;border-color:#9fd3b4;color:#2f6b45}.scene-options .option.wrong{background:#fdeaea;border-color:#e8a2a2;color:#a33}.scene-reply{margin-top:10px;border-radius:12px;padding:12px;background:#f7faf7;border:1px solid #e2ece4}.scene-reply.right{background:#eef8f1;border-color:#9fd3b4}.scene-reply.retry{background:#fff8ec;border-color:#ead2a4}.scene-reply p[lang=en]{margin:4px 0 6px}.scene-model{margin:8px 0}.scene-model p[lang=en]{margin:6px 0}
 </style></head><body><div id="app"></div><script type="module">
 /* ===== engine.js ===== */
 const initial = () => ({version:1,entered:false,prepared:false,location:'plaza',mode:'companion',started:false,clues:[],discovered:false,awake:false,following:false,complete:false,practice:0});
@@ -271,87 +270,8 @@ const stories = {
       forgot: ['Forgot means you did not remember something.', 'forgot 表示忘记。'],
       borrow: ['Borrow means take something and return it later.', 'borrow 表示借入、以后归还。'],
       lend: ['Lend means give something to someone for a while.', 'lend 表示把东西借给别人。'],
-      break: ['Break is a short rest between classes.', 'break 是课间休息。'],
-      thank: ['Thank means to say you are grateful.', 'thank 表示感谢、道谢。'],
-      tomorrow: ['Tomorrow is the day after today.', 'tomorrow 表示明天。']
+      break: ['Break is a short rest between classes.', 'break 是课间休息。']
     },
-    scenes: [
-      {
-        title: '第 1 幕 · 课本不见了',
-        icon: '🎒',
-        narration: [
-          'It is the morning break. Tom opens his bag and looks inside. His maths book is not there. He left it at home. The maths class starts in five minutes.',
-          '课间休息时，Tom 打开书包翻找。数学课本不在里面——他把它忘在家里了。还有五分钟就要上数学课。'
-        ],
-        words: ['forgot', 'break'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['What is Tom’s problem?', 'Tom 遇到了什么麻烦？'],
-            options: [
-              { en: 'He forgot his maths book at home.', zh: '他把数学课本忘在家里了。', right: true, reply: ['Yes! Tom forgot his maths book at home.', '对！Tom 把数学课本忘在家里了。'] },
-              { en: 'He lost his pencil case.', zh: '他丢了笔袋。', reply: ['Not quite. Listen again: his maths book is not in his bag.', '不完全对。再听一次：他的数学课本不在书包里。'] },
-              { en: 'He is late for school.', zh: '他上学迟到了。', reply: ['Not quite. The problem is the missing maths book.', '不完全对。问题在于数学课本不见了。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 2 幕 · 向 Lisa 开口',
-        icon: '🙋',
-        narration: [
-          'Tom sees his classmate Lisa. Her maths book is on the desk. Tom thinks: maybe I can borrow it. But he must ask politely.',
-          'Tom 看到同学 Lisa。她的数学课本在桌上。Tom 想：也许我能借来用一下。但他必须礼貌地开口。'
-        ],
-        words: ['borrow', 'lend'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['Help Tom ask Lisa politely.', '帮 Tom 礼貌地向 Lisa 借课本。'],
-            model: 'Can I borrow your maths book, please?',
-            match: /borrow|lend|book/i,
-            reply: ['Yes, of course. Here you are.', '当然可以，给你。'],
-            wrong: ['Try using "borrow": Can I borrow your maths book, please?', '试试用 borrow 来问：Can I borrow your maths book, please?']
-          },
-          {
-            type: 'choose',
-            prompt: ['Does Lisa lend the book to Tom?', 'Lisa 把课本借给 Tom 了吗？'],
-            options: [
-              { en: 'Yes, she lends it to him.', zh: '是的，她借给他了。', right: true, reply: ['Yes! Lisa lends Tom her maths book.', '对！Lisa 把数学课本借给了 Tom。'] },
-              { en: 'No, she says no.', zh: '没有，她拒绝了。', reply: ['Not quite. Listen again: Lisa is happy to help.', '不完全对。再听一次：Lisa 很乐意帮忙。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 3 幕 · 道谢与归还',
-        icon: '🤝',
-        narration: [
-          'Lisa lends Tom her maths book. Tom says thank you and promises to give it back tomorrow. Lisa smiles: "Don’t forget again!" They both laugh.',
-          'Lisa 把数学课本借给 Tom。Tom 道谢，并承诺明天归还。Lisa 笑着说：“别再忘了！”两人都笑了。'
-        ],
-        words: ['lend', 'thank', 'tomorrow'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['How does Tom thank Lisa?', 'Tom 该怎么感谢 Lisa？'],
-            model: 'Thank you! I will give it back tomorrow.',
-            match: /thank|thanks|give.*back|return/i,
-            reply: ['You are welcome. See you tomorrow!', '不客气，明天见！'],
-            wrong: ['Start with "Thank you", then say when you will give it back.', '用 Thank you 开头，再说什么时候归还。']
-          },
-          {
-            type: 'choose',
-            prompt: ['When will Tom give the book back?', 'Tom 什么时候归还课本？'],
-            options: [
-              { en: 'Tomorrow.', zh: '明天。', right: true, reply: ['Yes! He will give it back tomorrow.', '对！他明天归还。'] },
-              { en: 'Next week.', zh: '下星期。', reply: ['Not quite. Listen again: he promises to give it back tomorrow.', '不完全对。再听一次：他承诺明天归还。'] },
-              { en: 'He never gives it back.', zh: '他再也不还了。', reply: ['Not quite. Borrow means you must give it back.', '不完全对。borrow 借入是要归还的。'] }
-            ]
-          }
-        ]
-      }
-    ],
     check: [
       'What did Tom forget, and did Lisa lend it to him?',
       'Tom 忘了什么？Lisa 借给他了吗？'
@@ -384,83 +304,6 @@ const stories = {
       water: ['A glass of water is a drink with no colour or taste.', 'a glass of water 是一杯水。'],
       sandwich: ['A sandwich is food between two pieces of bread.', 'sandwich 是夹在面包里的食物，即三明治。']
     },
-    scenes: [
-      {
-        title: '第 1 幕 · 坐下点餐',
-        icon: '🍽️',
-        narration: [
-          'Lily sits down at a table in the café. A waiter comes with a smile: "Welcome! What would you like to order?" Lily is hungry and looks at the menu.',
-          'Lily 在咖啡馆坐下。服务员微笑着走来：“欢迎光临！您想点些什么？”Lily 有点饿，看看菜单。'
-        ],
-        words: ['order', 'sandwich'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['Help Lily tell the waiter what she wants.', '帮 Lily 告诉服务员她想吃什么。'],
-            model: 'I would like a chicken sandwich, please.',
-            match: /chicken|sandwich|would like|order/i,
-            reply: ['Good choice. Anything to drink?', '好选择。要喝的吗？'],
-            wrong: ['Try: I would like a chicken sandwich, please.', '试试这样说：I would like a chicken sandwich, please.']
-          },
-          {
-            type: 'choose',
-            prompt: ['What sandwich does Lily want?', 'Lily 想要什么三明治？'],
-            options: [
-              { en: 'A chicken sandwich.', zh: '鸡肉三明治。', right: true, reply: ['Yes! She orders a chicken sandwich.', '对！她点了鸡肉三明治。'] },
-              { en: 'A beef sandwich.', zh: '牛肉三明治。', reply: ['Not quite. Listen again: it is a chicken sandwich.', '不完全对。再听一次：是鸡肉三明治。'] },
-              { en: 'An egg sandwich.', zh: '鸡蛋三明治。', reply: ['Not quite. The sandwich is made with chicken.', '不完全对。三明治夹的是鸡肉。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 2 幕 · 特别要求',
-        icon: '🧅',
-        narration: [
-          'The waiter writes down the order. Lily remembers: she does not like onions. She says politely: "No onions, please." Then she asks for a glass of water.',
-          '服务员记下订单。Lily 想起来：她不喜欢洋葱。她礼貌地说：“请不要放洋葱。”然后又要了一杯水。'
-        ],
-        words: ['onion', 'water'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['What does Lily NOT want in her sandwich?', 'Lily 不要三明治里放什么？'],
-            options: [
-              { en: 'Onions.', zh: '洋葱。', right: true, reply: ['Right. She says: no onions, please.', '对。她说：请不要放洋葱。'] },
-              { en: 'Cheese.', zh: '奶酪。', reply: ['Not quite. Listen again: she says no onions.', '不完全对。再听一次：她说不要洋葱。'] },
-              { en: 'Tomatoes.', zh: '西红柿。', reply: ['Not quite. The problem is with onions.', '不完全对。问题出在洋葱上。'] }
-            ]
-          },
-          {
-            type: 'speak',
-            prompt: ['Help Lily order a drink.', '帮 Lily 点一杯喝的。'],
-            model: 'Could I have a glass of water, please?',
-            match: /water|glass|drink/i,
-            reply: ['Sure, one glass of water.', '好的，一杯水。'],
-            wrong: ['Try: Could I have a glass of water, please?', '试试这样说：Could I have a glass of water, please?']
-          }
-        ]
-      },
-      {
-        title: '第 3 幕 · 开动啦',
-        icon: '😋',
-        narration: [
-          'Soon the food comes: a chicken sandwich with no onions and a glass of water. Lily eats and drinks happily. She says: "Thank you. It is delicious!"',
-          '很快餐点来了：不加洋葱的鸡肉三明治和一杯水。Lily 吃得津津有味。她说：“谢谢，太好吃了！”'
-        ],
-        words: ['sandwich', 'water'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['Is Lily happy with her food?', 'Lily 对餐点满意吗？'],
-            options: [
-              { en: 'Yes, she says it is delicious.', zh: '是的，她说太好吃了。', right: true, reply: ['Yes! Lily enjoys her meal.', '对！Lily 吃得很开心。'] },
-              { en: 'No, she is angry.', zh: '不，她生气了。', reply: ['Not quite. Listen again: she says thank you.', '不完全对。再听一次：她说了谢谢。'] }
-            ]
-          }
-        ]
-      }
-    ],
     check: [
       'What did Lily order, and did she want onions?',
       'Lily 点了什么？她要洋葱吗？'
@@ -493,75 +336,6 @@ const stories = {
       size: ['Size shows how big or small something is, like S, M, L.', 'size 表示尺码，如 S、M、L。'],
       fit: ['Fit means the clothes are the right size for you.', 'fit 表示衣服尺码正合适。']
     },
-    scenes: [
-      {
-        title: '第 1 幕 · 发现蓝帽子',
-        icon: '🧢',
-        narration: [
-          'Jack walks into a shop. On the shelf he sees a nice blue cap. "This cap looks great," he thinks. He wants to know the price.',
-          'Jack 走进一家店。他在货架上看到一顶漂亮的蓝帽子。“这帽子真好看，”他想。他想知道价格。'
-        ],
-        words: ['cap', 'how much'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['Help Jack ask about the price.', '帮 Jack 问一下价格。'],
-            model: 'How much is this cap?',
-            match: /how much|price|cost/i,
-            reply: ['It is 25 yuan.', '25 元。'],
-            wrong: ['Try: How much is this cap?', '试试这样说：How much is this cap?']
-          },
-          {
-            type: 'choose',
-            prompt: ['How much is the blue cap?', '蓝帽子多少钱？'],
-            options: [
-              { en: '25 yuan.', zh: '25 元。', right: true, reply: ['Yes! The cap costs 25 yuan.', '对！帽子 25 元。'] },
-              { en: '15 yuan.', zh: '15 元。', reply: ['Not quite. Listen again: it is 25 yuan.', '不完全对。再听一次：是 25 元。'] },
-              { en: '50 yuan.', zh: '50 元。', reply: ['Not quite. It is cheaper than that.', '不完全对。比那个便宜。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 2 幕 · 试戴',
-        icon: '🪞',
-        narration: [
-          'The shop assistant brings a size M cap. "Would you like to try it on?" she asks. Jack puts it on in front of the mirror.',
-          '店员拿了一顶 M 码的帽子。“要试戴一下吗？”她问。Jack 在镜子前戴上帽子。'
-        ],
-        words: ['size', 'fit'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['Which size does Jack try?', 'Jack 试了哪个尺码？'],
-            options: [
-              { en: 'Size M.', zh: 'M 码。', right: true, reply: ['Yes! He tries size M.', '对！他试了 M 码。'] },
-              { en: 'Size S.', zh: 'S 码。', reply: ['Not quite. Listen again: it is size M.', '不完全对。再听一次：是 M 码。'] },
-              { en: 'Size L.', zh: 'L 码。', reply: ['Not quite. The cap is size M.', '不完全对。帽子是 M 码。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 3 幕 · 就买它了',
-        icon: '🛍️',
-        narration: [
-          'Size M fits Jack well. He looks in the mirror and smiles. "I will take it!" He pays 25 yuan and wears his new blue cap home.',
-          'M 码正合适。Jack 照照镜子，笑了。“就买它了！”他付了 25 元，戴着新蓝帽子回家。'
-        ],
-        words: ['fit', 'cap'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['Jack decides to buy it. What does he say?', 'Jack 决定买下帽子，他会怎么说？'],
-            model: 'I will take it, please.',
-            match: /take|buy|will/i,
-            reply: ['Great! That is 25 yuan. Thank you!', '好嘞！一共 25 元，谢谢！'],
-            wrong: ['Try: I will take it, please.', '试试这样说：I will take it, please.']
-          }
-        ]
-      }
-    ],
     check: [
       'What colour cap does Jack like, and how much is it?',
       'Jack 喜欢什么颜色的帽子？多少钱？'
@@ -594,85 +368,6 @@ const stories = {
       'next to': ['Next to means beside something, very close.', 'next to 表示在……旁边。'],
       bus: ['A bus is a big car that many people travel in.', 'bus 是公交车。']
     },
-    scenes: [
-      {
-        title: '第 1 幕 · 想去博物馆',
-        icon: '🏛️',
-        narration: [
-          'Anna is new in the city. She wants to visit the museum, but she does not know the way. She sees a kind man, Mr. Chen, at the bus stop.',
-          'Anna 初来这座城市。她想去博物馆，但不认识路。她在公交站看到一位和气的先生——陈先生。'
-        ],
-        words: ['museum', 'bus'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['Help Anna ask the way politely.', '帮 Anna 礼貌地问路。'],
-            model: 'Excuse me, how can I get to the museum?',
-            match: /museum|way|get to|how/i,
-            reply: ['Sure. Take Bus 5.', '好的。坐 5 路公交。'],
-            wrong: ['Try: Excuse me, how can I get to the museum?', '试试这样说：Excuse me, how can I get to the museum?']
-          },
-          {
-            type: 'choose',
-            prompt: ['What does Anna not know?', 'Anna 不知道的是什么？'],
-            options: [
-              { en: 'The way to the museum.', zh: '去博物馆的路。', right: true, reply: ['Yes! She does not know the way.', '对！她不认识路。'] },
-              { en: 'The time.', zh: '时间。', reply: ['Not quite. Her problem is the way to the museum.', '不完全对。她的问题是去博物馆的路。'] },
-              { en: 'Her own name.', zh: '她自己的名字。', reply: ['Not quite. She knows her name, but not the way.', '不完全对。她知道名字，不知道的是路。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 2 幕 · 陈先生指路',
-        icon: '🚌',
-        narration: [
-          'Mr. Chen says: "Take Bus 5. Ride three stops and get off at the library stop." Anna listens carefully and repeats: "Bus 5, library stop."',
-          '陈先生说：“坐 5 路公交，坐三站，在图书馆站下车。”Anna 认真听完，跟着重复：“5 路，图书馆站。”'
-        ],
-        words: ['get off', 'bus'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['Which bus should Anna take?', 'Anna 该坐几路公交？'],
-            options: [
-              { en: 'Bus 5.', zh: '5 路。', right: true, reply: ['Yes! She takes Bus 5.', '对！她坐 5 路。'] },
-              { en: 'Bus 3.', zh: '3 路。', reply: ['Not quite. Listen again: it is Bus 5.', '不完全对。再听一次：是 5 路。'] },
-              { en: 'Bus 15.', zh: '15 路。', reply: ['Not quite. It is Bus 5, not 15.', '不完全对。是 5 路，不是 15 路。'] }
-            ]
-          },
-          {
-            type: 'choose',
-            prompt: ['Where does she get off?', '她在哪站下车？'],
-            options: [
-              { en: 'At the library stop.', zh: '图书馆站。', right: true, reply: ['Right. She gets off at the library stop.', '对。她在图书馆站下车。'] },
-              { en: 'At the park stop.', zh: '公园站。', reply: ['Not quite. The stop is the library stop.', '不完全对。是图书馆站。'] },
-              { en: 'At the school stop.', zh: '学校站。', reply: ['Not quite. Listen again: the library stop.', '不完全对。再听一次：图书馆站。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 3 幕 · 到达博物馆',
-        icon: '🎉',
-        narration: [
-          'Anna takes Bus 5 and gets off at the library stop. The museum is next to the library! She thanks Mr. Chen in her heart and walks in happily.',
-          'Anna 坐上 5 路公交，在图书馆站下车。博物馆就在图书馆旁边！她心里感谢了陈先生，开心地走了进去。'
-        ],
-        words: ['next to', 'get off'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['Where is the museum?', '博物馆在哪里？'],
-            options: [
-              { en: 'Next to the library.', zh: '在图书馆旁边。', right: true, reply: ['Yes! The museum is next to the library.', '对！博物馆就在图书馆旁边。'] },
-              { en: 'Across from the park.', zh: '在公园对面。', reply: ['Not quite. It is next to the library.', '不完全对。它在图书馆旁边。'] },
-              { en: 'Behind the school.', zh: '在学校后面。', reply: ['Not quite. Listen again: next to the library.', '不完全对。再听一次：图书馆旁边。'] }
-            ]
-          }
-        ]
-      }
-    ],
     check: [
       'Which bus should Anna take, and where does she get off?',
       'Anna 该坐几路公交？在哪站下车？'
@@ -705,76 +400,6 @@ const stories = {
       kite: ['A kite is a toy that flies in the wind.', 'kite 是风筝。'],
       park: ['A park is a green open place in a city.', 'park 是公园。']
     },
-    scenes: [
-      {
-        title: '第 1 幕 · 晴朗的星期六',
-        icon: '☀️',
-        narration: [
-          'It is Saturday morning. The sun is bright and the sky is clear. Bob looks out of the window: "What a sunny day!" He picks up the phone.',
-          '星期六的早晨。阳光明亮，天空晴朗。Bob 看着窗外：“多晴的天啊！”他拿起了电话。'
-        ],
-        words: ['sunny', 'invite'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['What is the weather like on Saturday?', '星期六天气怎么样？'],
-            options: [
-              { en: 'It is sunny.', zh: '天气晴朗。', right: true, reply: ['Yes! The sun is bright and the sky is clear.', '对！阳光明亮，天空晴朗。'] },
-              { en: 'It is rainy.', zh: '下雨。', reply: ['Not quite. Listen again: the sun is bright.', '不完全对。再听一次：阳光明亮。'] },
-              { en: 'It is snowy.', zh: '下雪。', reply: ['Not quite. It is a sunny day.', '不完全对。这是晴天。'] }
-            ]
-          },
-          {
-            type: 'speak',
-            prompt: ['Help Bob invite Mary to the park.', '帮 Bob 邀请 Mary 去公园。'],
-            model: 'Would you like to go to the park with me?',
-            match: /park|go|would|like/i,
-            reply: ['Yes, I would love to!', '好呀，我很乐意！'],
-            wrong: ['Try: Would you like to go to the park with me?', '试试这样说：Would you like to go to the park with me?']
-          }
-        ]
-      },
-      {
-        title: '第 2 幕 · 带上风筝',
-        icon: '🪁',
-        narration: [
-          'Mary says yes on the phone. Then she has an idea: "It is windy in the park. Let us bring a kite!" Bob laughs: "Good idea!"',
-          'Mary 在电话里答应了。接着她有了个主意：“公园里风大，我们带一只风筝吧！”Bob 笑了：“好主意！”'
-        ],
-        words: ['kite', 'park'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['What does Mary want to bring?', 'Mary 想带什么去？'],
-            options: [
-              { en: 'A kite.', zh: '一只风筝。', right: true, reply: ['Yes! She wants to bring a kite.', '对！她想带风筝。'] },
-              { en: 'A ball.', zh: '一个球。', reply: ['Not quite. Listen again: a kite.', '不完全对。再听一次：风筝。'] },
-              { en: 'Some food.', zh: '一些食物。', reply: ['Not quite. She thinks of a kite.', '不完全对。她想到的是风筝。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 3 幕 · 风筝飞高高',
-        icon: '🎈',
-        narration: [
-          'In the park, Bob and Mary run with the kite. The kite flies high in the blue sky. "This is the best sunny day!" Mary says.',
-          '在公园里，Bob 和 Mary 带着风筝奔跑。风筝在蓝蓝的天上飞得很高。“这是最棒的晴天！”Mary 说。'
-        ],
-        words: ['sunny', 'kite'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['How is the kite in the sky?', '天上的风筝怎么样？'],
-            options: [
-              { en: 'It flies high.', zh: '飞得很高。', right: true, reply: ['Yes! The kite flies high in the blue sky.', '对！风筝在蓝天上飞得很高。'] },
-              { en: 'It breaks.', zh: '破了。', reply: ['Not quite. The kite flies well.', '不完全对。风筝飞得很好。'] },
-              { en: 'They forget it.', zh: '他们忘带了。', reply: ['Not quite. They bring it and fly it.', '不完全对。他们带了，而且放飞了。'] }
-            ]
-          }
-        ]
-      }
-    ],
     check: [
       'What is the weather like, and what does Mary want to bring?',
       '天气怎么样？Mary 想带什么？'
@@ -807,76 +432,6 @@ const stories = {
       basketball: ['Basketball is a sport with a ball and two hoops.', 'basketball 是篮球。'],
       join: ['Join means take part with other people.', 'join 表示一起参加。']
     },
-    scenes: [
-      {
-        title: '第 1 幕 · 泳池的邀请',
-        icon: '📞',
-        narration: [
-          'Tim loves water. His favourite sport is swimming. On Sunday he wants to swim, so he calls his friend Sue: "Will you swim with me?"',
-          'Tim 喜欢水。他最喜欢的运动是游泳。周日他想去游泳，于是打电话给朋友 Sue：“你愿意和我一起去游泳吗？”'
-        ],
-        words: ['favourite', 'swimming'],
-        interactions: [
-          {
-            type: 'speak',
-            prompt: ['Help Tim invite Sue to swim.', '帮 Tim 邀请 Sue 一起游泳。'],
-            model: 'Will you swim with me on Sunday?',
-            match: /swim|with|sunday/i,
-            reply: ['Let me think... I like basketball more.', '让我想想……我更喜欢篮球。'],
-            wrong: ['Try: Will you swim with me on Sunday?', '试试这样说：Will you swim with me on Sunday?']
-          },
-          {
-            type: 'choose',
-            prompt: ['What is Tim\'s favourite sport?', 'Tim 最喜欢的运动是什么？'],
-            options: [
-              { en: 'Swimming.', zh: '游泳。', right: true, reply: ['Yes! Tim\'s favourite sport is swimming.', '对！Tim 最喜欢游泳。'] },
-              { en: 'Basketball.', zh: '篮球。', reply: ['Not quite. Basketball is Sue\'s favourite.', '不完全对。篮球是 Sue 最喜欢的。'] },
-              { en: 'Running.', zh: '跑步。', reply: ['Not quite. Tim loves swimming.', '不完全对。Tim 爱的是游泳。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 2 幕 · 不同的爱好',
-        icon: '🏀',
-        narration: [
-          'Sue likes basketball best. She plays it every week. But she looks at Tim and smiles: "I will try swimming with you. It sounds fun!"',
-          'Sue 最喜欢篮球。她每周都打。但她看着 Tim 笑了笑：“我愿意和你试试游泳，听起来很有趣！”'
-        ],
-        words: ['basketball', 'join'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['What sport does Sue like best?', 'Sue 最喜欢什么运动？'],
-            options: [
-              { en: 'Basketball.', zh: '篮球。', right: true, reply: ['Yes! Sue plays basketball every week.', '对！Sue 每周都打篮球。'] },
-              { en: 'Swimming.', zh: '游泳。', reply: ['Not quite. She will try swimming, but she likes basketball.', '不完全对。她会试着游泳，但她喜欢的是篮球。'] },
-              { en: 'Football.', zh: '足球。', reply: ['Not quite. Listen again: basketball.', '不完全对。再听一次：篮球。'] }
-            ]
-          }
-        ]
-      },
-      {
-        title: '第 3 幕 · 尝试新事物',
-        icon: '🏊',
-        narration: [
-          'On Sunday, Tim and Sue go to the pool. Sue learns to float and kick. "Swimming is fun!" she says. Now she has two favourite sports.',
-          '周日，Tim 和 Sue 来到泳池。Sue 学会了漂浮和打水。“游泳真好玩！”她说。现在她有两个最喜欢的运动了。'
-        ],
-        words: ['swimming', 'join'],
-        interactions: [
-          {
-            type: 'choose',
-            prompt: ['How does Sue feel about swimming at last?', '最后 Sue 觉得游泳怎么样？'],
-            options: [
-              { en: 'It is fun.', zh: '很有趣。', right: true, reply: ['Yes! She says swimming is fun.', '对！她说游泳真好玩。'] },
-              { en: 'It is scary.', zh: '很可怕。', reply: ['Not quite. She enjoys it.', '不完全对。她很喜欢。'] },
-              { en: 'She will never swim again.', zh: '她再也不游了。', reply: ['Not quite. Now she has two favourite sports.', '不完全对。她现在有两个最喜欢的运动了。'] }
-            ]
-          }
-        ]
-      }
-    ],
     check: [
       'What sport does Tim like, and does Sue like swimming?',
       'Tim 喜欢什么运动？Sue 喜欢游泳吗？'
@@ -1355,52 +910,6 @@ function stalkNpc(id){const w=worlds[activeStory];const n=w&&w.npcs.find(x=>x.id
 function storiesHub(){
  return `<section class="card stories"><p class="muted">选一个故事开始：装好语言背包、进入冒险地图开口回答、翻看线索手记、最后冒险回顾。每个故事都是一次完整的听说冒险。</p><div class="story-list">${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}</div></section>`;
 }
-// ===== 多幕互动故事：多情节 + 多个听说交互 =====
-const sceneProgress={};let sceneTarget=null;
-function sstate(id){if(!sceneProgress[id])sceneProgress[id]={act:0,done:{},res:{}};return sceneProgress[id];}
-function skey(a,i){return a+'-'+i;}
-function sceneIx(d,a,i,ix){
- const sp=sstate(activeStory),k=skey(a,i),r=sp.res[k];
- if(ix.type==='choose'){
-  return `<div class="scene-ix"><b>📝 ${esc(ix.prompt[1])}</b><p lang="en">${esc(ix.prompt[0])}</p>
-   <div class="scene-options">${ix.options.map((o,oi)=>btn(esc(o.en),'scene-choose','option'+(r&&r.pick===oi?(o.right?' right':' wrong'):''),`data-value="${a}-${i}-${oi}"`)).join('')}</div>
-   ${r?`<div class="scene-reply ${r.right?'right':'retry'}"><b>${r.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(r.en)}</p><p>${esc(r.zh)}</p><div class="actions">${btn('🔊 再听','scene-reply','chip',`data-value="${k}"`)}</div></div>`:'<small class="muted">听完这一幕，选出你的答案。</small>'}</div>`;
- }
- const liveMic=recording&&sceneTarget&&sceneTarget.k===k;
- return `<div class="scene-ix"><b>🎙 ${esc(ix.prompt[1])}</b><p lang="en">${esc(ix.prompt[0])}</p>
-  <details class="typing-fallback scene-model"><summary>💡 不会说？看示范</summary><p lang="en">${esc(ix.model)}</p><div class="actions">${btn('🔊 听示范','scene-model','chip',`data-value="${k}"`)}</div></details>
-  <div class="actions">${btn(liveMic?'■ 说完了':'🎙 开口说','scene-mic','primary'+(liveMic?' recording':''),`data-value="${k}"`)}</div>${voicePanel('scene')}
-  <form id="scene-talk-${a}-${i}"><label for="scene-in-${a}-${i}">不方便开口？打字也可以</label><div><input id="scene-in-${a}-${i}" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form>
-  ${r?`<div class="scene-reply ${r.right?'right':'retry'}"><b>${r.right?'✅ 说得好！':'💡 再试试看'}</b><p lang="en">${esc(r.en)}</p><p>${esc(r.zh)}</p><div class="actions">${btn('🔊 再听','scene-reply','chip',`data-value="${k}"`)}</div></div>`:'<small class="muted">开口说，或打字帮角色把话说出来。</small>'}
-  ${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}</div>`;
-}
-function storySceneView(d){
- const sc=d.scenes||[];if(!sc.length)return storyMapView(d);
- const sp=sstate(activeStory),a=Math.min(sp.act,sc.length-1),cur=sc[a],total=sc.length;
- const actDone=cur.interactions.every((_,i)=>sp.done[skey(a,i)]);
- const allDone=sc.every((x,ai)=>x.interactions.every((_,i)=>sp.done[skey(ai,i)]));
- return `<section class="card adventure story-scene">
-  <div class="maphead"><strong>◈ ${esc(d.name)} · 互动故事</strong><span class="muted">第 ${a+1} / ${total} 幕 · 完成本幕的听说任务才能继续</span></div>
-  <div class="scene-track" role="list" aria-label="故事幕进度">${sc.map((x,i)=>`<span class="scene-dot ${i<a?'done':i===a?'active':''}" role="listitem" title="${esc(x.title)}">${x.icon}</span>`).join('')}</div>
-  <div class="scene-card">
-   <div class="scene-title">${cur.icon} ${esc(cur.title)}</div>
-   <div class="scene-narration"><p lang="en">${esc(cur.narration[0])}</p>
-    <div class="actions">${btn('🔊 听这一幕','scene-narration','primary')}${btn('慢速重听','scene-narration-slow','secondary')}</div>
-    <details class="transcript"><summary>看中文</summary><p>${esc(cur.narration[1])}</p></details></div>
-   <div class="vocabgrid">${(cur.words||[]).filter(w=>d.terms[w]).map(w=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(d.terms[w][1])}</span></button>`).join('')}</div>
-   ${cur.interactions.map((ix,i)=>sceneIx(d,a,i,ix)).join('')}
-  </div>
-  <div class="actions">
-   ${a>0?btn('← 上一幕','scene-act','chip',`data-value="${a-1}"`):''}
-   ${btn('← 语言背包','story-step','chip','data-value="0"')}
-   ${actDone?(a<total-1?btn('下一幕 →','scene-act','primary',`data-value="${a+1}"`):btn('下一个：线索手记 →','story-step','primary','data-value="2"')):'<span class="muted">完成本幕的听说任务后继续 →</span>'}
-  </div>
-  ${allDone?`<p class="muted">🎉 你走完了全部 ${total} 幕，可以去「线索手记」回顾啦。</p>`:''}
- </section>`;
-}
-function sceneChoose(v){const [a,i,oi]=v.split('-').map(Number);const d=stories[activeStory];const ix=d.scenes[a].interactions[i],o=ix.options[oi],sp=sstate(activeStory),k=skey(a,i);sp.res[k]={en:o.reply[0],zh:o.reply[1],right:!!o.right,pick:oi};if(o.right)sp.done[k]=true;render();speak(o.reply[0]);}
-function sceneSpeak(a,i,text){const d=stories[activeStory];if(!d.scenes)return;const ix=d.scenes[a].interactions[i],sp=sstate(activeStory),k=skey(a,i);if(!text.trim())return;const ok=ix.match.test(text);sp.res[k]=ok?{en:ix.reply[0],zh:ix.reply[1],right:true}:{en:ix.wrong[0],zh:ix.wrong[1],right:false};if(ok)sp.done[k]=true;sceneTarget=null;render();speak(sp.res[k].en);}
-
 function storyDetail(){
  const d=stories[activeStory];
  const top=`<div class="story-top">${btn('← 故事列表','story-back','chip')}<span class="story-topic">${esc(d.topic)}</span></div>`;
@@ -1408,7 +917,7 @@ function storyDetail(){
  if(storyStep===0){
   body=`<div class="story-prep"><b>▧ 语言背包</b><p class="muted">先认识本故事会遇到的词。点卡片听发音，冒险时也能回来查看。</p><div class="vocabgrid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div><div class="actions">${btn('下一个：冒险地图 →','story-step','primary','data-value="1"')}</div></div>`;
  } else if(storyStep===1){
-  body=d.scenes?storySceneView(d):storyMapView(d);
+  body=storyMapView(d);
  } else if(storyStep===2){
   body=`<div class="story-notebook"><b>▤ 线索手记</b><p class="muted">回顾故事与重点词，再用英语说出你的理解。</p><div class="story-narrative"><p lang="en">${esc(d.simple[0])}</p><p>${esc(d.simple[1])}</p><div class="actions">${btn('🔊 重听故事','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}</div></div><div class="vocabgrid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div><div class="story-check"><b>📝 ${esc(d.check[1])}</b><p lang="en">${esc(d.check[0])}</p></div><div class="story-answer">${voicePanel('story')}<div class="actions">${voiceTriggerButton('story','🎙 开口回答')}</div>${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}<details class="typing-fallback" ${textOnly?'open':''}><summary>暂时无法开口？打字回答</summary><form id="story-talk"><label for="story-answer">用英语回答</label><div><input id="story-answer" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form></details>${storyResult?`<div class="story-feedback ${storyResult.right?'right':(storyResult.checking?'retry':'info')}"><b>${storyResult.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(storyResult.en)}</p><p>${esc(storyResult.zh)}</p><div class="actions">${btn('🔊 再听','story-listen','chip')}</div></div>`:'<small class="muted">听完故事，用英语回答上面的问题。</small>'}</div><div class="actions">${btn('← 冒险地图','story-step','chip','data-value="1"')}${btn('下一个：冒险回顾 →','story-step','primary','data-value="3"')}</div></div>`;
  } else {
@@ -1421,8 +930,7 @@ function storiesView(){return activeStory?storyDetail():storiesHub(true);}
 function storiesAside(){return `<aside class="card coach-intro stories-aside"><div class="avatar">🎧</div><strong>听说小练习</strong><p>7 个日常场景，随时来练。</p><div class="story-tips"><small>🎧 先听故事，可常速或慢速重听</small><small>🗂 点词卡直接听发音</small><small>🎙 开口回答，也可以打字提交</small><small>💡 答错会给出提示，可以再试</small></div></aside>`;}
 function storyNav(){
  const home=btn('🏠 返回主页','story-back','home');
- const sd=activeStory?stories[activeStory]:null;
- const steps=[['prep','▧ 语言背包'],['map',sd&&sd.scenes?'◈ 互动故事':'◈ 冒险地图'],['notebook','▤ 线索手记'],['review','☆ 冒险回顾']];
+ const steps=[['prep','▧ 语言背包'],['map','◈ 冒险地图'],['notebook','▤ 线索手记'],['review','☆ 冒险回顾']];
  return `<nav class="nav story-nav" aria-label="本故事导航">${home}<span class="nav-sep" role="separator" aria-hidden="true"></span>${steps.map(([,label],i)=>btn((i<storyStep?'✓ ':'')+label,'story-step',i===storyStep?'active':'',`data-value="${i}"`)).join('')}</nav>`;
 }
 function storyCelebrate(){
@@ -1476,14 +984,7 @@ if(a==='mission-replay'||a==='mission-slow'){rememberSpeaker(NPCS.find(n=>n.id==
 if(a==='npc-mic'){mic('npc');return;}
 if(a==='npc-replay'||a==='npc-slow'){const n=nearest(player,s),audio=n&&(npcResponses[n.id]||npcAudio(n));if(audio){rememberSpeaker(n);render();speak(audio.en,a==='npc-slow');}return;}
 if(['start','finish','green','wrong-button'].includes(a)){const n=nearest(player,s);if(!n||(['start','finish'].includes(a)?n.id!=='organiser':n.id!=='pip'))return;commit('move',n.location);}
-if(['map','prep','notebook','review','stories'].includes(a)){if(a==='stories'){keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(!navEnabled(a)){commit('enter');view='prep';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view=a;render();return;}if(a==='welcome-home'){cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(a==='story-select'){storySelect(v);return;}if(a==='story-back'){storyBack();return;}if(a==='story-step'){storyStep=Number(v);render();return;}
-if(a==='scene-act'){const sp=sstate(activeStory);sp.act=Number(v);render();return;}
-if(a==='scene-choose'){sceneChoose(v);return;}
-if(a==='scene-narration'){const sc=stories[activeStory].scenes,sp=sstate(activeStory);speak(sc[Math.min(sp.act,sc.length-1)].narration[0]);return;}
-if(a==='scene-narration-slow'){const sc=stories[activeStory].scenes,sp=sstate(activeStory);speak(sc[Math.min(sp.act,sc.length-1)].narration[0],true);return;}
-if(a==='scene-model'){const [aa,ii]=v.split('-').map(Number);speak(stories[activeStory].scenes[aa].interactions[ii].model);return;}
-if(a==='scene-reply'){const r=sstate(activeStory).res[v];if(r)speak(r.en);return;}
-if(a==='scene-mic'){const [aa,ii]=v.split('-').map(Number);sceneTarget={a:aa,i:ii,k:v};mic('scene');return;}if(a==='story-listen'){if(storyResult&&storyResult.en)speak(storyResult.en);else if(activeStory)speak(stories[activeStory].simple[0]);return;}if(a==='story-slow'){if(activeStory)speak(stories[activeStory].simple[0],true);return;}
+if(['map','prep','notebook','review','stories'].includes(a)){if(a==='stories'){keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(!navEnabled(a)){commit('enter');view='prep';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view=a;render();return;}if(a==='welcome-home'){cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(a==='story-select'){storySelect(v);return;}if(a==='story-back'){storyBack();return;}if(a==='story-step'){storyStep=Number(v);render();return;}if(a==='story-listen'){if(storyResult&&storyResult.en)speak(storyResult.en);else if(activeStory)speak(stories[activeStory].simple[0]);return;}if(a==='story-slow'){if(activeStory)speak(stories[activeStory].simple[0],true);return;}
 if(a==='story-mic'){mic('story');return;}
 if(a==='smove'){smove(v);return;}
 if(a==='snpc-talk'){stalkTalk(v,false);return;}
@@ -1505,13 +1006,11 @@ function cancelVoice(renderUI=false){const turn=recording;recording=null;turn?.a
 function deliverVoice(d){
  if(d.target==='npc'){if(view==='map'&&nearest(player,s)?.id===d.npcId)npcSubmit(d.text);else{d.phase='cancelled';render();}}
  else if(d.target==='story'){if(activeStory)storyAnswer(d.text);else{d.phase='cancelled';render();}}
- else if(d.target==='scene'){if(sceneTarget)sceneSpeak(sceneTarget.a,sceneTarget.i,d.text);else{d.phase='cancelled';render();}}
  else submit(d.text);
 }
 function mic(target='npc'){
  if(recording){if(voiceDisplay?.phase!=='preparing')recording.stop();return;}
  if(target==='story'&&!activeStory)return;
- if(target==='scene'&&!sceneTarget)return;
  const contact=nearest(player,s);if(target==='npc'&&s.prepared&&contact?.id==='organiser'&&!s.complete){if(interactionMode(contact,s)==='mission')action('start');else replayNpc(contact);return;}
  if(s.complete&&target==='npc'){speak(reply(nearest(player,s)||NPCS[0],s,'').en);return;}
  const R=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -1530,8 +1029,7 @@ function mic(target='npc'){
  if(micApproved){start();return;}
  const d=document.createElement('dialog');d.innerHTML='<h2>开启语音交谈</h2><p>说话时持续识别，连续静音 2 秒后才回答，也可以点“说完了”。语音活动检测在本地运行；浏览器可能使用其远程语音服务。本应用不保存录音。</p><div class="actions"><button class="secondary" id="no-mic">改用文字</button><button class="primary" id="yes-mic">开启麦克风</button></div>';document.body.append(d);d.showModal();d.querySelector('#no-mic').onclick=()=>{d.remove();openTyping(target);};d.querySelector('#yes-mic').onclick=()=>{d.remove();start();};
 }
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.speak){speak(b.dataset.speak);return;}if(b.dataset.action)action(b.dataset.action,b.dataset.value);});document.addEventListener('submit',e=>{if(e.target.id==='npc-talk'){e.preventDefault();npcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='story-talk'){e.preventDefault();storyAnswer(new FormData(e.target).get('answer')||'');return;}
-if(e.target.id&&e.target.id.startsWith('scene-talk-')){e.preventDefault();const [aa,ii]=e.target.id.slice(11).split('-').map(Number);sceneSpeak(aa,ii,new FormData(e.target).get('answer')||'');return;}if(e.target.id!=='talk')return;e.preventDefault();submit(new FormData(e.target).get('utterance')||'');});render();
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.speak){speak(b.dataset.speak);return;}if(b.dataset.action)action(b.dataset.action,b.dataset.value);});document.addEventListener('submit',e=>{if(e.target.id==='npc-talk'){e.preventDefault();npcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='story-talk'){e.preventDefault();storyAnswer(new FormData(e.target).get('answer')||'');return;}if(e.target.id!=='talk')return;e.preventDefault();submit(new FormData(e.target).get('utterance')||'');});render();
 
 document.addEventListener('change',e=>{if(e.target.matches('[data-rate-choice]')){const rate=Number(e.target.value);if(!speechRates.includes(rate))return;stopSpeech();speechRate=rate;voiceTested=false;voiceStatus='语速已设为 '+speechRate.toFixed(2)+'×，下次播放生效';try{localStorage.setItem('campus-speech-rate',String(speechRate));}catch{notice='浏览器未允许保存语速，本次设置仅在当前页面有效。';}render();return;}if(e.target.id==='voice-choice'){stopSpeech();voiceTested=false;preferredVoice=e.target.value;voiceStatus='音色已更改，点击试听确认';try{localStorage.setItem('campus-voice',preferredVoice);voiceSaveError=false;}catch{voiceSaveError=true;}render();}});
 window.speechSynthesis?.addEventListener('voiceschanged',()=>{const select=document.querySelector('#voice-choice');if(select)select.innerHTML=voiceOptions();updateVoiceStatus();});

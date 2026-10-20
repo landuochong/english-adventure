@@ -167,52 +167,6 @@ function stalkNpc(id){const w=worlds[activeStory];const n=w&&w.npcs.find(x=>x.id
 function storiesHub(){
  return `<section class="card stories"><p class="muted">选一个故事开始：装好语言背包、进入冒险地图开口回答、翻看线索手记、最后冒险回顾。每个故事都是一次完整的听说冒险。</p><div class="story-list">${storyList.map(s=>{const d=stories[s.id];const hook=d.simple[1];return `<button class="story-card" data-action="story-select" data-value="${s.id}"><span class="story-topic">${esc(s.topic)}</span><span class="story-name">${esc(d.name)}</span><span class="story-hook">${esc(hook.length>22?hook.slice(0,22)+'…':hook)}</span><span class="story-go">开始 ▶</span></button>`;}).join('')}</div></section>`;
 }
-// ===== 多幕互动故事：多情节 + 多个听说交互 =====
-const sceneProgress={};let sceneTarget=null;
-function sstate(id){if(!sceneProgress[id])sceneProgress[id]={act:0,done:{},res:{}};return sceneProgress[id];}
-function skey(a,i){return a+'-'+i;}
-function sceneIx(d,a,i,ix){
- const sp=sstate(activeStory),k=skey(a,i),r=sp.res[k];
- if(ix.type==='choose'){
-  return `<div class="scene-ix"><b>📝 ${esc(ix.prompt[1])}</b><p lang="en">${esc(ix.prompt[0])}</p>
-   <div class="scene-options">${ix.options.map((o,oi)=>btn(esc(o.en),'scene-choose','option'+(r&&r.pick===oi?(o.right?' right':' wrong'):''),`data-value="${a}-${i}-${oi}"`)).join('')}</div>
-   ${r?`<div class="scene-reply ${r.right?'right':'retry'}"><b>${r.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(r.en)}</p><p>${esc(r.zh)}</p><div class="actions">${btn('🔊 再听','scene-reply','chip',`data-value="${k}"`)}</div></div>`:'<small class="muted">听完这一幕，选出你的答案。</small>'}</div>`;
- }
- const liveMic=recording&&sceneTarget&&sceneTarget.k===k;
- return `<div class="scene-ix"><b>🎙 ${esc(ix.prompt[1])}</b><p lang="en">${esc(ix.prompt[0])}</p>
-  <details class="typing-fallback scene-model"><summary>💡 不会说？看示范</summary><p lang="en">${esc(ix.model)}</p><div class="actions">${btn('🔊 听示范','scene-model','chip',`data-value="${k}"`)}</div></details>
-  <div class="actions">${btn(liveMic?'■ 说完了':'🎙 开口说','scene-mic','primary'+(liveMic?' recording':''),`data-value="${k}"`)}</div>${voicePanel('scene')}
-  <form id="scene-talk-${a}-${i}"><label for="scene-in-${a}-${i}">不方便开口？打字也可以</label><div><input id="scene-in-${a}-${i}" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form>
-  ${r?`<div class="scene-reply ${r.right?'right':'retry'}"><b>${r.right?'✅ 说得好！':'💡 再试试看'}</b><p lang="en">${esc(r.en)}</p><p>${esc(r.zh)}</p><div class="actions">${btn('🔊 再听','scene-reply','chip',`data-value="${k}"`)}</div></div>`:'<small class="muted">开口说，或打字帮角色把话说出来。</small>'}
-  ${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}</div>`;
-}
-function storySceneView(d){
- const sc=d.scenes||[];if(!sc.length)return storyMapView(d);
- const sp=sstate(activeStory),a=Math.min(sp.act,sc.length-1),cur=sc[a],total=sc.length;
- const actDone=cur.interactions.every((_,i)=>sp.done[skey(a,i)]);
- const allDone=sc.every((x,ai)=>x.interactions.every((_,i)=>sp.done[skey(ai,i)]));
- return `<section class="card adventure story-scene">
-  <div class="maphead"><strong>◈ ${esc(d.name)} · 互动故事</strong><span class="muted">第 ${a+1} / ${total} 幕 · 完成本幕的听说任务才能继续</span></div>
-  <div class="scene-track" role="list" aria-label="故事幕进度">${sc.map((x,i)=>`<span class="scene-dot ${i<a?'done':i===a?'active':''}" role="listitem" title="${esc(x.title)}">${x.icon}</span>`).join('')}</div>
-  <div class="scene-card">
-   <div class="scene-title">${cur.icon} ${esc(cur.title)}</div>
-   <div class="scene-narration"><p lang="en">${esc(cur.narration[0])}</p>
-    <div class="actions">${btn('🔊 听这一幕','scene-narration','primary')}${btn('慢速重听','scene-narration-slow','secondary')}</div>
-    <details class="transcript"><summary>看中文</summary><p>${esc(cur.narration[1])}</p></details></div>
-   <div class="vocabgrid">${(cur.words||[]).filter(w=>d.terms[w]).map(w=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(d.terms[w][1])}</span></button>`).join('')}</div>
-   ${cur.interactions.map((ix,i)=>sceneIx(d,a,i,ix)).join('')}
-  </div>
-  <div class="actions">
-   ${a>0?btn('← 上一幕','scene-act','chip',`data-value="${a-1}"`):''}
-   ${btn('← 语言背包','story-step','chip','data-value="0"')}
-   ${actDone?(a<total-1?btn('下一幕 →','scene-act','primary',`data-value="${a+1}"`):btn('下一个：线索手记 →','story-step','primary','data-value="2"')):'<span class="muted">完成本幕的听说任务后继续 →</span>'}
-  </div>
-  ${allDone?`<p class="muted">🎉 你走完了全部 ${total} 幕，可以去「线索手记」回顾啦。</p>`:''}
- </section>`;
-}
-function sceneChoose(v){const [a,i,oi]=v.split('-').map(Number);const d=stories[activeStory];const ix=d.scenes[a].interactions[i],o=ix.options[oi],sp=sstate(activeStory),k=skey(a,i);sp.res[k]={en:o.reply[0],zh:o.reply[1],right:!!o.right,pick:oi};if(o.right)sp.done[k]=true;render();speak(o.reply[0]);}
-function sceneSpeak(a,i,text){const d=stories[activeStory];if(!d.scenes)return;const ix=d.scenes[a].interactions[i],sp=sstate(activeStory),k=skey(a,i);if(!text.trim())return;const ok=ix.match.test(text);sp.res[k]=ok?{en:ix.reply[0],zh:ix.reply[1],right:true}:{en:ix.wrong[0],zh:ix.wrong[1],right:false};if(ok)sp.done[k]=true;sceneTarget=null;render();speak(sp.res[k].en);}
-
 function storyDetail(){
  const d=stories[activeStory];
  const top=`<div class="story-top">${btn('← 故事列表','story-back','chip')}<span class="story-topic">${esc(d.topic)}</span></div>`;
@@ -220,7 +174,7 @@ function storyDetail(){
  if(storyStep===0){
   body=`<div class="story-prep"><b>▧ 语言背包</b><p class="muted">先认识本故事会遇到的词。点卡片听发音，冒险时也能回来查看。</p><div class="vocabgrid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div><div class="actions">${btn('下一个：冒险地图 →','story-step','primary','data-value="1"')}</div></div>`;
  } else if(storyStep===1){
-  body=d.scenes?storySceneView(d):storyMapView(d);
+  body=storyMapView(d);
  } else if(storyStep===2){
   body=`<div class="story-notebook"><b>▤ 线索手记</b><p class="muted">回顾故事与重点词，再用英语说出你的理解。</p><div class="story-narrative"><p lang="en">${esc(d.simple[0])}</p><p>${esc(d.simple[1])}</p><div class="actions">${btn('🔊 重听故事','story-listen','primary')}${btn('慢速重听','story-slow','secondary')}</div></div><div class="vocabgrid">${Object.entries(d.terms).map(([w,t])=>`<button class="word" data-speak="${esc(w)}"><em>🔊</em><b>${esc(w)}</b><span>${esc(t[1])}</span></button>`).join('')}</div><div class="story-check"><b>📝 ${esc(d.check[1])}</b><p lang="en">${esc(d.check[0])}</p></div><div class="story-answer">${voicePanel('story')}<div class="actions">${voiceTriggerButton('story','🎙 开口回答')}</div>${micError?`<p class="muted" role="status">${esc(micError)}</p>`:''}<details class="typing-fallback" ${textOnly?'open':''}><summary>暂时无法开口？打字回答</summary><form id="story-talk"><label for="story-answer">用英语回答</label><div><input id="story-answer" name="answer" maxlength="300" placeholder="输入你的回答" autocomplete="off"><button class="secondary" type="submit">提交 ↗</button></div></form></details>${storyResult?`<div class="story-feedback ${storyResult.right?'right':(storyResult.checking?'retry':'info')}"><b>${storyResult.right?'✅ 答对啦！':'💡 再试试看'}</b><p lang="en">${esc(storyResult.en)}</p><p>${esc(storyResult.zh)}</p><div class="actions">${btn('🔊 再听','story-listen','chip')}</div></div>`:'<small class="muted">听完故事，用英语回答上面的问题。</small>'}</div><div class="actions">${btn('← 冒险地图','story-step','chip','data-value="1"')}${btn('下一个：冒险回顾 →','story-step','primary','data-value="3"')}</div></div>`;
  } else {
@@ -233,8 +187,7 @@ function storiesView(){return activeStory?storyDetail():storiesHub(true);}
 function storiesAside(){return `<aside class="card coach-intro stories-aside"><div class="avatar">🎧</div><strong>听说小练习</strong><p>7 个日常场景，随时来练。</p><div class="story-tips"><small>🎧 先听故事，可常速或慢速重听</small><small>🗂 点词卡直接听发音</small><small>🎙 开口回答，也可以打字提交</small><small>💡 答错会给出提示，可以再试</small></div></aside>`;}
 function storyNav(){
  const home=btn('🏠 返回主页','story-back','home');
- const sd=activeStory?stories[activeStory]:null;
- const steps=[['prep','▧ 语言背包'],['map',sd&&sd.scenes?'◈ 互动故事':'◈ 冒险地图'],['notebook','▤ 线索手记'],['review','☆ 冒险回顾']];
+ const steps=[['prep','▧ 语言背包'],['map','◈ 冒险地图'],['notebook','▤ 线索手记'],['review','☆ 冒险回顾']];
  return `<nav class="nav story-nav" aria-label="本故事导航">${home}<span class="nav-sep" role="separator" aria-hidden="true"></span>${steps.map(([,label],i)=>btn((i<storyStep?'✓ ':'')+label,'story-step',i===storyStep?'active':'',`data-value="${i}"`)).join('')}</nav>`;
 }
 function storyCelebrate(){
@@ -288,14 +241,7 @@ if(a==='mission-replay'||a==='mission-slow'){rememberSpeaker(NPCS.find(n=>n.id==
 if(a==='npc-mic'){mic('npc');return;}
 if(a==='npc-replay'||a==='npc-slow'){const n=nearest(player,s),audio=n&&(npcResponses[n.id]||npcAudio(n));if(audio){rememberSpeaker(n);render();speak(audio.en,a==='npc-slow');}return;}
 if(['start','finish','green','wrong-button'].includes(a)){const n=nearest(player,s);if(!n||(['start','finish'].includes(a)?n.id!=='organiser':n.id!=='pip'))return;commit('move',n.location);}
-if(['map','prep','notebook','review','stories'].includes(a)){if(a==='stories'){keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(!navEnabled(a)){commit('enter');view='prep';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view=a;render();return;}if(a==='welcome-home'){cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(a==='story-select'){storySelect(v);return;}if(a==='story-back'){storyBack();return;}if(a==='story-step'){storyStep=Number(v);render();return;}
-if(a==='scene-act'){const sp=sstate(activeStory);sp.act=Number(v);render();return;}
-if(a==='scene-choose'){sceneChoose(v);return;}
-if(a==='scene-narration'){const sc=stories[activeStory].scenes,sp=sstate(activeStory);speak(sc[Math.min(sp.act,sc.length-1)].narration[0]);return;}
-if(a==='scene-narration-slow'){const sc=stories[activeStory].scenes,sp=sstate(activeStory);speak(sc[Math.min(sp.act,sc.length-1)].narration[0],true);return;}
-if(a==='scene-model'){const [aa,ii]=v.split('-').map(Number);speak(stories[activeStory].scenes[aa].interactions[ii].model);return;}
-if(a==='scene-reply'){const r=sstate(activeStory).res[v];if(r)speak(r.en);return;}
-if(a==='scene-mic'){const [aa,ii]=v.split('-').map(Number);sceneTarget={a:aa,i:ii,k:v};mic('scene');return;}if(a==='story-listen'){if(storyResult&&storyResult.en)speak(storyResult.en);else if(activeStory)speak(stories[activeStory].simple[0]);return;}if(a==='story-slow'){if(activeStory)speak(stories[activeStory].simple[0],true);return;}
+if(['map','prep','notebook','review','stories'].includes(a)){if(a==='stories'){keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(!navEnabled(a)){commit('enter');view='prep';const g=guidance(s);say(g.en,g.zh);speak(g.en);return;}keys.clear();destination=null;cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view=a;render();return;}if(a==='welcome-home'){cancelVoice();stopSpeech();micError='';activeStory=null;storyStep=0;storyChecking=false;storyResult=null;view='welcome';render();return;}if(a==='story-select'){storySelect(v);return;}if(a==='story-back'){storyBack();return;}if(a==='story-step'){storyStep=Number(v);render();return;}if(a==='story-listen'){if(storyResult&&storyResult.en)speak(storyResult.en);else if(activeStory)speak(stories[activeStory].simple[0]);return;}if(a==='story-slow'){if(activeStory)speak(stories[activeStory].simple[0],true);return;}
 if(a==='story-mic'){mic('story');return;}
 if(a==='smove'){smove(v);return;}
 if(a==='snpc-talk'){stalkTalk(v,false);return;}
@@ -317,13 +263,11 @@ function cancelVoice(renderUI=false){const turn=recording;recording=null;turn?.a
 function deliverVoice(d){
  if(d.target==='npc'){if(view==='map'&&nearest(player,s)?.id===d.npcId)npcSubmit(d.text);else{d.phase='cancelled';render();}}
  else if(d.target==='story'){if(activeStory)storyAnswer(d.text);else{d.phase='cancelled';render();}}
- else if(d.target==='scene'){if(sceneTarget)sceneSpeak(sceneTarget.a,sceneTarget.i,d.text);else{d.phase='cancelled';render();}}
  else submit(d.text);
 }
 function mic(target='npc'){
  if(recording){if(voiceDisplay?.phase!=='preparing')recording.stop();return;}
  if(target==='story'&&!activeStory)return;
- if(target==='scene'&&!sceneTarget)return;
  const contact=nearest(player,s);if(target==='npc'&&s.prepared&&contact?.id==='organiser'&&!s.complete){if(interactionMode(contact,s)==='mission')action('start');else replayNpc(contact);return;}
  if(s.complete&&target==='npc'){speak(reply(nearest(player,s)||NPCS[0],s,'').en);return;}
  const R=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -342,8 +286,7 @@ function mic(target='npc'){
  if(micApproved){start();return;}
  const d=document.createElement('dialog');d.innerHTML='<h2>开启语音交谈</h2><p>说话时持续识别，连续静音 2 秒后才回答，也可以点“说完了”。语音活动检测在本地运行；浏览器可能使用其远程语音服务。本应用不保存录音。</p><div class="actions"><button class="secondary" id="no-mic">改用文字</button><button class="primary" id="yes-mic">开启麦克风</button></div>';document.body.append(d);d.showModal();d.querySelector('#no-mic').onclick=()=>{d.remove();openTyping(target);};d.querySelector('#yes-mic').onclick=()=>{d.remove();start();};
 }
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.speak){speak(b.dataset.speak);return;}if(b.dataset.action)action(b.dataset.action,b.dataset.value);});document.addEventListener('submit',e=>{if(e.target.id==='npc-talk'){e.preventDefault();npcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='story-talk'){e.preventDefault();storyAnswer(new FormData(e.target).get('answer')||'');return;}
-if(e.target.id&&e.target.id.startsWith('scene-talk-')){e.preventDefault();const [aa,ii]=e.target.id.slice(11).split('-').map(Number);sceneSpeak(aa,ii,new FormData(e.target).get('answer')||'');return;}if(e.target.id!=='talk')return;e.preventDefault();submit(new FormData(e.target).get('utterance')||'');});render();
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.speak){speak(b.dataset.speak);return;}if(b.dataset.action)action(b.dataset.action,b.dataset.value);});document.addEventListener('submit',e=>{if(e.target.id==='npc-talk'){e.preventDefault();npcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='story-talk'){e.preventDefault();storyAnswer(new FormData(e.target).get('answer')||'');return;}if(e.target.id!=='talk')return;e.preventDefault();submit(new FormData(e.target).get('utterance')||'');});render();
 
 document.addEventListener('change',e=>{if(e.target.matches('[data-rate-choice]')){const rate=Number(e.target.value);if(!speechRates.includes(rate))return;stopSpeech();speechRate=rate;voiceTested=false;voiceStatus='语速已设为 '+speechRate.toFixed(2)+'×，下次播放生效';try{localStorage.setItem('campus-speech-rate',String(speechRate));}catch{notice='浏览器未允许保存语速，本次设置仅在当前页面有效。';}render();return;}if(e.target.id==='voice-choice'){stopSpeech();voiceTested=false;preferredVoice=e.target.value;voiceStatus='音色已更改，点击试听确认';try{localStorage.setItem('campus-voice',preferredVoice);voiceSaveError=false;}catch{voiceSaveError=true;}render();}});
 window.speechSynthesis?.addEventListener('voiceschanged',()=>{const select=document.querySelector('#voice-choice');if(select)select.innerHTML=voiceOptions();updateVoiceStatus();});
