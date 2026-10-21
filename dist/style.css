@@ -199,3 +199,51 @@
 .story-ask form>div{display:flex;gap:8px}
 
 @media(prefers-reduced-motion:reduce){.clue-pop,.welcome-portrait,.welcome .primary,.quest-node.active .quest-dot,.destination:not([hidden]),.world-actor.player>span,.primary.recording,.workspace.title-screen::before,.workspace.title-screen::after,.toast,.story-card,.stories.detail{animation:none!important}}
+
+/* Daily adventures use the same listening-first controls and comfortable map as Pip. */
+.story-layout{grid-template-columns:minmax(0,1fr)}
+.story-adventure{overflow:hidden;border:1px solid #dce7d5;border-radius:18px}
+.story-adventure .world{height:510px;min-height:460px;isolation:isolate}
+.scene-path{position:absolute;inset:45% 8% 31%;background:#eee4ca;border:5px solid #fff7e7;border-radius:50px;transform:rotate(-5deg);pointer-events:none;z-index:0}
+.scene-place{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:5px;pointer-events:none;color:#46604b;z-index:1}
+.scene-place>span{font-size:48px;filter:drop-shadow(0 5px 2px #244a3a20)}
+.scene-place small{font-size:11px;background:#ffffffe6;border-radius:8px;padding:4px 9px;white-space:nowrap}
+.scene-classroom{background:repeating-linear-gradient(0deg,#f5e8d8 0 40px,#ebdcc9 41px 43px)}
+.scene-cafe{background:repeating-conic-gradient(#eee0cd 0 25%,#f8f1e6 0 50%) 0/60px 60px}
+.scene-shop{background:linear-gradient(160deg,#edf0f9,#e4e8ef)}
+.scene-town{background:linear-gradient(140deg,#e0ece5,#d8e6e9)}
+.scene-sports{background:repeating-linear-gradient(90deg,#dceade 0 100px,#eff6eb 101px 104px)}
+.scene-coach{margin:20px;padding:20px;background:#edf2e5;border:1px solid #d9e5ce;border-radius:16px}
+.scene-coach .coachhead{padding:0 0 14px}
+.scene-coach .coachhead small{display:block;font-size:11px;color:#6c806a;margin-top:4px}
+.scene-coach .coach-avatar{font-size:32px}
+.scene-coach>.rate-settings{max-width:420px}
+.story-adventure>.quest{padding:16px 20px;justify-content:center;flex-wrap:wrap}
+.scene-coach .npc-form{display:block}
+.scene-coach .transcript{margin:12px 0}
+.story-prep .voice-settings{max-width:100%}
+.story-adventure .snpc .quest-marker{cursor:pointer}
+.story-adventure .snpc.talked .quest-marker{background:#fff9e9;color:#355b44}
+.story-nav button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+@media(max-width:600px){.stories.detail{padding:14px}.story-prep,.story-notebook{padding:14px}.story-adventure .world{height:400px;min-height:400px}.scene-coach{margin:12px;padding:14px}.scene-place>span{font-size:36px}.scene-place small{font-size:9px}.scene-coach .actions{flex-wrap:wrap}.story-adventure .walk-controls{padding:10px}.story-adventure .snpc{width:58px}.scene-coach .npc-form>div{flex-wrap:wrap}.scene-coach input{width:100%}}
+
+/* Match Pip: map on the left, persistent coach on the right. */
+.layout.story-layout.scene-map-layout{grid-template-columns:minmax(0,1fr) 310px;align-items:start}
+.scene-map-layout>.scene-coach{position:sticky;top:16px;margin:0;padding:18px;background:#fff;max-height:calc(100dvh - 32px);overflow:auto;scrollbar-gutter:stable}
+.scene-coach-launcher,.scene-coach-close{display:none}
+.scene-coach .rate-settings{grid-template-columns:70px minmax(0,1fr)}
+.scene-coach .npc-form>div{flex-wrap:wrap}
+.scene-coach input{width:100%}
+.scene-map-layout>.scene-coach .actions{gap:8px}
+@media(max-width:1180px){
+ .layout.story-layout.scene-map-layout{grid-template-columns:minmax(0,1fr);padding-bottom:70px}
+ .scene-map-layout>.scene-coach{display:none;position:fixed;z-index:90;inset:auto 16px max(16px,env(safe-area-inset-bottom));max-height:80dvh;box-shadow:0 12px 60px #17362555;border:2px solid #b9cfa5}
+ .scene-map-layout>.scene-coach.is-open{display:block}
+ .scene-coach-launcher{display:block;position:fixed;right:20px;bottom:max(20px,env(safe-area-inset-bottom));z-index:80;box-shadow:0 5px 20px #17362544;padding:14px 20px}
+ .scene-coach.is-open+.scene-coach-launcher{display:none}
+ .scene-coach-close{display:block;position:sticky;top:0;margin:0 0 8px auto;z-index:1;background:#fff}
+ .scene-coach .coachhead{clear:both}
+}
+.snpc .quest-marker.voice-active{background:#eaa65d;color:#253d33;animation:scene-voice-pulse .9s ease-in-out infinite}
+@keyframes scene-voice-pulse{50%{transform:scale(1.16);box-shadow:0 0 0 6px #eaa65d33}}
+@media(prefers-reduced-motion:reduce){.snpc .quest-marker.voice-active{animation:none}}
