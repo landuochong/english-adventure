@@ -1,3 +1,4 @@
+import {createLocalVoiceTurn} from './local-voice-turn.js?v=3';
 import {createVoiceTurn} from './voice-turn.js?v=19';
 import {createBrowserVAD} from './vad-loader.js?v=19';
 import {mentionsTask} from './dialogue.js?v=18';
@@ -118,7 +119,7 @@ const mapProgress={};let lastStoryNear=null,storyMotion=0;
 let sceneCoachLine=null,sceneContext=null,sceneCoachOpen=false;
 function mstate(id){if(!mapProgress[id]){let raw;try{raw=JSON.parse(localStorage.getItem('campus-scenes-v2')||'{}')[id];}catch{}mapProgress[id]=restoreSceneState(id,raw);}return mapProgress[id];}
 function saveScenes(){try{const saved=JSON.parse(localStorage.getItem('campus-scenes-v2')||'{}');const all=saved&&typeof saved==='object'&&!Array.isArray(saved)?saved:{};for(const [id,st] of Object.entries(mapProgress)){const {lastUtterance,...savedState}=st;all[id]=savedState;}localStorage.setItem('campus-scenes-v2',JSON.stringify(all));}catch{storage=false;}}
-function leaveStory(){storyMotion++;cancelVoice();stopSpeech();keys.clear();destination=null;micError='';voiceDisplay=null;sceneCoachLine=null;sceneContext=null;sceneCoachOpen=false;lastStoryNear=null;}
+function leaveStory(){clearOriginalVoice();storyMotion++;cancelVoice();stopSpeech();keys.clear();destination=null;micError='';voiceDisplay=null;sceneCoachLine=null;sceneContext=null;sceneCoachOpen=false;lastStoryNear=null;}
 function storySelect(id){leaveStory();if(id==='pip'){activeStory=null;view='prep';render();return;}if(!dailyScenes[id])return;activeStory=id;storyStep=0;render();}
 function storyBack(){
  const leaving=activeStory;leaveStory();
@@ -213,6 +214,7 @@ function focusInput(){document.querySelector('#utterance')?.focus();}
 function submit(text){if(recording)cancelVoice();if(!text.trim())return;if(/repeat|again|slow|再说|重听/i.test(text)){speak(message,true);return;}const contextual=listeningContext&&!/下一步|next|怎么走|如何移动|keyboard|control|这句话怎么说/.test(text)&&(discussionActive||/听不懂|意思|解释|词|why|mean|understand|detail|said|towards|past|flashing|shiny|followed/i.test(text));const answer=contextual?discussClue(s,listeningContext,text,discussionChecking):coachAnswer(s,text);if(contextual){discussionActive=true;discussionChecking=answer.checking;coachStatus='继续围绕这条线索追问';}else{discussionActive=false;discussionChecking=false;coachStatus='';}say(answer.en,answer.zh);speak(answer.en,contextual);}
 function action(a,v){notice='';if(a==='reset'&&activeStory){const d=document.createElement('dialog');d.innerHTML='<h2>重置本场景？</h2><p>其他场景和 Pip 的进度会保留。</p><div class="actions"><button id="scene-reset-cancel" class="secondary">取消</button><button id="scene-reset-confirm" class="primary">重置本场景</button></div>';document.body.append(d);d.showModal();d.querySelector('#scene-reset-cancel').onclick=()=>d.remove();d.querySelector('#scene-reset-confirm').onclick=()=>{d.remove();action('scene-restart');};return;}if(a==='map-hint-dismiss'){mapIntroSeen=true;render();return;}
 if(a==='voice-finish'){recording?.stop();return;}
+if(a==='voice-original'){if(voiceDisplay?.audioURL){stopSpeech();originalVoicePlayer?.pause();originalVoicePlayer=new Audio(voiceDisplay.audioURL);originalVoicePlayer.play().catch(()=>{notice='原声播放失败，请重新录音。';render();});}return;}
 if(a==='voice-cancel'){cancelVoice(true);return;}
 if(a==='voice-retry'){if(voiceDisplay)mic(voiceDisplay.target);return;}
 if(a==='voice-confirm-text'){if(voiceDisplay?.phase==='review'){voiceDisplay.phase='done';render();deliverVoice(voiceDisplay);}return;}
@@ -259,12 +261,14 @@ function voiceMessage(state){
  return ({preparing:'正在准备麦克风和语音检测…',listening:'正在听，请开始说话',speaking:'正在听，你可以继续说',waiting:`等待你继续 · 静音 ${((2000-state.remaining)/1000).toFixed(1)} / 2 秒`,reconnecting:'正在继续识别，已保留前面的话',finalizing:'正在整理完整转写…',review:'有一部分文字尚未定稿，请确认或重说',done:'本次完整识别结果',empty:'没有识别到内容，请重说',cancelled:'已取消，本次内容没有提交'})[state.phase]||'';
 }
 function voiceTriggerButton(target,idleLabel){return btn(recording?'■ 说完了':'🎙 '+idleLabel,target==='scene-coach'?'scene-coach-mic':target==='coach'?'coach-talk':target==='scene-npc'?'scene-npc-mic':'npc-mic','primary'+(recording?' recording':''));}
+let originalVoicePlayer=null,originalVoiceURL='';
+function clearOriginalVoice(){originalVoicePlayer?.pause();originalVoicePlayer=null;if(originalVoiceURL)URL.revokeObjectURL(originalVoiceURL);originalVoiceURL='';}
 function voicePanel(target,npcId=''){
  const d=voiceDisplay;if(!d||d.target!==target||(['npc','scene-npc'].includes(target)&&d.npcId!==npcId))return '';
  const live=recording&&d.phase!=='review';
- return `<section class="voice-capture" aria-label="本次语音输入"><strong data-voice-state role="status">${esc(voiceMessage(d))}</strong><p class="voice-live" data-voice-live>${esc(d.text||'识别内容会显示在这里')}</p><div class="actions">${live?btn('说完了','voice-finish','primary','data-voice-stop '+(['preparing','finalizing'].includes(d.phase)?'disabled':''))+btn('取消','voice-cancel'):''}${d.phase==='review'?btn('确认并发送','voice-confirm-text','primary'):''}${!live?btn('重新说一次','voice-retry','chip'):''}</div></section>`;
+ return `<section class="voice-capture" aria-label="本次语音输入"><strong data-voice-state role="status">${esc(voiceMessage(d))}</strong><p class="voice-live" data-voice-live>${esc(d.text||'说完后显示识别文字')}</p><div class="actions">${live?btn('说完了','voice-finish','primary','data-voice-stop '+(['preparing','finalizing'].includes(d.phase)?'disabled':''))+btn('取消','voice-cancel'):''}${d.audioURL?btn('▶ 重听我的原声','voice-original','chip'):''}${d.phase==='review'?btn('确认并发送','voice-confirm-text','primary'):''}${!live?btn('重新说一次','voice-retry','chip'):''}</div></section>`;
 }
-function updateVoiceLive(){updateSceneMarkers();if(!voiceDisplay)return;document.querySelectorAll('[data-voice-state]').forEach(el=>el.textContent=voiceMessage(voiceDisplay));document.querySelectorAll('[data-voice-live]').forEach(el=>el.textContent=voiceDisplay.text||'识别内容会显示在这里');document.querySelectorAll('[data-voice-stop]').forEach(el=>el.disabled=['preparing','finalizing'].includes(voiceDisplay.phase));}
+function updateVoiceLive(){updateSceneMarkers();if(!voiceDisplay)return;document.querySelectorAll('[data-voice-state]').forEach(el=>el.textContent=voiceMessage(voiceDisplay));document.querySelectorAll('[data-voice-live]').forEach(el=>el.textContent=voiceDisplay.text||'说完后显示识别文字');document.querySelectorAll('[data-voice-stop]').forEach(el=>el.disabled=['preparing','finalizing'].includes(voiceDisplay.phase));}
 function cancelVoice(renderUI=false){const turn=recording;recording=null;turn?.abort();if(turn&&voiceDisplay)voiceDisplay={...voiceDisplay,phase:'cancelled'};if(renderUI)render();else updateSceneMarkers();}
 function deliverVoice(d){
  if(d.target==='npc'){if(view==='map'&&nearest(player,s)?.id===d.npcId)npcSubmit(d.text);else{d.phase='cancelled';render();}}
@@ -277,21 +281,22 @@ function mic(target='npc'){
  if(target.startsWith('scene-')&&(!activeStory||storyStep!==1||target==='scene-npc'&&!sceneNear(activeStory,mstate(activeStory))))return;
  const contact=target.startsWith('scene-')&&activeStory?sceneNear(activeStory,mstate(activeStory)):nearest(player,s);if(target==='npc'&&s.prepared&&contact?.id==='organiser'&&!s.complete){if(interactionMode(contact,s)==='mission')action('start');else replayNpc(contact);return;}
  if(s.complete&&target==='npc'){speak(reply(nearest(player,s)||NPCS[0],s,'').en);return;}
+ const localASR=['127.0.0.1','localhost'].includes(location.hostname)&&location.port==='4174';
  const R=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!R){const error='此浏览器不支持语音识别，请使用文字交流。';if(target==='coach')coachStatus=error;else micError=error;render();openTyping(target);return;}
+ if(!localASR&&!R){const error='此浏览器不支持语音识别，请使用文字交流。';if(target==='coach')coachStatus=error;else micError=error;render();openTyping(target);return;}
  if(target==='npc'&&(!contact||!s.prepared))return;
  const start=()=>{
-  micApproved=true;stopSpeech();storyMotion++;destination=null;keys.clear();micError='';coachStatus='';
+  micApproved=true;clearOriginalVoice();stopSpeech();storyMotion++;destination=null;keys.clear();micError='';coachStatus='';
   voiceDisplay={target,sceneId:activeStory,npcId:contact?.id||'',phase:'preparing',text:'',remaining:2000};
-  const turn=createVoiceTurn({Recognition:R,createVAD:createBrowserVAD,
+  const turn=(localASR?createLocalVoiceTurn:createVoiceTurn)({Recognition:R,createVAD:createBrowserVAD,scene:activeStory||'pip',
    onUpdate:update=>{if(recording!==turn)return;voiceDisplay={...voiceDisplay,...update};updateVoiceLive();},
-   onComplete:result=>{if(recording!==turn)return;recording=null;voiceDisplay={...voiceDisplay,...result,phase:!result.text?'empty':result.needsReview?'review':'done'};render();if(result.text&&!result.needsReview)deliverVoice(voiceDisplay);},
-   onError:(code,text)=>{if(recording!==turn)return;recording=null;const errors={'not-allowed':'麦克风权限未开启，请允许后重试或打字。','no-speech':'没有检测到说话，请重新说一次。','vad-unavailable':'语音检测未能启动，请重试或打字，不会提前提交。','vad-stalled':'语音检测中断，本次没有提交，请重说。','not-ready':'语音还没准备好，请重新开启。','network':'浏览器语音服务连接失败，本次没有提交。','recognition-restarts':'识别服务多次中断，本次没有提交，请重试。','recognition-timeout':'识别服务启动超时，请重试或打字。'};voiceDisplay={...voiceDisplay,text,phase:'error',error:errors[code]||'语音识别中断，本次没有提交，请重新说一次或打字。'};render();}
+   onComplete:result=>{if(recording!==turn)return;if(result.audioWav){originalVoiceURL=URL.createObjectURL(new Blob([result.audioWav],{type:'audio/wav'}));result.audioURL=originalVoiceURL;delete result.audioWav;}recording=null;voiceDisplay={...voiceDisplay,...result,phase:!result.text?'empty':result.needsReview?'review':'done'};render();if(result.text&&!result.needsReview)deliverVoice(voiceDisplay);},
+   onError:(code,text)=>{if(recording!==turn)return;recording=null;const errors={'local-asr':'本地 Whisper small 忙碌或识别失败，请稍后重试；不会转发到云端。','not-allowed':'麦克风权限未开启，请允许后重试或打字。','no-speech':'没有检测到说话，请重新说一次。','vad-unavailable':'语音检测未能启动，请重试或打字，不会提前提交。','vad-stalled':'语音检测中断，本次没有提交，请重说。','not-ready':'语音还没准备好，请重新开启。','network':'浏览器语音服务连接失败，本次没有提交。','recognition-restarts':'识别服务多次中断，本次没有提交，请重试。','recognition-timeout':'识别服务启动超时，请重试或打字。'};voiceDisplay={...voiceDisplay,text,phase:'error',error:errors[code]||'语音识别中断，本次没有提交，请重新说一次或打字。'};render();}
   });
   recording=turn;render();void turn.start();
  };
  if(micApproved){start();return;}
- const d=document.createElement('dialog');d.innerHTML='<h2>开启语音交谈</h2><p>说话时持续识别，连续静音 2 秒后才回答，也可以点“说完了”。语音活动检测在本地运行；浏览器可能使用其远程语音服务。本应用不保存录音。</p><div class="actions"><button class="secondary" id="no-mic">改用文字</button><button class="primary" id="yes-mic">开启麦克风</button></div>';document.body.append(d);d.showModal();d.querySelector('#no-mic').onclick=()=>{d.remove();openTyping(target);};d.querySelector('#yes-mic').onclick=()=>{d.remove();start();};
+ const d=document.createElement('dialog');d.innerHTML='<h2>开启语音交谈</h2><p>'+ (localASR?'本地 Whisper small 英语识别：连续静音 2 秒后提交整句，也可以点“说完了”。录音仅在本机处理，临时音频在识别结束后清除；说完后显示文字。':'说话时持续识别，连续静音 2 秒后才回答，也可以点“说完了”。浏览器可能使用其远程语音服务。本应用不保存录音。')+'</p><div class="actions"><button class="secondary" id="no-mic">改用文字</button><button class="primary" id="yes-mic">开启麦克风</button></div>';document.body.append(d);d.showModal();d.querySelector('#no-mic').onclick=()=>{d.remove();openTyping(target);};d.querySelector('#yes-mic').onclick=()=>{d.remove();start();};
 }
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.speak){speak(b.dataset.speak);return;}if(b.dataset.action)action(b.dataset.action,b.dataset.value);});document.addEventListener('submit',e=>{if(e.target.id==='npc-talk'){e.preventDefault();npcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='scene-npc-talk'){e.preventDefault();storyNpcSubmit(new FormData(e.target).get('question')||'');return;}if(e.target.id==='scene-coach-talk'){e.preventDefault();storyCoachSubmit(new FormData(e.target).get('utterance')||'');return;}if(e.target.id!=='talk')return;e.preventDefault();submit(new FormData(e.target).get('utterance')||'');});render();
 

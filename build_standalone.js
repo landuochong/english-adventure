@@ -1,6 +1,6 @@
 // 把所有 ESM 模块内联成一个独立 HTML，绕过服务器/端口/缓存
 import fs from 'node:fs';
-const order = ['scene-conversation','scene-engine','engine','stories','speech','dialogue','world','guidance','voice-turn','vad-loader','app'];
+const order = ['scene-conversation','scene-engine','engine','stories','speech','dialogue','world','guidance','voice-turn','local-voice-turn','vad-loader','app'];
 
 function strip(src){
   let s = src;

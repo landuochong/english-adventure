@@ -41,3 +41,34 @@ npm run vendor:vad
 `npm test` 验证回合状态与转写处理。真实 VAD 的合成语音验收页面位于 `tests/browser/voice-qa.html`，从项目根目录启动 HTTP 服务后打开；它使用模拟 ASR，不会打开麦克风。真人语音识别准确率仍需在实际浏览器试说验收。
 
 日常场景的任务数据、词汇和推进规则统一维护在 `dist/scene-engine.js`。改动后运行 `node build_standalone.js`，同步独立页面。
+
+## 本地 SenseVoice 测试版（2026-10-21）
+
+运行 `npm run start:local-asr`，打开 http://127.0.0.1:4174/ 。需要本机已配置的 `../AI/voice-tools`（相对 jalor 目录），可通过 `VOICE_TOOLS_DIR` 指定绝对路径。启动器复用 8032 的 SenseVoice，未运行时只启动识别服务，不启动 TTS 或聊天模型；退出时只停止自己启动的子进程。旧的 4173 静态预览仍用浏览器识别。
+
+4174 使用 Silero VAD 的 16 kHz 帧，在连续静音 2 秒或点击“说完了”后生成 PCM WAV，通过同源代理送至本机 SenseVoice。整句识别后显示原始结果，没有实时转写；失败不回退到云端。录音仅在内存中处理。默认模型自动判断语言，没有强制英语。新端口的音色和进度与 4173 不共享，首次需重新设置。
+
+83 项自动化测试通过，另用 Samantha 合成音频经过真实代理/模型验证：
+
+| 输入 | 实际输出 | 模型端耗时 |
+|---|---|---|
+| Take bus five. | Take bus 5. | 19 ms |
+| Could I borrow your maths book, please? | 原句正确 | 33 ms |
+| I would like a chicken sandwich without onions and a glass of water, please. | 原句正确 | 59 ms |
+| Which bus goes to the museum? Take bus five. Get off at the library. The museum is next to the library. | Which bus goes to the museum, Take Bu5, Get off at the library. The museum is next to the library. | 109 ms |
+
+这些是一次合成语音测试，耗时不含录音、两秒静音及浏览器端处理；不能证明真人英语识别优于原方案。长句仍出现 Bu5 错误，不做静默纠正。页面加载、真实 HTTP 识别与跨站请求拒绝已验证；真人麦克风完整链路待用户试用。
+
+### 原声重听与显式保存样本
+
+本地 4174 识别完成后，“本次语音输入”内可点击“重听我的原声”。播放的是实际送入模型的 16 kHz PCM 录音（经过浏览器麦克风处理及采样转换），不是重新合成识别文字；下一次录音替换上一段，普通游戏录音不写盘。
+
+专用测试页：http://127.0.0.1:4174/voice-lab.html 。用户点击开始、说话、停止，可先试听；点击“保存并识别”后，才将 WAV 保存到 `data/asr-samples/`，用于同一音频的模型对比。此目录在 Git 忽略列表中，不对静态网页开放。每段最长 30 秒；对照原句不作为识别提示发送。保存成功但识别失败仍保留文件。当前仅展示 SenseVoice 结果，尚未接入其他模型对比。
+
+## 当前本地识别：Whisper small（2026-10-21）
+
+本节覆盖此前 SenseVoice 接入说明。4174 已切换为本机 whisper.cpp 的 small 模型，固定英语；`npm run start:local-asr` 不再启动或依赖 voice-tools 的 8032 服务。默认读取本机 `~/whb/music/models/ggml-small.bin` 和 PATH 中的 `whisper-cli`，可用 `WHISPER_MODEL`、`WHISPER_CLI` 指定安装路径。当前 CPU 模式每次请求加载模型，本次真实接口两条短句分别耗时约 7.9 秒和 2.0 秒（不含录音和静音等待），未保证长录音延迟。
+
+游戏按场景传标识，后端仅使用白名单场景词汇提示，不包含任务答案、路线数字或隐藏线索；无效场景标识使用无提示识别。对比页可选场景或无提示，对照原句不发给模型。原声重听和两秒静音结束保留。CLI 所需录音写入私有临时目录，在正常完成、异常或超时后删除；不是纯内存处理。只有用户显式保存的对比样本长期保留在 Git 忽略目录。
+
+验证：83 项 JavaScript 测试和 3 项后端测试通过；真实 4174 HTTP 接口用用户前两段原声均返回 Please take bus 5.。这不代表任意录音都准确；此前七段对照测试仍有一段错误。仅本地更新，未发布、未提交。

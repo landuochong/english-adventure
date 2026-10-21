@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "start": "python3 -m http.server 4173 --directory dist",
-    "vendor:vad": "node scripts/vendor-vad.mjs"
+    "vendor:vad": "node scripts/vendor-vad.mjs",
+    "start:local-asr": "python3 scripts/start_local_asr.py"
   },
   "devDependencies": {
     "@ricky0123/vad-web": "0.0.31",

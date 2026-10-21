@@ -1,3 +1,8 @@
 node_modules/
 .sites-runtime/
 .DS_Store
+
+# Explicitly recorded private comparison samples
+data/asr-samples/
+
+__pycache__/
