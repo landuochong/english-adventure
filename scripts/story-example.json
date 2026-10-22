@@ -1,0 +1,273 @@
+{
+  "title": "野餐午餐的小变化",
+  "hook": "野餐出发前，同伴需要你帮忙。",
+  "background": "野餐前去咖啡馆点餐，发现鸡肉售罄，回去商量并选择替代午餐。",
+  "theme": "cafe",
+  "giver": "npc1",
+  "npcs": [
+    {
+      "id": "npc1",
+      "name": "Lily"
+    },
+    {
+      "id": "npc2",
+      "name": "Waiter"
+    }
+  ],
+  "intro": {
+    "en": "We are at a cafe. Go and listen to Lily first. I can help you think.",
+    "zh": "我们在咖啡馆。先听 Lily 的需求，我帮你分析。"
+  },
+  "mission": {
+    "en": "Could you check the menu for me? I would like a chicken sandwich without onions and water for our picnic.",
+    "zh": "能帮我看看菜单吗？野餐我要不加洋葱的鸡肉三明治和水。"
+  },
+  "actions": [
+    {
+      "id": "step1",
+      "npc": "npc2",
+      "kind": "change",
+      "label": "发现变化",
+      "event": "询问菜单，发现鸡肉售罄，必须回去商量替代。",
+      "reply": {
+        "en": "The chicken sandwiches are sold out. We have cheese sandwiches. Please ask Lily what she would like instead.",
+        "zh": "鸡肉三明治售罄了。还有奶酪三明治，请问 Lily 想换什么。"
+      },
+      "hint": {
+        "en": "Who can tell you what is available? Ask about the menu.",
+        "zh": "谁知道有哪些食物？问问菜单。"
+      },
+      "slots": [
+        {
+          "key": "slot1",
+          "intent": "question",
+          "source": "mission",
+          "expected": "menu",
+          "question": {
+            "en": "What would you like to ask about?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "menu",
+              "aliases": [
+                "menu",
+                "food",
+                "sandwiches",
+                "sandwich"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "step2",
+      "npc": "npc1",
+      "kind": "ask",
+      "label": "商量替代",
+      "event": "学生报告售罄并询问同伴想要的替代品。",
+      "reply": {
+        "en": "A cheese sandwich is fine. I would like it without onions, and water, please.",
+        "zh": "奶酪三明治可以，不加洋葱，喝水。"
+      },
+      "hint": {
+        "en": "Tell your friend what changed, then ask what she would like instead.",
+        "zh": "告诉同伴发生了什么，再问她想换什么。"
+      },
+      "slots": [
+        {
+          "key": "slot1",
+          "intent": "report",
+          "source": "step1",
+          "expected": "unavailable",
+          "question": {
+            "en": "What happened to the chicken sandwiches?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "unavailable",
+              "aliases": [
+                "sold out",
+                "no chicken",
+                "no chicken sandwiches"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "slot2",
+          "intent": "question",
+          "source": "step1",
+          "expected": "choice",
+          "question": {
+            "en": "What would you like to ask me?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "choice",
+              "aliases": [
+                "what",
+                "instead",
+                "would like"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "step3",
+      "npc": "npc2",
+      "kind": "collect",
+      "label": "点餐确认",
+      "event": "学生分轮说清食物、配料和饮料，店员只追问缺项。",
+      "reply": {
+        "en": "Your lunch is ready. Here is the cheese sandwich without onions and water. Please take them to Lily.",
+        "zh": "午餐好了，这是不加洋葱的奶酪三明治和水，请带给 Lily。"
+      },
+      "hint": {
+        "en": "Listen to your friend again. Tell the waiter all the details.",
+        "zh": "重听同伴的选择，告诉店员各项要求。"
+      },
+      "slots": [
+        {
+          "key": "slot1",
+          "intent": "request",
+          "source": "step2",
+          "expected": "cheese",
+          "question": {
+            "en": "What would you like to eat?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "cheese",
+              "aliases": [
+                "cheese sandwich",
+                "cheese"
+              ]
+            },
+            {
+              "value": "chicken",
+              "aliases": [
+                "chicken sandwich",
+                "chicken"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "slot2",
+          "intent": "request",
+          "source": "step2",
+          "expected": "without",
+          "question": {
+            "en": "Would you like onions?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "without",
+              "aliases": [
+                "without onions",
+                "no onions"
+              ]
+            },
+            {
+              "value": "with",
+              "aliases": [
+                "with onions",
+                "add onions"
+              ]
+            }
+          ]
+        },
+        {
+          "key": "slot3",
+          "intent": "request",
+          "source": "step2",
+          "expected": "water",
+          "question": {
+            "en": "What would you like to drink?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "water",
+              "aliases": [
+                "water"
+              ]
+            },
+            {
+              "value": "juice",
+              "aliases": [
+                "juice"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "step4",
+      "npc": "npc1",
+      "kind": "report",
+      "label": "交付午餐",
+      "event": "学生回到同伴处汇报并交付，获得感谢。",
+      "reply": {
+        "en": "Thank you! You checked with me when the plan changed. We are ready for the picnic. Well done!",
+        "zh": "谢谢你在计划变化时和我商量！可以去野餐了，做得好！"
+      },
+      "hint": {
+        "en": "Go back to your friend and tell her what you have brought.",
+        "zh": "回到同伴身边，告诉她你带来了什么。"
+      },
+      "slots": [
+        {
+          "key": "slot1",
+          "intent": "report",
+          "source": "step3",
+          "expected": "lunch",
+          "question": {
+            "en": "What have you brought for me?",
+            "zh": "请补充这一项信息"
+          },
+          "options": [
+            {
+              "value": "lunch",
+              "aliases": [
+                "lunch",
+                "sandwich",
+                "food"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "coverage": [
+    {
+      "learning_id": "example-word",
+      "step": "step3",
+      "practice": "主动表达食物需求"
+    }
+  ],
+  "additions": [
+    {
+      "term": "sold out",
+      "meaning": "售罄"
+    },
+    {
+      "term": "instead",
+      "meaning": "代替"
+    },
+    {
+      "term": "cheese",
+      "meaning": "奶酪"
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 // 把所有 ESM 模块内联成一个独立 HTML，绕过服务器/端口/缓存
 import fs from 'node:fs';
-const order = ['scene-conversation','scene-engine','engine','stories','speech','dialogue','world','guidance','voice-turn','local-voice-turn','vad-loader','app'];
+const order = ['generated-story','story-store','scene-conversation','scene-engine','engine','stories','speech','dialogue','world','guidance','voice-turn','local-voice-turn','vad-loader','app'];
 
 function strip(src){
   let s = src;
   // 去掉 import ... from './x.js?v=N'
   s = s.replace(/^[ \t]*import[^\n]*?from[ \t]*['"][^'"]+['"][^\n]*$/gm, '');
   // export function|const|let|var|class -> 去掉 export
-  s = s.replace(/^[ \t]*export[ \t]+(function|const|let|var|class)[ \t]+/gm, '$1 ');
+  s = s.replace(/^[ \t]*export[ \t]+(async function|function|const|let|var|class)[ \t]+/gm, '$1 ');
   // 去掉 export { ... };
   s = s.replace(/^[ \t]*export[ \t]*\{[^}]*\}[ \t]*;?[ \t]*$/gm, '');
   return s;

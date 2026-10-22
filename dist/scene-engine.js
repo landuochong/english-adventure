@@ -1,3 +1,4 @@
+import {generatedTurn} from './generated-story.js';
 import {conversationPlans,continueConversation,restoreConversation,conversationQuestion} from './scene-conversation.js?v=2';
 // Daily adventures share Pip's student-led loop. All dialogue is scripted, not AI.
 const scenePair=(en,zh)=>({en,zh});
@@ -74,7 +75,7 @@ export function restoreSceneState(id,raw){
  if(st.started){st.replies[w.giver]=w.mission;st.journal.push({npc:w.giver,...w.mission});}
  for(const a of w.actions.filter(a=>st.done.includes(a.id))){st.replies[a.npc]=a.reply;st.journal.push({npc:a.npc,...a.reply});}
  const next=sceneNext(id,st),key=next&&id+'.'+next.id;
- if(st.started&&next&&raw.conversation?.key===key){const draft=restoreConversation(key,raw.conversation.draft);if(draft){st.conversation={key,draft};st.lastNpc=next.npc;st.response=conversationQuestion(conversationPlans[key],draft);}}
+ if(st.started&&next&&raw.conversation?.key===key){const draft=next.generatedSlots?generatedTurn(next.generatedSlots,raw.conversation.draft,'').draft:restoreConversation(key,raw.conversation.draft);if(draft){st.conversation={key,draft};st.lastNpc=next.npc;st.response=next.generatedSlots?generatedTurn(next.generatedSlots,draft,'').response:conversationQuestion(conversationPlans[key],draft);}}
  return st;
 }
 export function sceneNear(id,st){return dailyScenes[id]?.npcs.filter(n=>Math.hypot(n.x-st.player.x,n.y-st.player.y)<=90).sort((a,b)=>Math.hypot(a.x-st.player.x,a.y-st.player.y)-Math.hypot(b.x-st.player.x,b.y-st.player.y))[0]||null;}
@@ -97,15 +98,19 @@ export function sceneInteract(id,st,npcId,text=null){
  let t=String(text).toLowerCase().replace(/[’']/g,"'").replace(/[?.!,]/g,' ').replace(/\s+/g,' ').trim();
  if(/\b(again|repeat|slower|slowly)\b/.test(t))return (st.lastNpc===npcId&&st.response)||st.replies[npcId]||scenePair('Please ask me about what you need first.','请先问我你需要的信息。');
  const key=id+'.'+a.id;
- if(!/[a-z]/.test(t)||/[\u3400-\u9fff]/.test(t))return scenePair(...sceneClarifications[id][st.done.length]);
- if(conversationPlans[key]){
+ if(!/[a-z]/.test(t)||/[\u3400-\u9fff]/.test(t))return (w.generated?a.slots[0].question:scenePair(...sceneClarifications[id][st.done.length]));
+ if(a.generatedSlots){
+  const previous=st.conversation?.key===key?st.conversation.draft:null;
+  const result=generatedTurn(a.generatedSlots,previous,t);st.conversation={key,draft:result.draft};
+  if(!result.complete){st.lastNpc=npcId;st.response=result.response;return result.response;}
+ }else if(conversationPlans[key]){
   const previous=st.conversation?.key===key?st.conversation.draft:null;
   const result=continueConversation(key,previous,t);st.conversation={key,draft:result.draft};
   if(!result.complete){st.lastNpc=npcId;st.response=result.response;return result.response;}
  }else{
   t=t.replace(/^(no\s+)?(sorry\s+)?i (meant|mean)\s+/,'');
   const negated=/\b(not|never|don't|doesn't|didn't|can't|cannot|won't|no)\b/.test(t);
-  if(negated||!a.test(t))return scenePair(...sceneClarifications[id][st.done.length]);
+  if(negated||!a.test(t))return (w.generated?a.slots[0].question:scenePair(...sceneClarifications[id][st.done.length]));
  }
  st.conversation=null;st.response=null;
  st.done.push(a.id);st.replies[npcId]=a.reply;st.journal.push({npc:npcId,...a.reply});st.complete=st.done.length===w.actions.length;return a.reply;
