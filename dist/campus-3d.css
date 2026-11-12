@@ -1,0 +1,28 @@
+*{box-sizing:border-box}body{margin:0;background:#ebe8de;color:#254a3b;font:15px/1.5 system-ui,sans-serif}header{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 4%;background:#faf9f1}a{color:inherit}header b{letter-spacing:.15em;font-size:13px}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #bcc9b6;background:#fffdf3;color:#254a3b;border-radius:12px;padding:10px 16px}button:hover{background:#e4efdb}button:disabled{opacity:.45;cursor:default}button[hidden]{display:none}#stage{position:relative;height:calc(100dvh - 250px);min-height:380px;overflow:hidden}canvas{display:block;width:100%;height:100%}.scene-title{position:absolute;left:4%;top:18px;pointer-events:none}.scene-title small{letter-spacing:.18em;font-size:10px}.scene-title h1{font-size:24px;margin:4px 0}.scene-title p{margin:0;font-size:12px}#labels{position:absolute;inset:0;pointer-events:none}.actor-label{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;padding:5px 12px;background:#fffaf0e8;border:0;white-space:nowrap;box-shadow:0 3px 12px #253c3222}.actor-label.near{outline:2px solid #ce7549}.marker{color:#c34032;font-weight:900;padding-left:8px}#status{position:absolute;bottom:14px;left:4%;border-radius:20px;background:#fffdf1dc;padding:7px 16px;font-size:13px}#dock{padding:14px 4% 22px;background:#faf9f1;border-top:1px solid #d2d7c6;min-height:190px}#phase{font-size:12px;margin-left:14px;color:#65796c}#hint{font-size:12px;color:#6d7e6d;margin:5px 0 12px}.controls{display:flex;flex-wrap:wrap;gap:7px}#talk,#begin{background:#285840;color:white}details{margin-top:10px;font-size:13px}summary{cursor:pointer}form{display:flex;gap:8px}input{padding:10px;border:1px solid #bec7b7;border-radius:10px;min-width:0;flex:1}dialog{border:1px solid #d9ddcc;border-radius:24px;padding:28px;max-width:490px;width:calc(100% - 32px);box-shadow:0 20px 100px #14352455;color:#254a3b;background:#fffdf3}dialog::backdrop{background:#183a3355;backdrop-filter:blur(5px)}dialog[open]{position:fixed;inset:0;margin:auto;z-index:10}dialog h2{margin:7px 0}dialog small{font-size:10px;letter-spacing:.15em}dialog label{display:block;margin:12px 0}select{display:block;padding:9px;width:100%;border:1px solid #bacab5;background:white;border-radius:9px}#words{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}.stars{font-size:48px;color:#d69e31;letter-spacing:8px}#win{text-align:center}#win button,#win a{margin:6px}#audio-status{font-size:12px}#recording{max-width:100%}@media(max-width:600px){header b{font-size:10px}header{padding:0 12px}#stage{min-height:340px;height:55dvh}.scene-title h1{font-size:19px}button{padding:9px 12px}.scene-title{top:12px}dialog{padding:22px}}
+
+#npc-note[hidden]{display:none}
+#npc-note{position:absolute;z-index:5;width:310px;max-width:calc(100% - 16px);max-height:calc(100% - 16px);overflow:auto;padding:14px 16px;border:1px solid #b8c8af;border-radius:16px;background:#fffdf5;box-shadow:0 12px 35px #18392b35}
+.note-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#note-close{padding:2px 10px;font-size:24px;line-height:1.3}
+#note-en{font-size:16px;line-height:1.65}
+#note-zh{color:#6d7e6d}
+
+/* The campus is the main play surface; controls form a compact HUD. */
+body{background:#dce8ef;color:#173c55}
+header{background:#f6fafded}
+#stage{height:calc(100dvh - 150px);min-height:480px}
+#dock{position:relative;min-height:92px;background:#f7fbfd;padding:10px 3% 14px}
+.scene-title{background:#f5faffdf;padding:12px 18px;border-left:4px solid #eea64a}
+.scene-title h1{font-size:22px}
+#talk,#begin{background:#245b7a;color:white}
+button{border-color:#acc5d3;color:#173c55;background:#f7fbff}
+button:hover{background:#dcecf4}
+.actor-label{border-radius:8px;background:#f5fbfff0}
+.actor-label.near{outline-color:#e9a44a}
+dialog{background:#f7fbff;color:#173c55}
+#npc-note{background:#f7fbff;border-color:#a3c5d6}
+#status{background:#f7fbffe8}
+#dock>details{position:absolute;bottom:100%;right:16px;width:min(400px,calc(100vw - 32px));background:#f7fbffed;border-radius:12px;padding:10px 14px;max-height:45dvh;overflow:auto}
+.controls{align-items:center}
+@media(max-width:600px){#stage{height:calc(100dvh - 210px);min-height:400px}.scene-title{padding:8px 10px}.scene-title h1{font-size:16px}header b{font-size:11px}#dock{min-height:150px}}
+button:focus-visible,a:focus-visible{outline:3px solid #e6a04d;outline-offset:3px}

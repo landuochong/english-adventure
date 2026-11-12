@@ -88,3 +88,24 @@ test('a negated source fact cannot justify a positive answer',()=>{
  const c=copy();c.mission.en='There is not a menu.';c.actions[0].slots[0].options=[{value:'menu',aliases:['menu']}];
  assert.ok(validateStory(c).some(e=>e.includes('来源')));
 });
+
+test('report variants accept completed work but reject questions, promises and negation',()=>{
+ const slots=[{key:'slot1',intent:'report',expected:'notes',question:{en:'What have you brought back?',zh:'你带回了什么？'},options:[{value:'notes',aliases:['notes','correct sentence','correct information']}]}];
+ for(const text of ['Our teacher has written down the right sentence and author.','I have brought the notes.','The teacher wrote the correct information.'])assert.equal(generatedTurn(slots,null,text).complete,true,text);
+ for(const text of ['Have you brought the notes?','I will bring the notes.','Our teacher has not written the right sentence.','I have not brought the notes.','I haven\'t brought the notes.','I need to get the notes.','Actually I will bring the notes.','Maybe I have the notes.'])assert.equal(generatedTurn(slots,null,text).complete,false,text);
+});
+
+test('follow-up accepts reordered combined fragments, remembers details and asks only what is missing',()=>{
+ const slots=config.actions[2].slots;
+ let r=generatedTurn(slots,null,'hello');
+ r=generatedTurn(slots,r.draft,'water and a cheese sandwich');
+ assert.equal(r.draft.values.slot1,'cheese');assert.equal(r.draft.values.slot3,'water');assert.equal(r.draft.asked,'slot2');assert.equal(r.response.en,slots[1].question.en);
+ r=generatedTurn(slots,r.draft,'without onions');assert.equal(r.complete,true);
+ const unrelated=generatedTurn(slots,{values:{}},'The dog is reading about water and cheese');assert.deepEqual(unrelated.draft.values,{});
+});
+
+test('two alternative values cannot be confirmed by a generic yes',()=>{
+ const slots=config.actions[2].slots;
+ let r=generatedTurn(slots,null,'I would like water and juice');assert.equal(r.draft.pending,'slot3');
+ r=generatedTurn(slots,r.draft,'yes');assert.equal(r.complete,false);assert.equal(r.draft.values.slot3,undefined);
+});

@@ -6,3 +6,13 @@ node_modules/
 data/asr-samples/
 
 __pycache__/
+
+# Locally evaluated licensed character assets; not for raw redistribution.
+/dist/assets/local-characters/
+
+# Mixamo source assets are embedded in the app, not redistributed in the source repository.
+/dist/assets/characters/vanguard-mixamo.glb
+
+# Local source archives; selected assets and license records remain trackable.
+/resources/quaternius/*/standard.zip
+/resources/quaternius/**/*.part

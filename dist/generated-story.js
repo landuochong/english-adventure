@@ -45,17 +45,33 @@ function checkConfig(c,learning=[]){
  }
  return [...new Set(errors)];
 }
-const intentMatch=(t,intent)=>intent==='answer'||(intent==='question'?/^(what|where|when|which|how|can|could|do|does|is|are|have|would|tell)\b|^please tell\b|^i (would like|want|need) to know\b/:intent==='request'?/^(can|could|may|please|let)\b|^i (would like|want|need|will take)\b|\bplease$/:/\b(here|have|got|ready|found|ordered|brought|is|are|can|will|said)\b/).test(t);
-const shortAnswer=(t,s)=>s.options.some(o=>o.aliases.some(a=>[norm(a),norm(a)+' please','the '+norm(a),'a '+norm(a),'a '+norm(a)+' please'].includes(t)));
+// Bounded language variants, not semantic AI. Keep names, quantities and negation intact.
+const phraseNorm=t=>norm(t).replace(/\bright (sentence|information|answer)\b/g,'correct $1');
+const intentMatch=(t,intent)=>{
+ if(intent==='answer')return true;
+ if(intent==='question')return /^(what|where|when|which|how|can|could|do|does|is|are|have|would|tell)\b|^please tell\b|^i (would like|want|need) to know\b/.test(t);
+ if(intent==='request')return /^(can|could|may|please|let)\b|^i (would like|want|need|will take)\b|\bplease$/.test(t);
+ // Asking about an outcome or promising it is not a completed report.
+ if(/^(what|where|when|which|how|can|could|do|does|did|is|are|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t))return false;
+ return /\b(here|have|has|had|got|ready|found|ordered|brought|written|wrote|is|are|said)\b/.test(t);
+};
+// After a follow-up, accept concise answers containing several declared details.
+// Arbitrary sentences with an embedded keyword are still not short answers.
+const shortAnswer=(t,slots)=>{
+ let rest=' '+phraseNorm(t)+' ';
+ const aliases=slots.flatMap(s=>s.options.flatMap(o=>o.aliases)).map(phraseNorm).sort((a,b)=>b.length-a.length);
+ for(const a of aliases)rest=rest.split(' '+a+' ').join(' ');
+ return rest.trim()!==phraseNorm(t)&&rest.trim().split(/\s+/).every(w=>['','and','the','a','an','please','thanks'].includes(w));
+};
 function literalMatch(text,alias){
- const words=norm(text).split(' '),target=norm(alias).split(' ');
+ const words=phraseNorm(text).split(' '),target=phraseNorm(alias).split(' ');
  if(!target.some(w=>!['not','no','but','yes','the','a','an','from','is','are','it'].includes(w)))return false;
  for(let i=0;i<=words.length-target.length;i++){
   if(!target.every((w,j)=>words[i+j]===w))continue;
   const before=words.slice(0,i),contrast=before.lastIndexOf('but'),segment=before.slice(contrast+1);
-  if(segment.some(w=>['never',"don't","doesn't","didn't","can't",'cannot',"won't"].includes(w))||/\bdo not\b/.test(segment.join(' ')))continue;
+  if(segment.some(w=>['never',"don't","doesn't","didn't","can't",'cannot',"won't","haven't","hasn't","hadn't"].includes(w))||/\bdo not\b/.test(segment.join(' ')))continue;
   const context=segment.slice(segment.lastIndexOf('and')+1);
-  if(!context.some(w=>['not','no','without','never',"don't","doesn't","didn't","can't",'cannot',"won't"].includes(w)))return true;
+  if(!context.some(w=>['not','no','without','never',"don't","doesn't","didn't","can't",'cannot',"won't","haven't","hasn't","hadn't"].includes(w)))return true;
  }
  return false;
 }
@@ -78,7 +94,8 @@ export function generatedTurn(slots,raw,text){
   for(const s of slots){
    const matched=s.options.filter(o=>o.aliases.some(a=>literalMatch(t,a)));
    if(matched.length>1){delete d.values[s.key];d.pending=s.key;continue;}
-   if(matched.length===1&&(correction||intentMatch(t,s.intent)||(raw&&shortAnswer(t,s)))){
+   if(s.intent==='report'&&(/^(what|where|when|which|how|can|could|do|does|did|is|are|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t)))continue;
+   if(matched.length===1&&(correction||intentMatch(t,s.intent)||(raw&&shortAnswer(t,slots)))){
     const value=matched[0].value;
     if(d.values[s.key]&&d.values[s.key]!==value&&!correction){d.values[s.key]=value;d.pending=s.key;}
     else {d.values[s.key]=value;if(d.pending===s.key)d.pending=null;}

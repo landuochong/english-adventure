@@ -247,6 +247,15 @@
 .snpc .quest-marker.voice-active{background:#eaa65d;color:#253d33;animation:scene-voice-pulse .9s ease-in-out infinite}
 @keyframes scene-voice-pulse{50%{transform:scale(1.16);box-shadow:0 0 0 6px #eaa65d33}}
 @media(prefers-reduced-motion:reduce){.snpc .quest-marker.voice-active{animation:none}}
+
+.story-card-wrap{position:relative;min-width:0}.story-card-wrap>.story-card{width:100%;height:100%;box-sizing:border-box}.custom-story>.story-card{padding-right:42px}.story-remove{position:absolute;top:7px;right:7px;z-index:1;width:36px;height:36px;border:0;border-radius:9px;padding:0;color:#b22d27;background:transparent;font-size:27px;line-height:1;cursor:pointer}.story-remove:hover{background:#fff0ef}.story-remove:disabled{opacity:.45;cursor:wait}.story-removal-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border:1px solid #c7d9c0;background:#f0f6eb;border-radius:12px}
+
+/* Earned interaction feedback: no answer text or future objectives. */
+.scene-feedback{display:flex;flex-wrap:wrap;gap:.65rem 1rem;align-items:center;justify-content:space-between;padding:.65rem 1rem;color:var(--ink,#24354b);font-size:.875rem}
+.scene-feedback>span{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.detail-dot{width:.65rem;height:.65rem;border:1.5px solid #81919e;border-radius:50%;display:inline-block}
+.detail-dot.confirmed{background:#318269;border-color:#318269}
+.scene-feedback small{margin-left:.25rem}
 </style></head><body><div id="app"></div><script type="module">
 /* ===== generated-story.js ===== */
 // Declarative story format: no generated JavaScript, HTML or regular expressions.
@@ -296,17 +305,33 @@ function checkConfig(c,learning=[]){
  }
  return [...new Set(errors)];
 }
-const intentMatch=(t,intent)=>intent==='answer'||(intent==='question'?/^(what|where|when|which|how|can|could|do|does|is|are|have|would|tell)\b|^please tell\b|^i (would like|want|need) to know\b/:intent==='request'?/^(can|could|may|please|let)\b|^i (would like|want|need|will take)\b|\bplease$/:/\b(here|have|got|ready|found|ordered|brought|is|are|can|will|said)\b/).test(t);
-const shortAnswer=(t,s)=>s.options.some(o=>o.aliases.some(a=>[norm(a),norm(a)+' please','the '+norm(a),'a '+norm(a),'a '+norm(a)+' please'].includes(t)));
+// Bounded language variants, not semantic AI. Keep names, quantities and negation intact.
+const phraseNorm=t=>norm(t).replace(/\bright (sentence|information|answer)\b/g,'correct $1');
+const intentMatch=(t,intent)=>{
+ if(intent==='answer')return true;
+ if(intent==='question')return /^(what|where|when|which|how|can|could|do|does|is|are|have|would|tell)\b|^please tell\b|^i (would like|want|need) to know\b/.test(t);
+ if(intent==='request')return /^(can|could|may|please|let)\b|^i (would like|want|need|will take)\b|\bplease$/.test(t);
+ // Asking about an outcome or promising it is not a completed report.
+ if(/^(what|where|when|which|how|can|could|do|does|did|is|are|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t))return false;
+ return /\b(here|have|has|had|got|ready|found|ordered|brought|written|wrote|is|are|said)\b/.test(t);
+};
+// After a follow-up, accept concise answers containing several declared details.
+// Arbitrary sentences with an embedded keyword are still not short answers.
+const shortAnswer=(t,slots)=>{
+ let rest=' '+phraseNorm(t)+' ';
+ const aliases=slots.flatMap(s=>s.options.flatMap(o=>o.aliases)).map(phraseNorm).sort((a,b)=>b.length-a.length);
+ for(const a of aliases)rest=rest.split(' '+a+' ').join(' ');
+ return rest.trim()!==phraseNorm(t)&&rest.trim().split(/\s+/).every(w=>['','and','the','a','an','please','thanks'].includes(w));
+};
 function literalMatch(text,alias){
- const words=norm(text).split(' '),target=norm(alias).split(' ');
+ const words=phraseNorm(text).split(' '),target=phraseNorm(alias).split(' ');
  if(!target.some(w=>!['not','no','but','yes','the','a','an','from','is','are','it'].includes(w)))return false;
  for(let i=0;i<=words.length-target.length;i++){
   if(!target.every((w,j)=>words[i+j]===w))continue;
   const before=words.slice(0,i),contrast=before.lastIndexOf('but'),segment=before.slice(contrast+1);
-  if(segment.some(w=>['never',"don't","doesn't","didn't","can't",'cannot',"won't"].includes(w))||/\bdo not\b/.test(segment.join(' ')))continue;
+  if(segment.some(w=>['never',"don't","doesn't","didn't","can't",'cannot',"won't","haven't","hasn't","hadn't"].includes(w))||/\bdo not\b/.test(segment.join(' ')))continue;
   const context=segment.slice(segment.lastIndexOf('and')+1);
-  if(!context.some(w=>['not','no','without','never',"don't","doesn't","didn't","can't",'cannot',"won't"].includes(w)))return true;
+  if(!context.some(w=>['not','no','without','never',"don't","doesn't","didn't","can't",'cannot',"won't","haven't","hasn't","hadn't"].includes(w)))return true;
  }
  return false;
 }
@@ -329,7 +354,8 @@ function generatedTurn(slots,raw,text){
   for(const s of slots){
    const matched=s.options.filter(o=>o.aliases.some(a=>literalMatch(t,a)));
    if(matched.length>1){delete d.values[s.key];d.pending=s.key;continue;}
-   if(matched.length===1&&(correction||intentMatch(t,s.intent)||(raw&&shortAnswer(t,s)))){
+   if(s.intent==='report'&&(/^(what|where|when|which|how|can|could|do|does|did|is|are|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t)))continue;
+   if(matched.length===1&&(correction||intentMatch(t,s.intent)||(raw&&shortAnswer(t,slots)))){
     const value=matched[0].value;
     if(d.values[s.key]&&d.values[s.key]!==value&&!correction){d.values[s.key]=value;d.pending=s.key;}
     else {d.values[s.key]=value;if(d.pending===s.key)d.pending=null;}
@@ -361,6 +387,16 @@ async function generateCheckedStory(request,payload,onRepair=()=>{}){
 function openStories(){return new Promise((resolve,reject)=>{const r=indexedDB.open('campus-generated-stories',1);r.onupgradeneeded=()=>r.result.createObjectStore('stories',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('故事存储被占用'));});}
 async function listStories(){const db=await openStories();try{return await new Promise((resolve,reject)=>{const r=db.transaction('stories').objectStore('stories').getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}finally{db.close();}}
 async function saveStory(record){const db=await openStories();try{await new Promise((resolve,reject)=>{const tx=db.transaction('stories','readwrite');tx.objectStore('stories').put(record);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}finally{db.close();}}
+// A reversible removal. Update the latest record in one transaction so undo
+// never overwrites edits saved by another tab with an old in-memory copy.
+async function setStoryRemoved(id,removed){
+ const db=await openStories();
+ try{return await new Promise((resolve,reject)=>{
+  const tx=db.transaction('stories','readwrite'),store=tx.objectStore('stories'),request=store.get(id);let found=false;
+  request.onsuccess=()=>{const record=request.result;if(!record)return;found=true;if(removed)record.removedAt=new Date().toISOString();else delete record.removedAt;store.put(record);};
+  tx.oncomplete=()=>resolve(found);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+ });}finally{db.close();}
+}
 
 
 /* ===== scene-conversation.js ===== */
@@ -1128,10 +1164,12 @@ async function createBrowserVAD(callbacks,{getStream}={}){
 
 
 
-let generatedLoadWarning='',initialGeneratedStory=null;
+let generatedLoadWarning='',initialGeneratedStory=null,lastRemovedStory=null,storyStoreBusy=false;
+const generatedRecords=new Map();
 try{
  const requested=new URLSearchParams(location.search).get('play');
  for(const record of await listStories()){
+  if(record.removedAt){if(record.mode==='saved'&&(!lastRemovedStory||record.removedAt>lastRemovedStory.removedAt))lastRemovedStory=record;continue;}
   if(record.mode!=='saved'&&record.id!==requested)continue;
   try{
    if(!/^[a-z0-9-]{10,100}$/.test(record.id)||!/^[a-z0-9-]{10,100}$/.test(record.version))throw Error('无效故事版本');
@@ -1139,7 +1177,7 @@ try{
    dailyScenes[id]=w;sceneVocabulary[id]=[...record.learning.filter(x=>x.type!=='grammar').map(x=>[x.term,x.meaning,'Listen to this expression again: '+x.term]),...w.additions.map(x=>[x.term,'补充：'+x.meaning,'Listen to this expression again: '+x.term])];
    if(!sceneVocabulary[id].length)sceneVocabulary[id]=record.learning.map(x=>[x.term,x.meaning,'Listen to this expression again: '+x.term]);
    stories[id]={topic:'我的课程故事',name:w.npcs.find(n=>n.id===w.giver).name};
-   if(record.mode==='saved')storyList.push({id,topic:'我的课程故事',name:w.title});
+   if(record.mode==='saved'){storyList.push({id,topic:'我的课程故事',name:w.title});generatedRecords.set(id,record.id);}
    if(record.id===requested)initialGeneratedStory=id;
   }catch{generatedLoadWarning='有一份故事未通过检查，请回课程素材页修改。';}
  }
@@ -1273,13 +1311,22 @@ function storyNavigate(value){if(!activeStory)return;const st=mstate(activeStory
 function storyBegin(asText=false){if(!activeStory)return;if(asText)textOnly=true;if(!voiceConfirmed&&!voiceTested&&!textOnly){notice='请先试听音色和语速，或选择文字体验。';render();return;}if(voiceTested&&!textOnly){voiceConfirmed=true;try{localStorage.setItem('campus-voice-confirmed','1');}catch{}}const st=mstate(activeStory);st.prepared=true;saveScenes();notice='';storyStep=1;sceneCoachLine=sceneCoach(activeStory,st);render();speak(sceneCoachLine.en);}
 function mnear(w,st){return sceneNear(activeStory,st);}
 function storyQuestTracker(st,w){const count=st.done.length;return `<div class="quest scene-progress" aria-label="任务进度">${['领取任务','交流行动','完成委托'].map((label,i)=>`<span class="quest-node ${i===0?st.started?'done':'active':i===1?st.complete?'done':st.started?'active':'todo':st.complete?'done':'todo'}"><span class="quest-dot">${i===0&&st.started||i===2&&st.complete?'✓':i+1}</span><span class="quest-label">${label}${i===1&&st.started?' '+count+'/'+w.actions.length:''}</span></span>`).join('<span class="quest-line"></span>')}</div>`;}
+// Only earned state is visible; never render expected slot values or future events.
+function storyInteractionFeedback(w,st){
+ if(!w.generated||!st.started)return '';
+ const a=w.actions.find(a=>!st.done.includes(a.id)),draft=st.conversation?.key===activeStory+'.'+a?.id?st.conversation.draft:null;
+ const slots=a?.generatedSlots||[],confirmed=slots.filter(s=>draft?.values[s.key]===s.expected&&draft?.pending!==s.key).length;
+ const last=w.actions.find(a=>a.id===st.done.at(-1));
+ const milestone=st.complete?'🏆 委托完成':last?.kind==='collect'?'📦 已完成收集':last?.kind==='change'?'💡 已确认变化':last?'✓ 已完成交流':'🤝 已领取任务';
+ return `<div class="scene-feedback" role="status"><span>${milestone}</span>${draft?`<span aria-label="已确认 ${confirmed} 项，共 ${slots.length} 项">${slots.map(s=>`<i class="detail-dot ${draft.values[s.key]===s.expected&&draft.pending!==s.key?'confirmed':''}" aria-hidden="true"></i>`).join('')}<small>${draft.pending?'请确认刚才的信息':confirmed?'已记住，继续补充':'听听人物的追问'}</small></span>`:''}</div>`;
+}
 function storyMapView(){const w=dailyScenes[activeStory],st=mstate(activeStory),near=sceneNear(activeStory,st);lastStoryNear=near?.id||null;
  return `<section class="adventure story-adventure"><div class="maphead"><strong>◈ ${esc(w.title)}</strong><span class="muted">方向键 / WASD 移动 · 点击地面走过去 · E 开口交流</span></div><div class="map-goal">${st.complete?'🎉 委托完成':st.started?'听取信息，完成同伴的委托':'先走近同伴，点击红色 ? 领取任务'}</div>
  <div id="story-world" class="world scene-${w.theme}" tabindex="0" aria-label="冒险地图"><div class="scene-path" aria-hidden="true"></div>${w.places.map(([icon,label,x,y])=>`<div class="scene-place" style="left:${x}%;top:${y}%" aria-hidden="true"><span>${icon}</span><small>${label}</small></div>`).join('')}
  ${w.npcs.map(n=>`<button class="snpc ${sceneContactMode(activeStory,st,n.id)==='replay'?'talked':''} ${near?.id===n.id?'near':''}" data-snpc="${n.id}" style="left:${n.x/10}%;top:${n.y/6}%" aria-label="${esc(n.name)} · ${sceneContactMode(activeStory,st,n.id)==='replay'?'重听':'交谈'}"><span class="quest-marker" ${near?.id===n.id?'':'hidden'}>${sceneContactMode(activeStory,st,n.id)==='replay'?'🔊':'?'}</span><span class="sprite">${n.icon}</span><span class="npc-name">${esc(n.name)}</span></button>`).join('')}
  <div id="story-player" class="world-actor player" style="left:${st.player.x/10}%;top:${st.player.y/6}%"><span>🧑‍🚀</span><small>你</small></div><div id="story-companion" class="world-actor follower" style="left:${(st.player.x-50)/10}%;top:${(st.player.y+35)/6}%" ${s.mode==='voice'?'hidden':''}><span>👩🏻‍🚀</span><small>Nova</small></div></div>
  <div class="walk-controls"><span>走近 ? 交谈 · 🔊 重听 · E 再次提问</span><div>${[['↑','up'],['←','left'],['↓','down'],['→','right']].map(([icon,dir])=>btn(icon,'smove','chip',`data-value="${dir}" aria-label="${dir}"`)).join('')}</div></div>
- <section id="story-encounter" class="encounter">${storyEncounter(w,st,near)}</section>${storyQuestTracker(st,w)}
+ <section id="story-encounter" class="encounter">${storyEncounter(w,st,near)}</section>${storyInteractionFeedback(w,st)}${storyQuestTracker(st,w)}
 </section>`;
 }
 function storyCoachPanel(){const st=mstate(activeStory),c=sceneCoachLine||sceneCoach(activeStory,st);return `<aside id="scene-coach-panel" class="card scene-coach ${sceneCoachOpen?'is-open':''}" aria-label="同行教练" tabindex="-1"><button class="chip scene-coach-close" data-action="scene-coach-close" aria-label="收起教练面板">收起 ✕</button><div class="coachhead"><span class="coach-avatar">👩🏻‍🚀</span><div><strong>Nova · 同行教练</strong><small>你来行动，我帮你分析 · 预设对话</small></div></div>${rateSettings('scene-rate')}${audioPrompt()}<div class="actions">${btn('🔊 听建议','story-coach','primary')}${btn('慢速重听','story-coach-slow')}${btn('讨论刚才的信息','story-discuss')}${btn('🎙 和教练说话','scene-coach-mic')}</div>${transcript(c.en,c.zh)}${voicePanel('scene-coach')}${sceneTyping('scene-coach-talk','问问教练','utterance')}
@@ -1321,7 +1368,16 @@ function storyTalk(id,slow=false,ask=false){
 }
 function storyNpcSubmit(text){if(!activeStory||storyStep!==1||!text.trim())return;const id=activeStory,st=mstate(id),n=sceneNear(id,st);if(!n)return;const before=st.complete;const r=sceneInteract(id,st,n.id,text);if(!r)return;stopSpeech();st.lastUtterance=text;st.response=r;st.lastNpc=n.id;sceneContext=r;saveScenes();render();sceneSay(n.id,r.en);if(!before&&st.complete)storyCelebrate();}
 function storyCoachSubmit(text='next'){if(!activeStory)return;sceneCoachLine=sceneCoach(activeStory,mstate(activeStory),text,sceneContext);render();speak(sceneCoachLine.en);}
-function storiesHub(){return `${generatedLoadWarning?`<p role="status">${esc(generatedLoadWarning)}</p>`:''}<section class="card stories"><a class="secondary" href="./course-entry.html" style="display:inline-block;padding:12px 18px;border-radius:12px;text-decoration:none;margin-bottom:12px">＋ 用课程创建故事 · 粘贴图片或文本</a><p class="muted">先准备语言背包，再进入地图。你来走动、提问、完成委托，Nova 陪你分析。</p><div class="story-list">${storyList.map(item=>{const w=dailyScenes[item.id],done=w?mstate(item.id).complete:s.complete;return `<button class="story-card ${item.id==='pip'?'main-story':''}" data-action="story-select" data-value="${item.id}"><span class="story-topic">${esc(item.topic)}</span><span class="story-name">${esc(w?.title||'寻找 Pip')}</span><span class="story-hook">${esc(w?.hook||'科技节的机器人不见了，听线索寻找它。')}</span><span class="story-go">${done?'已完成 · 再看看':'开始 ▶'}</span></button>`;}).join('')}</div></section>`;}
+async function changeStoryRemoval(id,removed){
+ if(storyStoreBusy||activeStory)return;
+ const recordId=removed?generatedRecords.get(id):lastRemovedStory?.id;
+ if(!recordId)return;
+ storyStoreBusy=true;render();
+ try{if(!await setStoryRemoved(recordId,removed))throw Error('故事已不存在，请刷新列表');location.reload();}
+ catch(e){storyStoreBusy=false;notice=(removed?'移除失败：':'撤销失败：')+e.message;render();}
+}
+function storiesHub(){return `${generatedLoadWarning?`<p role="status">${esc(generatedLoadWarning)}</p>`:''}<section class="card stories"><a class="primary" href="./campus-3d.html" style="display:inline-block;padding:12px 18px;margin-bottom:12px">第 1 关 · 未来校园科技展</a> <a class="secondary" href="./cafe-3d.html" style="display:inline-block;padding:12px 18px;margin-bottom:12px">☕ 3D 餐厅冒险 · 本地样板</a> <a class="secondary" href="./course-entry.html" style="display:inline-block;padding:12px 18px;border-radius:12px;text-decoration:none;margin-bottom:12px">＋ 用课程创建故事 · 粘贴图片或文本</a><p class="muted">先准备语言背包，再进入地图。你来走动、提问、完成委托，Nova 陪你分析。</p>${lastRemovedStory?`<div class="story-removal-notice" role="status"><span>已移除「${esc(lastRemovedStory.config?.title||'自建故事')}」</span>${btn('撤销移除','story-remove-undo','chip',storyStoreBusy?'disabled':'')}</div>`:''}<div class="story-list">${storyList.map(item=>{const w=dailyScenes[item.id],done=w?mstate(item.id).complete:s.complete,custom=generatedRecords.has(item.id);return `<article class="story-card-wrap ${custom?'custom-story':''}"><button class="story-card ${item.id==='pip'?'main-story':''}" data-action="story-select" data-value="${item.id}"><span class="story-topic">${esc(item.topic)}</span><span class="story-name">${esc(w?.title||'寻找 Pip')}</span><span class="story-hook">${esc(w?.hook||'科技节的机器人不见了，听线索寻找它。')}</span><span class="story-go">${done?'已完成 · 再看看':'开始 ▶'}</span></button>${custom?btn('×','story-remove','story-remove',`data-value="${item.id}" aria-label="移除故事：${esc(w.title)}" title="移除故事" ${storyStoreBusy?'disabled':''}`):''}</article>`;}).join('')}</div></section>`;}
+
 function storyDetail(){const d=stories[activeStory],w=dailyScenes[activeStory],st=mstate(activeStory);let body='';
  if(storyStep===0)body=`<div class="story-prep"><b>▧ 语言背包</b><p class="muted">先听关键词和常用表达。具体任务进入地图后由同伴告诉你。</p>${voiceSettings()}<div class="vocabgrid">${sceneVocabulary[activeStory].map(([word,zh])=>`<button class="word" data-speak="${esc(word)}"><em>🔊</em><b>${esc(word)}</b><span>${esc(zh)}</span></button>`).join('')}</div><div class="phrases">${(w.grammar||[]).map(g=>`<p class="muted">${esc(g.term)}：${esc(g.meaning)}</p>`).join('')}${w.phrases.map(p=>`<button class="phrase" data-speak="${esc(p)}">🔊 ${esc(p)}</button>`).join('')}</div><div class="actions">${btn(st.prepared?'返回探索 →':'准备好了，出发 →','scene-begin','primary')}${!voiceConfirmed&&!voiceTested&&!textOnly?btn('暂用文字体验','scene-text','chip'):''}</div></div>`;
  else if(storyStep===1)body=storyMapView();
@@ -1350,7 +1406,7 @@ function questTracker(mini=false){
 function render(){const hub=isHub(),story=inStory();document.querySelector('#app').innerHTML=`<div class="shell ${hub?'no-sidebar':''}">${hub?'':`<aside class="sidebar"><div class="brand">campus<span>quest.</span><small>英语同行冒险</small></div>${story?storyNav():`<nav class="nav" aria-label="主导航">${[['prep','▧ 语言背包'],['map','◈ 冒险地图'],['notebook','▤ 线索手记'],['stories','📖 日常故事'],['review','☆ 冒险回顾']].map(([v,t])=>btn(t,v,view===v?'active':'')).join('')}</nav>`}<div class="side-note">${story?'本场景 · 听说冒险<br><b>准备 → 探索 → 交流</b><br>教练给建议，任务由你完成。':'YOUR ADVENTURE<br><b>每一次开口，<br>都是新的发现。</b><br>你来探索，教练与你同行。'}</div></aside>`}<main class="workspace ${hub?'title-screen':''}"><div class="topbar hud"><div class="hud-left"><span class="hud-avatar">${hub?'🎧':story?'📖':'🧑‍🚀'}</span><span class="hud-meta"><b>${hub?'听说练习员':story?'同行探索员':'探索员'}</b><small>${hub?'日常故事 · 独立练习':story?'本场景听说冒险':'第 01 关 · 校园篇'}</small></span></div>${hub?`<span class="pill">📖 ${storyList.length} 个场景 · 随时可玩</span>`:story?'<span class="pill">🗂 自主探索</span>':questTracker(true)+'<span class="pill">🌱 A1–A2</span>'}</div>${hub?`<header class="heading"><div><div class="eyebrow">DAILY STORIES</div><h1>日常英语小故事</h1><p>${storyList.length} 个独立冒险：先学表达，再听任务，自己开口完成委托。</p></div><span class="pill">◷ 每篇约 5 分钟</span></header>`:story?`<header class="heading"><div><div class="eyebrow">DAILY STORY</div><h1>${esc(stories[activeStory].name)} 的冒险</h1><p>${esc(stories[activeStory].topic)} · 准备语言、听取委托、开口行动。</p></div></header>`:`<header class="heading"><div><div class="eyebrow">THE MISSING ROBOT</div><h1>消失的科技节机器人</h1><p>跟随线索，找到 Pip。校园里的冒险，从你开口开始。</p></div><span class="pill">◷ 约 20 分钟 · 无倒计时</span></header>`}${!storage?'<div class="toast">浏览器存储不可用，本次进度仅保留到页面关闭。</div>':''}${notice?`<div class="toast" role="status">${esc(notice)}</div>`:''}${cluePop?`<div class="clue-pop" role="status">${esc(cluePop)}</div>`:''}<div class="layout ${story?'story-layout'+(storyStep===1?' scene-map-layout':''):''}"><div>${hub?welcome():story?storyDetail():view==='voice'?voiceSetup():view==='prep'?prep():view==='notebook'?notebook():view==='map'?planBanner()+map():review()}</div>${hub?storiesAside():(story?(storyStep===1?storyCoachPanel():''):(s.entered||s.prepared?coach():'<aside class="card coach-intro"><div class="avatar">👩🏻‍🚀</div><strong>Nova · 同行教练</strong><p>准备好后，点击开始。</p></aside>'))}</div><footer class="footnote"><span>${hub?'DAILY STORIES · 听说小练习':story?'DAILY STORY · 听说练习':'EPISODE 01 · GREENFIELD CAMPUS'}</span><span>进度保存在此浏览器 · 脚本互动，不含真人联机 &nbsp; ${btn('重置进度','reset','chip')}</span></footer></main></div>`;updateSceneMarkers();}
 function focusInput(){document.querySelector('#utterance')?.focus();}
 function submit(text){if(recording)cancelVoice();if(!text.trim())return;if(/repeat|again|slow|再说|重听/i.test(text)){speak(message,true);return;}const contextual=listeningContext&&!/下一步|next|怎么走|如何移动|keyboard|control|这句话怎么说/.test(text)&&(discussionActive||/听不懂|意思|解释|词|why|mean|understand|detail|said|towards|past|flashing|shiny|followed/i.test(text));const answer=contextual?discussClue(s,listeningContext,text,discussionChecking):coachAnswer(s,text);if(contextual){discussionActive=true;discussionChecking=answer.checking;coachStatus='继续围绕这条线索追问';}else{discussionActive=false;discussionChecking=false;coachStatus='';}say(answer.en,answer.zh);speak(answer.en,contextual);}
-function action(a,v){notice='';if(a==='reset'&&activeStory){const d=document.createElement('dialog');d.innerHTML='<h2>重置本场景？</h2><p>其他场景和 Pip 的进度会保留。</p><div class="actions"><button id="scene-reset-cancel" class="secondary">取消</button><button id="scene-reset-confirm" class="primary">重置本场景</button></div>';document.body.append(d);d.showModal();d.querySelector('#scene-reset-cancel').onclick=()=>d.remove();d.querySelector('#scene-reset-confirm').onclick=()=>{d.remove();action('scene-restart');};return;}if(a==='map-hint-dismiss'){mapIntroSeen=true;render();return;}
+function action(a,v){notice='';if(a==='story-remove'||a==='story-remove-undo'){void changeStoryRemoval(v,a==='story-remove');return;}if(a==='reset'&&activeStory){const d=document.createElement('dialog');d.innerHTML='<h2>重置本场景？</h2><p>其他场景和 Pip 的进度会保留。</p><div class="actions"><button id="scene-reset-cancel" class="secondary">取消</button><button id="scene-reset-confirm" class="primary">重置本场景</button></div>';document.body.append(d);d.showModal();d.querySelector('#scene-reset-cancel').onclick=()=>d.remove();d.querySelector('#scene-reset-confirm').onclick=()=>{d.remove();action('scene-restart');};return;}if(a==='map-hint-dismiss'){mapIntroSeen=true;render();return;}
 if(a==='voice-finish'){recording?.stop();return;}
 if(a==='voice-original'){if(voiceDisplay?.audioURL){stopSpeech();originalVoicePlayer?.pause();originalVoicePlayer=new Audio(voiceDisplay.audioURL);originalVoicePlayer.play().catch(()=>{notice='原声播放失败，请重新录音。';render();});}return;}
 if(a==='voice-cancel'){cancelVoice(true);return;}

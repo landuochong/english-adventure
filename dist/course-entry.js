@@ -1,9 +1,9 @@
 import {validateStory,generateCheckedStory} from './generated-story.js';
-import {saveStory} from './story-store.js';
+import {saveStory,setStoryRemoved} from './story-store.js';
 const $=id=>document.getElementById(id),fields=['title','text','level','extra','scenario'];
-let db,images=[],urls=[],busy=0,dirty=false,revision=0,extraction=null,confirmed=false,extracting=false,storyDraft=null,generating=false;
+let db,images=[],urls=[],busy=0,dirty=false,revision=0,extraction=null,confirmed=false,extracting=false,storyDraft=null,generating=false,clearedStoryDraft=null,clearingStory=false;
 const status=text=>$('status').textContent=text;
-function changed(source=false){revision++;dirty=true;if(extraction){if(source){extraction.stale=true;$('review-warning').textContent='课程材料或要求已修改，请重新提取后再确认。';}confirmed=false;$('confirmed').textContent='内容有修改，请重新检查并确认';}if(storyDraft){storyDraft.stale=true;if($('story-status'))$('story-status').textContent='学习重点或要求已改变，请重新生成故事。';}updateStoryAccess();if(storyDraft)checkStory();status('有未保存的修改');}
+function changed(source=false){revision++;dirty=true;if(clearedStoryDraft){clearedStoryDraft.stale=true;clearedStoryDraft.reviewed=false;}if(extraction){if(source){extraction.stale=true;$('review-warning').textContent='课程材料或要求已修改，请重新提取后再确认。';}confirmed=false;$('confirmed').textContent='内容有修改，请重新检查并确认';}if(storyDraft){storyDraft.stale=true;if($('story-status'))$('story-status').textContent='学习重点或要求已改变，请重新生成故事。';}updateStoryAccess();if(storyDraft)checkStory();status('有未保存的修改');}
 function renderImages(){
  urls.forEach(URL.revokeObjectURL);urls=[];$('images').replaceChildren();
  images.forEach((file,index)=>{const figure=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption'),remove=document.createElement('button');const url=URL.createObjectURL(file);urls.push(url);img.src=url;img.alt='课程图片 '+(index+1);caption.textContent=file.name||'粘贴的截图';remove.type='button';remove.textContent='移除图片 '+(index+1);remove.onclick=()=>{images.splice(index,1);renderImages();changed(true);};figure.append(img,caption,remove);$('images').append(figure);});
@@ -25,17 +25,17 @@ for(const id of fields)$(id).addEventListener('input',()=>changed(true));
 async function persistDraft(e){
  e?.preventDefault();if(!db||busy||extracting||generating)return;
  if(!$('text').value.trim()&&!images.length){$('error').textContent='请先粘贴课程文字或添加至少一张图片。';$('text').focus();return;}
- $('save').disabled=true;$('error').textContent='';const savedRevision=revision;const draft={version:1,updatedAt:new Date().toISOString(),images:[...images],extraction,confirmed,storyDraft};for(const id of fields)draft[id]=$(id).value;
+ $('save').disabled=true;$('error').textContent='';const savedRevision=revision;const draft={version:1,updatedAt:new Date().toISOString(),images:[...images],extraction,confirmed,storyDraft,clearedStoryDraft};for(const id of fields)draft[id]=$(id).value;
  try{await new Promise((resolve,reject)=>{const tx=db.transaction('drafts','readwrite');tx.objectStore('drafts').put(draft,'current');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});dirty=revision!==savedRevision;status(dirty?'已保存上一版，仍有未保存的修改':'草稿已保存 · 可随时回来继续编辑');return !dirty;}
  catch{status('保存失败，当前素材仍在页面中');$('error').textContent='浏览器存储不可用或空间不足，请保留原材料后重试。';}
  finally{$('save').disabled=false;}
 }
 $('course-form').onsubmit=persistDraft;
-window.addEventListener('beforeunload',e=>{if(dirty||busy||extracting||generating){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(dirty||busy||extracting||generating||clearingStory){e.preventDefault();e.returnValue='';}});
 try{
  db=await new Promise((resolve,reject)=>{const r=indexedDB.open('campus-course-drafts',1);r.onupgradeneeded=()=>r.result.createObjectStore('drafts');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('Blocked'));});
  const draft=await new Promise((resolve,reject)=>{const r=db.transaction('drafts').objectStore('drafts').get('current');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
- if(draft){for(const id of fields)if(typeof draft[id]==='string')$(id).value=draft[id];images=(draft.images||[]).filter(f=>f instanceof Blob);extraction=draft.extraction||null;confirmed=draft.confirmed===true;storyDraft=draft.storyDraft||null;renderReview();renderStory();renderImages();status('已恢复上次保存的草稿');}else status('添加文字或图片后即可保存');
+ if(draft){for(const id of fields)if(typeof draft[id]==='string')$(id).value=draft[id];images=(draft.images||[]).filter(f=>f instanceof Blob);extraction=draft.extraction||null;confirmed=draft.confirmed===true;storyDraft=draft.storyDraft||null;clearedStoryDraft=draft.clearedStoryDraft||null;renderReview();renderStory();renderImages();status('已恢复上次保存的草稿');}else status('添加文字或图片后即可保存');
  $('save').disabled=busy>0;
 }catch{status('本地草稿存储不可用');$('error').textContent='可以输入和预览，但无法保存；请保留原材料。';}
 
@@ -84,6 +84,8 @@ $('extract').onclick=async()=>{
 
 function learningItems(){return ['vocabulary','phrases','grammar'].flatMap(type=>(extraction?.[type]||[]).map((r,i)=>({id:type+'-'+i,type,term:r.term,meaning:r.meaning,origin:r.origin})));}
 function updateStoryAccess(){
+ $('clear-story-draft').hidden=!storyDraft;$('clear-story-draft').disabled=generating||extracting||clearingStory;
+ $('undo-clear-story').hidden=!!storyDraft||!clearedStoryDraft;$('undo-clear-story').disabled=generating||extracting||clearingStory;
  $('story-builder').hidden=!extraction;
  $('generate-story').disabled=!confirmed||!!extraction?.stale||generating;
  if(!confirmed)$('story-status').textContent='请先核对并确认上方学习重点。';
@@ -153,3 +155,23 @@ $('import-story').onclick=async()=>{try{
  const c=JSON.parse($('import-story-json').value);if(!c||!Array.isArray(c.actions)||!Array.isArray(c.npcs)||!c.mission||!c.intro||!Array.isArray(c.coverage)||!Array.isArray(c.additions)||c.actions.some(a=>!a||!a.reply||!a.hint||!Array.isArray(a.slots))||c.npcs.some(n=>!n||typeof n.name!=='string'))throw Error('故事配置不完整');
  storyDraft={id:crypto.randomUUID(),config:c,learning:learningItems(),reviewed:false,stale:false};storyChanged();renderStory();await persistDraft();$('story-status').textContent='已恢复故事草稿，检查未通过时可自动修复。';
 }catch(e){$('import-status').textContent='恢复失败：'+e.message;}};
+
+async function changeDraftRemoval(undo=false){
+ if(generating||extracting||busy||clearingStory)return;
+ if(undo?!clearedStoryDraft:!storyDraft)return;
+ clearingStory=true;const controls=[...document.querySelectorAll('input,textarea,select,button')],disabled=controls.map(c=>c.disabled);controls.forEach(c=>c.disabled=true);const previous=storyDraft,previousBackup=clearedStoryDraft;
+ try{
+  if(undo){storyDraft=clearedStoryDraft;clearedStoryDraft=null;}
+  else{clearedStoryDraft=storyDraft;storyDraft=null;}
+  revision++;dirty=true;
+  if(!await persistDraft()){storyDraft=previous;clearedStoryDraft=previousBackup;renderStory();$('clear-story-status').textContent='未能保存，故事草稿仍保留，请重试。';return;}
+  // Preview and saved stories are separate records. Only change this draft's preview.
+  let previewWarning='';
+  try{await setStoryRemoved('preview-'+(undo?storyDraft.id:clearedStoryDraft.id),!undo);}
+  catch{previewWarning=undo?'旧试玩链接尚未恢复，可点击开始试玩创建新副本。':'旧试玩副本暂未移除，但课程草稿已清空。';}
+  renderStory();$('story-status').textContent=undo?'故事草稿已恢复。':'可以使用保留的学习重点生成新故事。';
+  $('clear-story-status').textContent=(undo?'已恢复故事草稿。':'已清空当前故事草稿，课文、图片和学习重点均保留；已保存到主页的故事不受影响。')+previewWarning;
+ }finally{clearingStory=false;controls.forEach((c,i)=>c.disabled=disabled[i]);updateStoryAccess();if(storyDraft)checkStory();}
+}
+$('clear-story-draft').onclick=()=>changeDraftRemoval();
+$('undo-clear-story').onclick=()=>changeDraftRemoval(true);

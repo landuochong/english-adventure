@@ -5,8 +5,8 @@ export function pcmWav(frames){
  str(0,'RIFF');v.setUint32(4,36+length*2,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,16000,true);v.setUint32(28,32000,true);v.setUint16(32,2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,length*2,true);
  let offset=44;for(const frame of frames)for(const sample of frame){const x=Math.max(-1,Math.min(1,sample));v.setInt16(offset,x*(x<0?32768:32767),true);offset+=2;}return buffer;
 }
-export function createLocalVoiceTurn({createVAD,scene='',onUpdate=()=>{},onComplete=()=>{},onError=()=>{},request=fetch}){
- const gate=new SilenceGate(),controller=new AbortController();let vad,frames=[],timer,closed=false,finishing=false,ready=false,started=0;
+export function createLocalVoiceTurn({createVAD,scene='',silenceMs=2000,onUpdate=()=>{},onComplete=()=>{},onError=()=>{},request=fetch}){
+ const gate=new SilenceGate({silenceMs}),controller=new AbortController();let vad,frames=[],timer,closed=false,finishing=false,ready=false,started=0;
  const update=phase=>onUpdate({phase,text:'',remaining:gate.state(performance.now()).remaining});
  const release=async()=>{clearInterval(timer);const old=vad;vad=null;if(old)await old.destroy();};
  const fail=async code=>{if(closed)return;closed=true;controller.abort();frames=[];await release().catch(()=>{});onError(code,'');};

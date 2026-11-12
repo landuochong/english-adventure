@@ -13,6 +13,7 @@ MODEL=Path(os.environ.get('WHISPER_MODEL',Path.home()/'whb/music/models/ggml-sma
 CLI=os.environ.get('WHISPER_CLI',shutil.which('whisper-cli') or '')
 LOCK=threading.Lock()
 PROMPTS={
+ 'campus-level-one':'An English conversation at a school science fair. Vocabulary: science fair, robot, information desk, laboratory, battery check, bring back, light, colour.',
  'directions':'An English conversation about getting around town by public transport. Vocabulary: bus, bus stop, route, museum, library, get off. Which bus should I take?',
  'school':'An English conversation in a classroom. Vocabulary: textbook, maths book, borrow, lend, return.',
  'restaurant':'An English conversation in a cafe. Vocabulary: menu, sandwich, onions, with, without, water, juice, order.',

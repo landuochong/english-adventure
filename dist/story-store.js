@@ -1,3 +1,13 @@
 export function openStories(){return new Promise((resolve,reject)=>{const r=indexedDB.open('campus-generated-stories',1);r.onupgradeneeded=()=>r.result.createObjectStore('stories',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('故事存储被占用'));});}
 export async function listStories(){const db=await openStories();try{return await new Promise((resolve,reject)=>{const r=db.transaction('stories').objectStore('stories').getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}finally{db.close();}}
 export async function saveStory(record){const db=await openStories();try{await new Promise((resolve,reject)=>{const tx=db.transaction('stories','readwrite');tx.objectStore('stories').put(record);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}finally{db.close();}}
+// A reversible removal. Update the latest record in one transaction so undo
+// never overwrites edits saved by another tab with an old in-memory copy.
+export async function setStoryRemoved(id,removed){
+ const db=await openStories();
+ try{return await new Promise((resolve,reject)=>{
+  const tx=db.transaction('stories','readwrite'),store=tx.objectStore('stories'),request=store.get(id);let found=false;
+  request.onsuccess=()=>{const record=request.result;if(!record)return;found=true;if(removed)record.removedAt=new Date().toISOString();else delete record.removedAt;store.put(record);};
+  tx.oncomplete=()=>resolve(found);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+ });}finally{db.close();}
+}

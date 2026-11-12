@@ -1,0 +1,44 @@
+#quest-labels{position:fixed;inset:0;pointer-events:none}.quest-marker{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;width:42px;height:42px;padding:0;border-radius:50%;font-size:26px;font-weight:bold;color:white;background:#ba3939;box-shadow:0 3px 12px #0004;border:2px solid #fff}.quest-marker[data-mode="text"]{background:#234d64}.quest-marker[data-mode="done"]{background:#297f65}#quest-controls{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;max-width:65%;font-size:13px}#quest-controls[hidden],#quest-ui [hidden]{display:none!important}#quest-controls button{padding:10px 13px;white-space:nowrap}#quest-status{background:#163447df;border-radius:6px;padding:7px}#quest-status:empty{display:none}#quest-note{position:fixed;left:24px;bottom:105px;width:min(410px,calc(100vw - 48px));max-height:65vh;overflow:auto;background:#f4f8f9f5;color:#183c4b;border:1px solid #cadbdf;border-radius:12px;padding:18px;box-shadow:0 10px 30px #183c4b33}#quest-note button{padding:9px 11px;margin:8px 4px 0 0;background:#dcebed}#quest-close{float:right;margin:0!important;padding:0 8px!important;font-size:24px}#quest-note b{display:block;margin-bottom:12px}#quest-note summary{cursor:pointer;margin:10px 0}#quest-form{display:flex;gap:6px}#quest-input{min-width:0;width:100%;padding:9px;border:1px solid #abc1c8;border-radius:5px}#quest-recording{max-width:100%}#quest-ui dialog{border:0;border-radius:16px;padding:28px;width:min(520px,90vw);color:#183c4b;box-shadow:0 20px 80px #0004}#quest-ui dialog::backdrop{background:#102f4966;backdrop-filter:blur(4px)}#quest-ready label{display:block;margin:14px 0}#quest-ready select{display:block;max-width:100%;width:100%;padding:10px;margin-top:6px}#quest-words{display:flex;gap:6px;flex-wrap:wrap;margin:20px 0}#quest-words button{font-size:13px;padding:9px}#quest-begin{background:#226b77;color:white}#quest-win{text-align:center}.quest-stars{font-size:50px;color:#e6a52e;letter-spacing:10px;animation:quest-pop .6s ease-out}@keyframes quest-pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}@media(prefers-reduced-motion:reduce){.quest-stars{animation:none}}
+
+#quest-form{align-items:center}#quest-form button{flex:none;white-space:nowrap;margin:0}#quest-input{flex:1;width:0;height:40px}
+
+#quest-ui[data-recording="true"] .quest-marker{display:none}#quest-ui[data-recording="true"] #quest-coach{display:none}#minimap .map-people-legend{display:block;font-size:10px;line-height:1.5;color:#c9dfe5;margin-top:7px}
+
+/* Compact conversation dock: leave the speaker and campus in view. */
+#quest-note{left:50%;bottom:82px;transform:translateX(-50%);width:min(560px,calc(100vw - 32px));max-height:48vh;background:#172e3cf2;color:#edf5f5;border:1px solid #71899380;border-top:3px solid #e9b765;border-radius:8px;padding:18px 22px;box-shadow:0 12px 38px #09213044;backdrop-filter:blur(16px)}
+#quest-note b{font-size:18px;font-weight:550;margin-bottom:9px}
+#quest-note button{background:#314c59;color:#f3f7f8;border:1px solid #79909b66;border-radius:5px;font-size:13px;padding:10px 13px}
+#quest-note #quest-replay{background:#e9b765;color:#23343c;border-color:#e9b765}
+#quest-note #quest-close{background:transparent;border:0;color:#c3d5dc}
+#quest-note summary{font-size:12px;color:#bed2db;line-height:1.6}
+#quest-note p{line-height:1.65;font-size:14px}
+#quest-voice-status:empty{display:none}
+#quest-controls button{background:#203b49ed;color:#edf5f5;border:1px solid #8ca6b14d;border-radius:5px}
+#quest-ui button:hover{filter:brightness(1.12)}
+#quest-ui button:focus-visible{outline:3px solid #e9b765;outline-offset:3px}
+#quest-ui button:disabled{opacity:.45;cursor:default}
+#quest-input{background:#f0f6f7;color:#173440}
+@media(max-width:650px){#quest-note{bottom:115px;padding:14px;max-height:50vh}#quest-controls{bottom:26px;max-width:90%}#quest-note button{padding:9px}}
+
+/* Speaker occupies the left of the frame; listening controls sit alongside. */
+@media(min-width:701px){#quest-note{left:auto;right:30px;bottom:100px;transform:none;width:350px;max-height:52vh}body:has(#quest-ui[data-recording="true"]) #minimap{visibility:hidden}body:has(#quest-ui[data-recording="true"]) #reticle{visibility:hidden}}
+
+body:has(#quest-ui[data-recording="true"]) #mobile{display:none}
+@media(pointer:fine){body #mobile{display:none}}
+
+#quest-ui #quest-win{background:#173341f2;color:#f2f7f8;border:1px solid #8babb566;border-top:3px solid #e9b765;border-radius:8px;padding:28px;text-align:left}#quest-ui #quest-win::backdrop{background:#10283726;backdrop-filter:none}#quest-win .quest-stars{font-size:40px;letter-spacing:7px}#quest-win h2{font-size:28px;margin:16px 0 10px}#quest-win p{font-size:14px;line-height:1.7;margin-bottom:20px}#quest-win button{padding:11px 13px;margin:0 5px 12px 0;font-size:13px;border-radius:5px}#quest-win #quest-thanks{background:#e9b765;color:#19333e}#quest-win a{display:block;color:#b8d4df;font-size:13px;text-underline-offset:4px}@media(min-width:701px){#quest-ui #quest-win{position:fixed;inset:auto auto 36px 36px;margin:0;width:420px}}
+
+#interaction-hint{position:fixed;left:50%;top:58%;transform:translateX(-50%);pointer-events:none;padding:9px 15px;border:1px solid #a7c5d270;border-radius:5px;background:#183846ed;color:#eef7f8;font:13px system-ui;box-shadow:0 4px 18px #122f3533}#interaction-hint[hidden]{display:none}
+
+/* Begin inside the place itself, with the campus visible behind the invitation. */
+body #entry{place-content:center start;padding:64px;background:linear-gradient(90deg,#102d3ed9 0%,#102d3e85 37%,#102d3e00 76%);text-align:left;backdrop-filter:none}
+body #entry h2{font-size:44px;line-height:1.2;font-weight:550;letter-spacing:.03em}
+body #entry p{font-size:16px;line-height:1.9;margin:8px 0 28px;max-width:32ch}
+body #entry #start{width:185px;background:#e9b765;color:#173442;font-weight:600;border:1px solid #ffdc9b;padding:15px 22px;border-radius:5px}
+body:has(#entry:not([hidden])) #minimap,body:has(#entry:not([hidden])) #mobile,body:has(#entry:not([hidden])) footer{visibility:hidden}
+#quest-ui dialog{max-height:calc(100dvh - 32px);overflow:auto}
+@media(max-width:650px){body #entry{place-content:end stretch;padding:26px 24px 90px;background:linear-gradient(0deg,#102d3ef5 0%,#102d3e90 43%,#102d3e00 85%)}body #entry h2{font-size:32px}body #entry p{font-size:14px}#quest-ui dialog{padding:20px}#quest-controls{flex-wrap:wrap;justify-content:center}#quest-status{max-width:80vw}}
+
+body:has(#quest-ui[data-recording="true"]) #minimap,body:has(#quest-ui[data-recording="true"]) footer,body:has(#quest-ui[data-recording="true"]) #reticle{visibility:hidden}body:has(#entry:not([hidden])) #hud header>div{visibility:hidden}
+
+body #reticle{display:none}

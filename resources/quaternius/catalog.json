@@ -1,0 +1,1208 @@
+{
+  "date": "2026-11-12",
+  "purpose": "Future-school reusable assets; inclusion does not imply automatic scene loading",
+  "packs": [
+    {
+      "id": "sci-fi-essentials-kit",
+      "source": "https://quaternius.itch.io/sci-fi-essentials-kit",
+      "edition": "Standard free",
+      "archive": "resources/quaternius/sci-fi-essentials-kit/standard.zip",
+      "archive_bytes": 166910545,
+      "archive_sha256": "a08346d538aa39fbea9fa492e03620d1860fc6214eedd62a4f5db373ac6fca01",
+      "license": "CC0-1.0 (bundled license)",
+      "license_files": [
+        "resources/quaternius/sci-fi-essentials-kit/License_Standard.txt"
+      ]
+    },
+    {
+      "id": "modular-sci-fi-megakit",
+      "source": "https://quaternius.itch.io/modular-sci-fi-megakit",
+      "edition": "Standard free",
+      "archive": "resources/quaternius/modular-sci-fi-megakit/standard.zip",
+      "archive_bytes": 48559316,
+      "archive_sha256": "6fae60cf5189e44dff0bd91097f094a765acc6d57d64a85a0cc0dd56e03035e3",
+      "license": "CC0-1.0 (bundled license)",
+      "license_files": [
+        "resources/quaternius/modular-sci-fi-megakit/License_Standard.txt"
+      ]
+    },
+    {
+      "id": "universal-animation-library",
+      "source": "https://quaternius.itch.io/universal-animation-library",
+      "edition": "Standard free",
+      "archive": "resources/quaternius/universal-animation-library/standard.zip",
+      "archive_bytes": 15904933,
+      "archive_sha256": "cc73fc4e495b82958207316596317a3f40b9fa38065bde1027937452da537724",
+      "license": "CC0-1.0 (bundled license)",
+      "license_files": [
+        "resources/quaternius/universal-animation-library/License.txt",
+        "resources/quaternius/universal-animation-library/README.txt"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "sci-fi-essentials-kit/Enemy_EyeDrone",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Enemy_EyeDrone.gltf",
+      "archive_entry": "glTF/Enemy_EyeDrone.gltf",
+      "bytes": 53939,
+      "sha256": "ae39f7a2cc7698aaa774c9c84df3263d833023d69e7638e417d88e79cb3c7005",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Enemy_EyeDrone.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_BaseColor_png.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_ORM.png"
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "channels": 24
+        },
+        {
+          "name": "BackFlip",
+          "channels": 24
+        },
+        {
+          "name": "Charging",
+          "channels": 24
+        },
+        {
+          "name": "Hit",
+          "channels": 24
+        },
+        {
+          "name": "Idle",
+          "channels": 24
+        },
+        {
+          "name": "Look",
+          "channels": 24
+        }
+      ],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Enemy_EyeDrone.bin": "3e2006cbb5836c0bdb9e4c0d74115c5301f34150b25d5a36cc2eb98daa4ce991",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_Normal.png": "3e1f78e93b93df32828ee9a9389665e9ccbe330065a36f365267bd9e094d2187",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_BaseColor_png.png": "65ab96c4ed89e64d84ed453fd67dfd37027860d81b93fb2a5d5bb2e9e0e35df8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_ORM.png": "c9b85f821df22954ca63cbeb09bc392bba4e12a3776c413886ea86b8457fd08d"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Enemy_QuadShell",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Enemy_QuadShell.gltf",
+      "archive_entry": "glTF/Enemy_QuadShell.gltf",
+      "bytes": 235254,
+      "sha256": "fb441f91a21d05faab2b8570f379cd7a4169fa53cb680c158cd9e09408868670",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Enemy_QuadShell.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_BaseColor_png.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_ORM.png"
+      ],
+      "animations": [
+        {
+          "name": "Attack",
+          "channels": 84
+        },
+        {
+          "name": "Charge",
+          "channels": 84
+        },
+        {
+          "name": "Hit",
+          "channels": 84
+        },
+        {
+          "name": "Idle",
+          "channels": 84
+        },
+        {
+          "name": "Look",
+          "channels": 84
+        },
+        {
+          "name": "Run",
+          "channels": 84
+        },
+        {
+          "name": "TurnOff",
+          "channels": 84
+        },
+        {
+          "name": "Walk",
+          "channels": 84
+        }
+      ],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Enemy_QuadShell.bin": "8f2759ba937e4f4e4b98cdba2d782ec9289541fe2405b7cffd7d5364eda10162",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_Normal.png": "3e1f78e93b93df32828ee9a9389665e9ccbe330065a36f365267bd9e094d2187",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_BaseColor_png.png": "65ab96c4ed89e64d84ed453fd67dfd37027860d81b93fb2a5d5bb2e9e0e35df8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Enemies_ORM.png": "c9b85f821df22954ca63cbeb09bc392bba4e12a3776c413886ea86b8457fd08d"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Chair",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Chair.gltf",
+      "archive_entry": "glTF/Prop_Chair.gltf",
+      "bytes": 3629,
+      "sha256": "3b87c634abb635344606102d4272a7b2448b5ce64cab96cda41433cb4278d377",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Chair.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Chair.bin": "2a127ae035fb1efb80b50bc85bd86cb7f99acb8dec496609a759029f88b18fee",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png": "758a95beccdc9f0621d8b8a283ee2593e04b56f1cd32776165ec85e1568e8eb8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png": "2a15eadbedbc928d771ed8f2a7a8c1a16bce89b2836a0ecf34ece7e2fab96769"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Desk_Medium",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Desk_Medium.gltf",
+      "archive_entry": "glTF/Prop_Desk_Medium.gltf",
+      "bytes": 5521,
+      "sha256": "6f26a2a78898ca79e2593fa4bae7bd95ef9e914ca56c0a0492a65ab0217f6a6a",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Desk_Medium.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Desk_Medium.bin": "5eaf07f59c8cd58374c6da564210e95b17ee11fc71a86eaa53c5472abab62ed5",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png": "758a95beccdc9f0621d8b8a283ee2593e04b56f1cd32776165ec85e1568e8eb8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png": "2a15eadbedbc928d771ed8f2a7a8c1a16bce89b2836a0ecf34ece7e2fab96769",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Desk_Small",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Desk_Small.gltf",
+      "archive_entry": "glTF/Prop_Desk_Small.gltf",
+      "bytes": 5415,
+      "sha256": "b902113328237fd29e3dae13d61888fb861b1db24143705403933e7d772de6a1",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Desk_Small.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Desk_Small.bin": "5fe24035cb2abd5cdc9c49644e6e5b26d00c94dc73abb8e4b58f0e6619b24c37",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png": "758a95beccdc9f0621d8b8a283ee2593e04b56f1cd32776165ec85e1568e8eb8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png": "2a15eadbedbc928d771ed8f2a7a8c1a16bce89b2836a0ecf34ece7e2fab96769",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_HealthPack",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_HealthPack.gltf",
+      "archive_entry": "glTF/Prop_HealthPack.gltf",
+      "bytes": 2230,
+      "sha256": "1272bab6b46f6011fc783e0c08fa5772cb52d1b799115f11f8612cf1fec60b0e",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_HealthPack.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_HealthPack.bin": "3f493562fbb728d7b3fbe7c44fec4e6a55a6d94c5d37079304823b9483a758c7",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_Normal.png": "5dc16d40e5e92c956f0fdbeea346d2b6792f9f25b13addee5f33d984d75072aa",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_BaseColor.png": "e94bc5ac9bd7c0d5771936da662bbed9c8fa8cb44d9ec51b59ccd6512104b4cc",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_ORM.png": "30a45c78f17e41d6e85a1caedbeac5974121fe1aa8095f1a4887a9ab1ea1fab1"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_HealthPack_Tube",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_HealthPack_Tube.gltf",
+      "archive_entry": "glTF/Prop_HealthPack_Tube.gltf",
+      "bytes": 2231,
+      "sha256": "7d8c3210629244410a4fba5c7debaa9d5ae355b87ef71cead3f57d1a989ec2c2",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_HealthPack_Tube.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_HealthPack_Tube.bin": "916be0c81f05cec3ffc5931163472519bd946e78e76d333389d6f7cecf9e53eb",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_Normal.png": "5dc16d40e5e92c956f0fdbeea346d2b6792f9f25b13addee5f33d984d75072aa",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_BaseColor.png": "e94bc5ac9bd7c0d5771936da662bbed9c8fa8cb44d9ec51b59ccd6512104b4cc",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_ORM.png": "30a45c78f17e41d6e85a1caedbeac5974121fe1aa8095f1a4887a9ab1ea1fab1"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_KeyCard",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_KeyCard.gltf",
+      "archive_entry": "glTF/Prop_KeyCard.gltf",
+      "bytes": 2216,
+      "sha256": "24c62b29687346fb9bd045199ffe1622d6169770a07ec9235a1f34ba3dc83820",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_KeyCard.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch1_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch1_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch1_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_KeyCard.bin": "a4a5b563b7930d59cba05481fcf1941ac8a72bc347abcdbf4ff3bca5d7fa2ad0",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch1_Normal.png": "3a0d462366e5d03ef13fb35efc97c38c2463c118a89e303d356bac54d941d4ee",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch1_BaseColor.png": "b8428a3df1d8e920e185d7a76bb6755f6ecbda3259d963263c92c149e94d85ca",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch1_ORM.png": "4ec5e8db4c8cf5e849461d76bfeeb3d9e722380696c6688911e4751745d8021e"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Locker",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Locker.gltf",
+      "archive_entry": "glTF/Prop_Locker.gltf",
+      "bytes": 2153,
+      "sha256": "99ce345d2d751ad23a20ef3153bc82a85d4d1cbc5787074fc1c54a3278f295c1",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Locker.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Locker.bin": "02ff3313a5905d349db9f2116d4effb942e904577aecb0f74a77371183910736",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_BaseColor.png": "7b13c6a7d82b434314237c4b1930b8e12ddc69a70ffef28d73cbd178d3ff6293",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Mug",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Mug.gltf",
+      "archive_entry": "glTF/Prop_Mug.gltf",
+      "bytes": 2172,
+      "sha256": "81c6aca3656b84a338db681729f3a7e2abff11ceca19bed1fbe2739aaa8a5107",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Mug.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Mug.bin": "f0f0d8556e573b4aa9f2a54bbf16ad6c346f6040a475e311b20df14c4ba6c9dc",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_BaseColor.png": "2a15eadbedbc928d771ed8f2a7a8c1a16bce89b2836a0ecf34ece7e2fab96769",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Chest",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Chest.gltf",
+      "archive_entry": "glTF/Prop_Chest.gltf",
+      "bytes": 17853,
+      "sha256": "8c1ee29dd8006c21abdb9f5d74b270ef6a336348878f059912f7a1a8b6ac3ca1",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Chest.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_ORM.png"
+      ],
+      "animations": [
+        {
+          "name": "Close",
+          "channels": 9
+        },
+        {
+          "name": "Idle_Closed",
+          "channels": 9
+        },
+        {
+          "name": "Idle_Open",
+          "channels": 9
+        },
+        {
+          "name": "Open",
+          "channels": 9
+        }
+      ],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Chest.bin": "9c8648eb8a271379227646b852dbc58fd2ba4545aec2eb4f296acd64301c631d",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_Normal.png": "5dc16d40e5e92c956f0fdbeea346d2b6792f9f25b13addee5f33d984d75072aa",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_BaseColor.png": "e94bc5ac9bd7c0d5771936da662bbed9c8fa8cb44d9ec51b59ccd6512104b4cc",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Batch2_ORM.png": "30a45c78f17e41d6e85a1caedbeac5974121fe1aa8095f1a4887a9ab1ea1fab1"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Crate",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Crate.gltf",
+      "archive_entry": "glTF/Prop_Crate.gltf",
+      "bytes": 2186,
+      "sha256": "593077978159b4d5283a60a291f5b55b80915896d82b0218dc3e5de2f92c3d6a",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Crate.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Crates_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Crates_BaseColor.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Crates_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Crate.bin": "ec472c1c9ea48727d2a40085365b4bad6031a785b75b2dae083291bc1d295752",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Crates_Normal.png": "9fe8aa4951198c0dd3e06a41cd7aca1e50e308c2629f620f4d5be53dfc835b21",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Crates_BaseColor.png": "79d604644b8ef63731735cfb29a4a9ded81598d20ecffe75e2af3fd9e18d255c",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Props_Crates_ORM.png": "a36b59d07082dde265f13689f0acaacfa0cfb22b4769a2dad1bad282a39bf795"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_SatelliteDish",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_SatelliteDish.gltf",
+      "archive_entry": "glTF/Prop_SatelliteDish.gltf",
+      "bytes": 5732,
+      "sha256": "2d311ee9fa42ebc541036d934de2ceb989364c1e724de14a4b21b2e901a51b21",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_SatelliteDish.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_BaseColor_Red.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_ORM.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_SatelliteDish.bin": "70bca5b61df2904589b666ddef044ea3b25c5fc69697d395d2e1fdbc9d036a58",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_BaseColor_Red.png": "4a08abf8dc0a5bf558a0ae38dc0d70eddc328eaa8060725d07b95d7c8a75663c",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_Cables.png": "758a95beccdc9f0621d8b8a283ee2593e04b56f1cd32776165ec85e1568e8eb8",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4"
+      }
+    },
+    {
+      "id": "sci-fi-essentials-kit/Prop_Shelves_ThinShort",
+      "pack": "sci-fi-essentials-kit",
+      "file": "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Shelves_ThinShort.gltf",
+      "archive_entry": "glTF/Prop_Shelves_ThinShort.gltf",
+      "bytes": 2429,
+      "sha256": "e90fd40a9e04afd53616615cd24c2da844301edccf5e8cb92f726bbca19b29ee",
+      "dependencies": [
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Shelves_ThinShort.bin",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/sci-fi-essentials-kit/Prop_Shelves_ThinShort.bin": "269874ce280233e5dc418fe252633fd123649ca9f7fc5c740eea41ab8adb3aa3",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/sci-fi-essentials-kit/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Prop_AccessPoint",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_AccessPoint.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Props/Prop_AccessPoint.gltf",
+      "bytes": 7110,
+      "sha256": "23281aebdf5904403c71217c5ca45c4e901b978b452ddfba9e968fd01b0aac77",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_AccessPoint.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Decals.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_AccessPoint.bin": "b490a23edf6226c5c699376d8368bb4a86d30381ca95a1950264bc922143b5e8",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Decals.png": "cfd1dfe9d3c86a7f5f9bc2e516d935599a70854090f413a29aec0ced1d6c908a",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Prop_Computer",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Computer.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Computer.gltf",
+      "bytes": 5621,
+      "sha256": "724525353d0c24a0596f77d5d461bd3cf58685e6e2c3abc1b5df3141759912f4",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Computer.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Decals.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Computer.bin": "4edcd2674633831714ae8aafe7174be52c2f3d21f24e009fd7e9417e27eb788d",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Decals.png": "cfd1dfe9d3c86a7f5f9bc2e516d935599a70854090f413a29aec0ced1d6c908a",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Prop_ItemHolder",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_ItemHolder.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Props/Prop_ItemHolder.gltf",
+      "bytes": 5038,
+      "sha256": "4e0c1867d92bd4d1ff2c96a5b1312defbdb4ace13d1d842f48bf201556f2f501",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_ItemHolder.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Decals.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_ItemHolder.bin": "74bcb41e58d577bec18b850fa37f31c665b755ba0324f0525422d492483faa59",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Decals.png": "cfd1dfe9d3c86a7f5f9bc2e516d935599a70854090f413a29aec0ced1d6c908a"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Prop_Light_Small",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Light_Small.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Small.gltf",
+      "bytes": 3571,
+      "sha256": "0f9cbbe00a3ca817278dfac3e9f20eab3feec4c7a74b3d4ca32560a517e6f38a",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Light_Small.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Light_Small.bin": "d31557d8a0bca16e31cb578cc90528cc484908b641c897b5bb0f55335e292054",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Prop_Light_Wide",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Light_Wide.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Props/Prop_Light_Wide.gltf",
+      "bytes": 3568,
+      "sha256": "bad2b6ffc330aaa185700edb7487f4c8315291fd23d834844f68d6c1695fff40",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Light_Wide.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/Prop_Light_Wide.bin": "2ec8fa4cbe5d26f208a1b3a4a20635d1524359bbacdfed282ddc90e2358aa96c",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Props/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Column_Simple",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Columns/Column_Simple.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Columns/Column_Simple.gltf",
+      "bytes": 4012,
+      "sha256": "6e2db23b3719f52c3ad5d548e3056ba60c26826d32e3edbdee1f504b705e18c5",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/Column_Simple.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_01_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_02_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_02_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/Column_Simple.bin": "85f91d5bc4b03ae1da42b468e31f15d935fdee81323a29467cb80175a9a2b98b",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_02_BaseColor_Red.png": "4a08abf8dc0a5bf558a0ae38dc0d70eddc328eaa8060725d07b95d7c8a75663c",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Columns/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Door_Frame_Square",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Frame_Square.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Frame_Square.gltf",
+      "bytes": 2395,
+      "sha256": "057175188e8899a281d5c768a2de314cf9721071210bcfe4efc193c8de5e2197",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Frame_Square.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Frame_Square.bin": "34bc96ea81fdafbf7bca0f439c7b94f125108f58278d599df4c460c08259178e",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Door_Simple",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Simple.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Simple.gltf",
+      "bytes": 5385,
+      "sha256": "e8b728e7b9f64f88130c122712c85a3e228926ef5506dcb645d6be4dad52ae84",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Simple.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_BaseColor.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_Cables.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Simple.bin": "0b647b8afb5b561b9572d27aa5528bf2a354340273ebb3b4792303a8cc478031",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_BaseColor.png": "2a15eadbedbc928d771ed8f2a7a8c1a16bce89b2836a0ecf34ece7e2fab96769",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_03_Cables.png": "758a95beccdc9f0621d8b8a283ee2593e04b56f1cd32776165ec85e1568e8eb8"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/Door_Metal",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Metal.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Platforms/Door_Metal.gltf",
+      "bytes": 3931,
+      "sha256": "bca8e81ab0237c99ac5a74b73a975a12cbfaec35f60600d300b108aa61c6b13c",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Metal.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_02_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_02_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/Door_Metal.bin": "ee30b65b79f86514d758672649da7879515f431a11657ebf2e66339cf169b1fb",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_02_BaseColor_Red.png": "4a08abf8dc0a5bf558a0ae38dc0d70eddc328eaa8060725d07b95d7c8a75663c",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Platforms/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/WallWindow_Straight",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Walls/WallWindow_Straight.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Walls/WallWindow_Straight.gltf",
+      "bytes": 7088,
+      "sha256": "8963fbfb1431216caf8ed5c41e2bd2463a5583770b276072ae87d66fa7ebaa7a",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/WallWindow_Straight.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_01_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_01_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_01_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_BaseColor.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/WallWindow_Straight.bin": "ba9316187d6161d38a6585be4498b160676f85215179d39c03fab882683520da",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_BaseColor_Red.png": "4a08abf8dc0a5bf558a0ae38dc0d70eddc328eaa8060725d07b95d7c8a75663c",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_01_Normal.png": "1aec7ad47a642fc68216b5a3119341b7dca038c1fc9493df8a15ad4aa27ddbcf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_01_BaseColor_Red.png": "15fc0e344ed35483bc771aaa95c1c2a0b0ec2349a893cf24af18b8742f0842ac",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_01_ORM.png": "6ab7ad231df22867652048ebfd602684a9072d45c483ca57df0fcd4cb2cb4feb",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_Normal.png": "141c075ee32a4dda83c4b954076ea563b86e2a6329d5c536aa7ddccb6c1328bf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_BaseColor.png": "7b431c76896c8d2de736e33271049fc869f2a8a5c0632678c9f030146e90c650",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_ORM.png": "555039f51a71803be3d617ac03eac05e840ec5b36c269de2115a50e956bff3b2"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/WallAstra_Straight_Window",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Walls/WallAstra_Straight_Window.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Walls/WallAstra_Straight_Window.gltf",
+      "bytes": 7800,
+      "sha256": "e6801442d6961b72087d216b9024e2c056cb2d6b975450aeddda23662a40475f",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/WallAstra_Straight_Window.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_BaseColor.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_Cables.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/WallAstra_Straight_Window.bin": "3ccd060adc3c638a23835875a7ae4f45c7a8be0357db93ef16d9b1273cb93049",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_Normal.png": "b2c3238cbe2586e44df0b00179adf85e5b7ac7fed1713ec0b807482245a30738",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_BaseColor.png": "2a15eadbedbc928d771ed8f2a7a8c1a16bce89b2836a0ecf34ece7e2fab96769",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_ORM.png": "c57134b5d496b39b955a87765ea32b93567b1ab494fe6b890de24c75dcfd6fe4",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_03_Cables.png": "758a95beccdc9f0621d8b8a283ee2593e04b56f1cd32776165ec85e1568e8eb8",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_BaseColor_Red.png": "4a08abf8dc0a5bf558a0ae38dc0d70eddc328eaa8060725d07b95d7c8a75663c",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8"
+      }
+    },
+    {
+      "id": "modular-sci-fi-megakit/TopWindow_Straight",
+      "pack": "modular-sci-fi-megakit",
+      "file": "dist/assets/quaternius/modular-sci-fi-megakit/Walls/TopWindow_Straight.gltf",
+      "archive_entry": "Modular SciFi MegaKit[Standard]/glTF/Walls/TopWindow_Straight.gltf",
+      "bytes": 6417,
+      "sha256": "dedca17ecd1b3cdf6c87fde4a4973642d63f8d2d1b65e20a077df04ba6b76268",
+      "dependencies": [
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/TopWindow_Straight.bin",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_BaseColor_Red.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_ORM.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_Normal.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_BaseColor.png",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_ORM.png"
+      ],
+      "animations": [],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/TopWindow_Straight.bin": "3fbcad9e2865b485513941329f9cbcbcb5d499ca8991b4e7120d4dc503e6e36d",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_Normal.png": "7faaa7059192f43aded9cc2f93917dd54fd14545509c37318d4e6bf0a8104960",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_BaseColor_Red.png": "4a08abf8dc0a5bf558a0ae38dc0d70eddc328eaa8060725d07b95d7c8a75663c",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_Trim_02_ORM.png": "2a433e6a7fbcec375b5c5e5c7aa57dbe1fd23ca6592f48c52d09dde2d622aab8",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_Normal.png": "141c075ee32a4dda83c4b954076ea563b86e2a6329d5c536aa7ddccb6c1328bf",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_BaseColor.png": "7b431c76896c8d2de736e33271049fc869f2a8a5c0632678c9f030146e90c650",
+        "dist/assets/quaternius/modular-sci-fi-megakit/Walls/T_PaddedWall_ORM.png": "555039f51a71803be3d617ac03eac05e840ec5b36c269de2115a50e956bff3b2"
+      }
+    },
+    {
+      "id": "universal-animation-library/UAL1_Standard",
+      "pack": "universal-animation-library",
+      "file": "dist/assets/quaternius/universal-animation-library/UAL1_Standard.glb",
+      "archive_entry": "Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard.glb",
+      "bytes": 7618436,
+      "sha256": "69591853d817488edaa8fd9bf8fc1d821eaeaf789f8627b3cd23b41c4ed67997",
+      "dependencies": [],
+      "animations": [
+        {
+          "name": "A_TPose",
+          "channels": 195
+        },
+        {
+          "name": "Crouch_Fwd_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Crouch_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Dance_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Death01",
+          "channels": 195
+        },
+        {
+          "name": "Driving_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Fixing_Kneeling",
+          "channels": 195
+        },
+        {
+          "name": "Hit_Chest",
+          "channels": 195
+        },
+        {
+          "name": "Hit_Head",
+          "channels": 195
+        },
+        {
+          "name": "Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Idle_Talking_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Idle_Torch_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Interact",
+          "channels": 195
+        },
+        {
+          "name": "Jog_Fwd_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Jump_Land",
+          "channels": 195
+        },
+        {
+          "name": "Jump_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Jump_Start",
+          "channels": 195
+        },
+        {
+          "name": "PickUp_Table",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Aim_Down",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Aim_Neutral",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Aim_Up",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Reload",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Shoot",
+          "channels": 195
+        },
+        {
+          "name": "Punch_Cross",
+          "channels": 195
+        },
+        {
+          "name": "Punch_Jab",
+          "channels": 195
+        },
+        {
+          "name": "Push_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Roll",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Enter",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Exit",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Talking_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Enter",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Exit",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Shoot",
+          "channels": 195
+        },
+        {
+          "name": "Sprint_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Swim_Fwd_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Swim_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Sword_Attack",
+          "channels": 195
+        },
+        {
+          "name": "Sword_Idle",
+          "channels": 195
+        },
+        {
+          "name": "Walk_Formal_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Walk_Loop",
+          "channels": 195
+        }
+      ],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {}
+    },
+    {
+      "id": "universal-animation-library/UAL1_Standard_RM",
+      "pack": "universal-animation-library",
+      "file": "dist/assets/quaternius/universal-animation-library/UAL1_Standard_RM.glb",
+      "archive_entry": "Universal Animation Library[Standard]/Unreal-Godot/UAL1_Standard_RM.glb",
+      "bytes": 7620504,
+      "sha256": "be684571ed655a1b892c2c07e6e2aeca053b606c442d34004adaf1d944090d01",
+      "dependencies": [],
+      "animations": [
+        {
+          "name": "A_TPose",
+          "channels": 195
+        },
+        {
+          "name": "Crouch_Fwd_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Crouch_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Dance_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Death01",
+          "channels": 195
+        },
+        {
+          "name": "Driving_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Fixing_Kneeling",
+          "channels": 195
+        },
+        {
+          "name": "Hit_Chest",
+          "channels": 195
+        },
+        {
+          "name": "Hit_Head",
+          "channels": 195
+        },
+        {
+          "name": "Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Idle_Talking_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Idle_Torch_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Interact",
+          "channels": 195
+        },
+        {
+          "name": "Jog_Fwd_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Jump_Land",
+          "channels": 195
+        },
+        {
+          "name": "Jump_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Jump_Start",
+          "channels": 195
+        },
+        {
+          "name": "PickUp_Table",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Aim_Down",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Aim_Neutral",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Aim_Up",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Reload",
+          "channels": 195
+        },
+        {
+          "name": "Pistol_Shoot",
+          "channels": 195
+        },
+        {
+          "name": "Punch_Cross",
+          "channels": 195
+        },
+        {
+          "name": "Punch_Jab",
+          "channels": 195
+        },
+        {
+          "name": "Push_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Roll",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Enter",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Exit",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Sitting_Talking_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Enter",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Exit",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Spell_Simple_Shoot",
+          "channels": 195
+        },
+        {
+          "name": "Sprint_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Swim_Fwd_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Swim_Idle_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Sword_Attack",
+          "channels": 195
+        },
+        {
+          "name": "Sword_Idle",
+          "channels": 195
+        },
+        {
+          "name": "Walk_Formal_Loop",
+          "channels": 195
+        },
+        {
+          "name": "Walk_Loop",
+          "channels": 195
+        }
+      ],
+      "status": "downloaded; JSON/GLB and external dependencies checked; not placed in scene; visual review pending",
+      "dependency_sha256": {}
+    },
+    {
+      "id": "robot-expressive",
+      "pack": "robot-expressive",
+      "file": "dist/assets/characters/school-robot.glb",
+      "bytes": 463988,
+      "sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319",
+      "dependencies": [],
+      "animations": [
+        {
+          "name": "Dance"
+        },
+        {
+          "name": "Death"
+        },
+        {
+          "name": "Idle"
+        },
+        {
+          "name": "Jump"
+        },
+        {
+          "name": "No"
+        },
+        {
+          "name": "Punch"
+        },
+        {
+          "name": "Running"
+        },
+        {
+          "name": "Sitting"
+        },
+        {
+          "name": "Standing"
+        },
+        {
+          "name": "ThumbsUp"
+        },
+        {
+          "name": "Walking"
+        },
+        {
+          "name": "WalkJump"
+        },
+        {
+          "name": "Wave"
+        },
+        {
+          "name": "Yes"
+        }
+      ],
+      "status": "integrated as user-controlled student; browser verified in prior iteration",
+      "source": "https://github.com/mrdoob/three.js/tree/r180/examples/models/gltf/RobotExpressive",
+      "license": "CC0-1.0",
+      "dependency_sha256": {}
+    }
+  ],
+  "pending": [
+    {
+      "id": "animated-mech",
+      "source": "https://quaternius.com/packs/animatedmech.html",
+      "status": "not downloaded: official Google Drive returned Quota exceeded on 2026-11-12",
+      "planned_use": "校园维护机器人、实验室助手；四个候选 George / Leela / Mike / Stan"
+    }
+  ]
+}

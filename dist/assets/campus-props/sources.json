@@ -1,0 +1,38 @@
+[
+  {
+    "name": "computer",
+    "source": "modular-sci-fi-megakit/Props/Prop_Computer.gltf",
+    "file": "computer.glb",
+    "bytes": 1808248
+  },
+  {
+    "name": "access",
+    "source": "modular-sci-fi-megakit/Props/Prop_AccessPoint.gltf",
+    "file": "access.glb",
+    "bytes": 1820800
+  },
+  {
+    "name": "desk",
+    "source": "sci-fi-essentials-kit/Prop_Desk_Medium.gltf",
+    "file": "desk.glb",
+    "bytes": 3671264
+  },
+  {
+    "name": "chair",
+    "source": "sci-fi-essentials-kit/Prop_Chair.gltf",
+    "file": "chair.glb",
+    "bytes": 2085280
+  },
+  {
+    "name": "locker",
+    "source": "sci-fi-essentials-kit/Prop_Locker.gltf",
+    "file": "locker.glb",
+    "bytes": 1765172
+  },
+  {
+    "name": "drone",
+    "source": "sci-fi-essentials-kit/Enemy_EyeDrone.gltf",
+    "file": "drone.glb",
+    "bytes": 2001360
+  }
+]
