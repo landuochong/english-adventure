@@ -1,10 +1,12 @@
+import {campusWorld} from './campus-world.js?v=world-2';
+import {missions} from './campus-missions.js?v=world-2';
 import {createCampusProps} from './campus-props.js?v=school-1';
 import {createStudent} from './campus-student.js?v=robot-player-1';
-import {findCampusPath} from './campus-navigation.js';
+import {findCampusPath} from './campus-navigation.js?v=world-1';
 import {createCampusTreeFactory} from './campus-landscape.js';
-import {environmentLayout} from './campus-environment-layout.js?v=range-35';
-import {createEnvironmentGame} from './campus-environment-game.js?v=quest-28';
-import { createCampusCharacters } from './campus-characters.js?v=school-1';
+import {environmentLayout} from './campus-environment-layout.js?v=world-2';
+import {createEnvironmentGame} from './campus-environment-game.js?v=world-2';
+import { createCampusCharacters } from './campus-characters.js?v=world-2';
 import * as T from './vendor/three/three.module.js';
 const scene=new T.Scene();scene.background=new T.Color('#b8d1df');scene.fog=new T.FogExp2('#bfd3dd',.0075);
 let renderer;try{renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});}catch(e){const el=document.getElementById('error');el.style.display='block';el.textContent='此浏览器无法启动 3D 场景，请启用硬件加速后重试。';throw e;}
@@ -23,8 +25,8 @@ const dark=mat('#263d4c',.4),steel=mat('#677f8d',.35),wood=mat('#aa8053',.7,text
 const glass=new T.MeshPhysicalMaterial({color:'#9bc2ce',roughness:.08,metalness:.2,transparent:true,opacity:.3,side:T.DoubleSide,depthWrite:false});
 function box(w,h,d,m,x,y,z,solid=false){const o=new T.Mesh(new T.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;scene.add(o);if(solid){obstacles.push({x,z,w:w/2+.3,d:d/2+.3});solidMeshes.push(o);}if(h>2||y>2.5){o.material=m.clone();o.userData.fade={opacity:m.opacity,x,z,w,d,overhead:y>3&&h<1.3&&w>6,canopy:y>3&&y<3.9&&Math.abs(x)<5.6&&Math.abs(z)<1};occluders.push(o);}return o;}
 function cylinder(r,h,m,x,y,z){const o=new T.Mesh(new T.CylinderGeometry(r,r,h,16),m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;scene.add(o);return o;}
-function sign(text,x,y,z,w=5,h=1,background='#12354b',color='#eff7f8'){const c=document.createElement('canvas');c.width=1024;c.height=Math.round(1024*h/w);const ctx=c.getContext('2d');ctx.fillStyle=background;ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=color;ctx.font='500 '+Math.round(c.height*.48)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,512,c.height/2,c.width*.92);const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;const m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshStandardMaterial({map:t,roughness:.5}));m.position.set(x,y,z);scene.add(m);return m;}
-box(100,.2,100,stone,0,-.12,0);
+function sign(text,x,y,z,w=5,h=1,background='#12354b',color='#eff7f8'){const c=document.createElement('canvas');c.width=1024;c.height=Math.round(1024*h/w);const ctx=c.getContext('2d');ctx.fillStyle=background;ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=color;ctx.font='500 '+Math.round(c.height*.48)+'px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,512,c.height/2,c.width*.92);const t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;const m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshStandardMaterial({map:t,roughness:.5}));m.position.set(x,y,z);scene.add(m);if(y>2.5){m.userData.fade={opacity:1,x,z,w,d:.1,overhead:false,canopy:false};occluders.push(m);}return m;}
+box(130,.2,120,stone,15,-.12,10);
 box(20,.035,30,mat('#bec8cb'),0,.01,10);
 for(let z=-2;z<28;z+=2.5)box(20,.01,.025,mat('#8d9da6'),0,.035,z);
 for(let x=-10;x<=10;x+=2.5)box(.025,.01,30,mat('#8d9da6'),x,.035,10);
@@ -69,8 +71,47 @@ sign('校园科技展   /   Science Fair',0,2.5,-16.9,10,1.5,'#0d4057','#f3f7f7'
 // Distant buildings make the courtyard belong to a campus rather than float in space.
 for(const [x,z,h] of [[-38,-27,12],[31,-30,15],[0,-35,10],[-39,24,9]]){box(16,h,12,mat('#bdced5'),x,h/2,z,true);for(let y=2;y<h;y+=2.5)box(16.1,.7,12.1,mat('#8eaebc',.3),x,y,z);}
 // Low garden wall and planting close the courtyard behind the arrival point.
-box(36,1.1,.45,concrete,0,.55,32,true);
-for(const x of [-15,-9,-3,3,9,15])tree(x,34,.9);
+for(const x of [-11,11])box(14,1.1,.45,concrete,x,.55,32,true);
+for(const x of [-15,-9,9,15])tree(x,34,.9);
+// A walkable southern extension; each new region lives in the same world coordinate system.
+box(8,.04,28,mat('#bec8cb'),0,.02,42);
+for(const x of [-4.4,4.4])for(const z of [33,38,43]){cylinder(.07,.9,dark,x,.45,z);cylinder(.08,.13,white,x,.9,z);}
+box(24,.06,19,mat('#d9dcd5'),0,.03,48);
+box(24,1.2,.35,concrete,0,.6,57,true);
+for(const x of [-12,12])box(.3,1.2,13,concrete,x,.6,50.5,true);
+box(25,.28,14,dark,0,4.65,50.5);
+for(const x of [-10,10])box(.22,4.5,.22,steel,x,2.25,44,true);
+sign('Campus Cafe',0,4.1,43.5,8,.65);
+box(7,1.05,1.3,wood,5,.55,52.5,true);box(7.2,.1,1.5,white,5,1.12,52.5);
+for(const [x,z] of [[-7,48],[-7,53]]){cylinder(.95,.1,wood,x,.85,z);cylinder(.12,.8,steel,x,.4,z);obstacles.push({x,z,w:1.25,d:1.25});for(const dz of [-1.5,1.5]){box(1.6,.12,.5,wood,x,.55,z+dz);for(const dx of [-.55,.55])box(.12,.5,.36,steel,x+dx,.25,z+dz);}}
+for(const x of [-14,14]){box(2.8,.5,4,concrete,x,.25,40,true);box(2.5,.08,3.7,grass,x,.54,40);tree(x,40,.85);}
+// Open shop with a real customer area, display counter and separate collection stand.
+box(14,.05,12,mat('#e1e5df'),25,.03,46);
+box(14,1.2,.3,concrete,25,.6,52,true);for(const x of [18,32])box(.3,1.2,10,concrete,x,.6,47,true);
+box(14.5,.25,12.5,dark,25,4.5,46);sign('Campus Store',25,3.9,40,8,.65);
+box(5,1,1,wood,27,.5,49.5,true);box(5.2,.1,1.2,white,27,1.05,49.5);
+for(const x of [20,22]){box(1.2,1.5,.6,white,x,.75,50,true);for(const y of [.5,1,1.5])box(1.3,.07,.7,steel,x,y,50);}
+// East library: connected to the courtyard by an open promenade.
+box(45,.04,5,mat('#bec8cb'),37,.025,26);
+box(17,.05,16,mat('#e1e5df'),45,.035,16);
+box(17,1.2,.3,concrete,45,.6,8,true);for(const x of [36.5,53.5])box(.3,1.2,13,concrete,x,.6,14.5,true);
+box(18,.25,17,dark,45,4.5,16);sign('Library',45,3.8,24.3,7,.7);
+for(const x of [39,44,49]){box(3,1.8,.65,wood,x,.9,9,true);for(const y of [.5,1,1.5])box(3,.06,.7,white,x,y,9);for(let i=0;i<9;i++)box(.18,.32,.3,mat(i%2?'#568a99':'#bf9f64'),x-1.2+i*.3,1.7,9.1);}
+// Campus transport kiosk: the museum route is learned here, no bus boarding is simulated.
+box(17,.05,12,mat('#c2ced0'),59,.03,36);
+for(const x of [56,65])box(.16,3,.16,steel,x,1.5,37);
+box(10,.18,3,white,60.5,3.1,37);sign('Campus Shuttle',60.5,2.6,38.6,8,.55);
+box(5,.12,.65,wood,60,.65,39);for(const x of [58,62])box(.15,.6,.5,steel,x,.3,39);
+// Western outdoor learning lawn and sports area; no external forest map is implied.
+box(18,.06,24,grass,-25,.02,52);
+for(const [x,z] of [[-33,42],[-33,61],[-16,63]])tree(x,z,.85);
+sign('Outdoor Club',-26,2,40,6,.7);
+box(12,.05,16,mat('#719eab'),-24,.03,25);
+for(const x of [-29.5,-18.5])box(.06,.02,15,white,x,.08,25);
+for(const z of [17.5,25,32.5])box(11,.02,.06,white,-24,.08,z);
+const courtCircle=new T.Mesh(new T.RingGeometry(1.9,1.95,48),new T.MeshBasicMaterial({color:'#eff2ef',side:T.DoubleSide}));courtCircle.rotation.x=-Math.PI/2;courtCircle.position.set(-24,.08,25);scene.add(courtCircle);
+sign('Sports Club',-24,2.6,16.5,6,.7);
+sign('Cafe  ↓',3.5,1.5,30.5,2.5,.65);
 createCampusProps(scene,obstacles,solidMeshes);
 let yaw=0,pitch=-.04,active=false,drag=false,lastX=0,lastY=0;let route=[];const keys=new Set(),entry=document.getElementById('entry');
 document.getElementById('start').onclick=()=>{entry.hidden=true;game.begin();};
@@ -101,14 +142,14 @@ renderer.domElement.onpointerup=e=>{
  const click=pointerStart&&Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)<6;pointerStart=null;drag=false;
  if(!active||game.movementLocked)return;
  if(!click){renderer.domElement.onpointermove(e);return;}
- const person=pickPerson(e);if(person){keys.clear();route=[];clearHover();game.interact(person.userData.npcId);}else{const point=npcRay.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());if(point){route=findCampusPath(player.position,point,valid);destination.visible=route.length>0;destination.position.set(point.x,.08,point.z);}}
+ const person=pickPerson(e);if(person){keys.clear();route=[];clearHover();game.interact(person.userData.npcId);}else{const point=npcRay.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());if(point){route=findCampusPath(player.position,point,valid,{bounds:campusWorld.bounds});destination.visible=route.length>0;destination.position.set(point.x,.08,point.z);}}
 };
 renderer.domElement.onpointercancel=()=>{drag=false;pointerStart=null;};
 for(const b of document.querySelectorAll('[data-dir]')){b.onpointerdown=e=>{if(!active||game.movementLocked)return;e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.dir);};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.dir);}
 function valid(x,z){
  if(Object.values(environmentLayout.people).some(p=>Math.hypot(x-p.x,z-p.z)<.75))return false;
- if([environmentLayout.device,{x:-.8,z:-1.2}].some(p=>Math.hypot(x-p.x,z-p.z)<.85))return false;
- return x>-45&&x<45&&z>-42&&z<36&&!obstacles.some(o=>Math.abs(x-o.x)<o.w&&Math.abs(z-o.z)<o.d);}
+ if(missions.flatMap(m=>[m.device,m.display]).filter(Boolean).some(p=>Math.hypot(x-p.x,z-p.z)<.85))return false;
+ const b=campusWorld.bounds;return x>b.minX&&x<b.maxX&&z>b.minZ&&z<b.maxZ&&!obstacles.some(o=>Math.abs(x-o.x)<o.w&&Math.abs(z-o.z)<o.d);}
 // North-up map: reuse the collision footprints so buildings stay aligned with the world.
 const mapLayout=document.getElementById('map-layout'),mapPlayer=document.getElementById('map-player');
 const mapBody=document.getElementById('map-body'),mapToggle=document.getElementById('map-toggle');
@@ -117,8 +158,8 @@ function mapRect(x,z,w,d,fill){const el=document.createElementNS(svgNS,'rect');f
 mapRect(-11,-5,22,35,'#46616b');mapRect(-16,-17.5,32,15,'#54717b');mapRect(-18,-15,5,30,'#3f5864');
 for(const o of obstacles)mapRect(o.x-o.w+.3,o.z-o.d+.3,(o.w-.3)*2,(o.d-.3)*2,'#91a8ae');
 for(const [x,z] of [[-9,8],[9,8],[-9,20],[9,20]])mapRect(x-1.55,z-2.35,3.1,4.7,'#729a7e');
-mapRect(-3.7,-3,7.4,.9,'#7ce0d3');
-for(const [label,x,z] of [['科学中心',0,-7],['庭院',0,12]]){const el=document.createElementNS(svgNS,'text');el.setAttribute('x',x);el.setAttribute('y',z);el.setAttribute('fill','#e1edf0');el.setAttribute('font-size','3.5');el.setAttribute('text-anchor','middle');el.textContent=label;mapLayout.append(el);}
+mapRect(36.5,8,17,16,'#54717b');mapRect(50,30,17,12,'#54717b');mapRect(-34,40,18,24,'#729a7e');mapRect(-30,17,12,16,'#54717b');mapRect(-3.7,-3,7.4,.9,'#7ce0d3');mapRect(-4,28,8,15,'#46616b');mapRect(-12,39,24,18,'#54717b');
+for(const [label,x,z] of [['科学中心',0,-7],['庭院',0,12],['咖啡馆',0,55],['商店',25,46],['图书馆',45,18],['车站',60,36],['草坪',-25,52],['运动区',-24,25]]){const el=document.createElementNS(svgNS,'text');el.setAttribute('x',x);el.setAttribute('y',z);el.setAttribute('fill','#e1edf0');el.setAttribute('font-size','3.5');el.setAttribute('text-anchor','middle');el.textContent=label;mapLayout.append(el);}
 mapToggle.onclick=()=>{mapBody.hidden=!mapBody.hidden;mapToggle.setAttribute('aria-expanded',String(!mapBody.hidden));mapToggle.querySelector('span').textContent=mapBody.hidden?'展开 ＋':'收起 −';document.getElementById('minimap').classList.toggle('collapsed',mapBody.hidden);mapToggle.blur();};
 function updateMap(){if(!mapBody.hidden)mapPlayer.setAttribute('transform',`translate(${player.position.x} ${player.position.z}) rotate(${180-player.rotation.y*180/Math.PI})`);}
 const sightRay=new T.Raycaster();

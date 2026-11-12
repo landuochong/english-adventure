@@ -1,5 +1,5 @@
 // Grid pathfinding shared by mouse movement and its tests. No task-state access.
-export function findCampusPath(start,target,valid,{step=.65,limit=6000}={}){
+export function findCampusPath(start,target,valid,{step=.65,limit=12000,bounds={minX:-45,maxX:45,minZ:-42,maxZ:70}}={}){
  const key=(x,z)=>`${x},${z}`,world=n=>({x:n.x*step,z:n.z*step});
  const clear=(a,b)=>{const n=Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/.05);for(let i=1;i<=n;i++){const x=a.x+(b.x-a.x)*i/n,z=a.z+(b.z-a.z)*i/n;if(!valid(x,z)||!valid(x-.04,z)||!valid(x+.04,z)||!valid(x,z-.04)||!valid(x,z+.04))return false;}return true;};
  if(!valid(target.x,target.z))return [];
@@ -14,7 +14,7 @@ export function findCampusPath(start,target,valid,{step=.65,limit=6000}={}){
      const result=[];let from=start,i=0;while(i<points.length){let next=i;while(next+1<points.length&&clear(from,points[next+1]))next++;result.push(points[next]);from=points[next];i=next+1;}return result;}
    for(let dx=-1;dx<=1;dx++)for(let dz=-1;dz<=1;dz++){
      if(!dx&&!dz)continue;const next={x:node.x+dx,z:node.z+dz},w=world(next),nid=key(next.x,next.z),g=node.g+Math.hypot(dx,dz);
-     if(Math.abs(w.x)>45||w.z< -42||w.z>36||closed.has(nid)||!valid(w.x,w.z)||!clear(world(node),w)||g>=(cost.get(nid)??Infinity))continue;
+     if(w.x<bounds.minX||w.x>bounds.maxX||w.z<bounds.minZ||w.z>bounds.maxZ||closed.has(nid)||!valid(w.x,w.z)||!clear(world(node),w)||g>=(cost.get(nid)??Infinity))continue;
      cost.set(nid,g);came.set(nid,node);open.push({...next,g,f:g+heuristic(next)});
    }
  }

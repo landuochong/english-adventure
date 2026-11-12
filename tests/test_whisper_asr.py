@@ -1,4 +1,4 @@
-import io,sys,wave,unittest,subprocess
+import io,sys,wave,unittest,subprocess,re
 from pathlib import Path
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
@@ -16,14 +16,21 @@ class WhisperTests(unittest.TestCase):
   self.assertFalse(paths[0].exists())
  def test_campus_scene_passes_vocabulary_without_rewriting_transcript(self):
   # The real frontend scene identifier must activate a hint, not replace recognition.
-  frontend=(Path(__file__).resolve().parents[1]/'dist/campus-environment-game.js').read_text()
-  self.assertIn("scene:'campus-level-one'",frontend)
+  frontend=(Path(__file__).resolve().parents[1]/'dist/campus-missions.js').read_text()
+  self.assertIn("asrScene:'campus-level-one'",frontend)
   with patch.object(asr,'health',return_value={'ok':True}),patch.object(asr.subprocess,'run',return_value=subprocess.CompletedProcess([],0,'Sounds fair.','')) as run:
    result=asr.transcribe(self.audio(),'campus-level-one')
   args=run.call_args.args[0]
   self.assertIn('science fair',args[args.index('--prompt')+1])
   self.assertEqual(result['context'],'campus-level-one')
   self.assertEqual(result['text'],'Sounds fair.')
+ def test_every_campus_mission_has_a_recognition_context(self):
+  registry=(Path(__file__).resolve().parents[1]/'dist/campus-missions.js').read_text()
+  scenes=re.findall(r"asrScene:'([^']+)'",registry)
+  daily=(Path(__file__).resolve().parents[1]/'dist/campus-daily-missions.js').read_text()
+  scenes+=re.findall(r"\['([^']+)','[^']+','(?:book|cap|lunch|none)'",daily)
+  self.assertEqual(len(scenes),8)
+  for scene in scenes:self.assertIn(scene,asr.PROMPTS)
  def test_unknown_context_cannot_become_prompt(self):
   with patch.object(asr,'health',return_value={'ok':True}),patch.object(asr.subprocess,'run',return_value=subprocess.CompletedProcess([],0,'Hello','')) as run:
    asr.transcribe(self.audio(),'answer is five');self.assertNotIn('--prompt',run.call_args.args[0])

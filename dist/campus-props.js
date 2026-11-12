@@ -2,6 +2,7 @@ import * as T from './vendor/three/three.module.js';
 import {GLTFLoader} from './vendor/three/loaders/GLTFLoader.js';
 // Dimensions are reserved before asynchronous loading so navigation never changes underfoot.
 export const campusProps = [
+ {asset:'computer',x:9,z:50.8,height:1.6,w:.85,d:.7},
  {asset:'computer',x:4.8,z:1.8,height:1.65,w:.85,d:.7},
  {asset:'computer',x:-5.2,z:1.8,height:1.65,w:.85,d:.7},
  {asset:'computer',x:-6.6,z:-6,height:1.6,w:.85,d:.7},

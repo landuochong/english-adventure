@@ -1,6 +1,6 @@
 import {GLTFLoader} from './vendor/three/loaders/GLTFLoader.js';
 import * as T from './vendor/three/three.module.js';
-import {environmentLayout} from './campus-environment-layout.js?v=range-35';
+import {environmentLayout} from './campus-environment-layout.js?v=world-2';
 import { createRobotCoach } from './robot-coach.js?v=school-1';
 
 // Stylized campus cast. Characters provide presence only; they never complete tasks.
@@ -29,14 +29,14 @@ export function createCampusCharacters(scene, camera, canWalk, actor=camera) {
   let pending=0;const failures=[];const requested=new Set();
   const report=()=>{status.textContent=pending?'正在加载附近人物…':failures.length?'人物加载未完成：'+failures.join('、')+'；刷新可重试':'';status.hidden=!pending&&!failures.length;};report();
   const loader=new GLTFLoader();
-  function loadPerson(person){if(requested.has(person.id))return;requested.add(person.id);pending++;report();const config=assets[person.id];
+  function loadPerson(person){if(requested.has(person.id))return;requested.add(person.id);pending++;report();const config=assets[person.id]||{file:'school-robot.glb',height:1.7,idle:'Idle'};
     loader.loadAsync('./assets/characters/'+config.file).catch(error=>{if(config.fallback&&config.file!==config.fallback)return loader.loadAsync('./assets/characters/'+config.fallback);throw error;}).then(gltf=>{
       const avatar=gltf.scene;
       if(config.idle&&gltf.animations.length){const mixer=new T.AnimationMixer(avatar),idle=gltf.animations.find(c=>c.name===config.idle);if(!idle)throw new Error('Missing standing pose');mixer.clipAction(idle).play();mixer.update(0);if(gltf.animations.some(c=>c.name==='Talking'||c.name==='Wave')){person.mixer=mixer;person.actions=Object.fromEntries(gltf.animations.map(c=>[c.name,mixer.clipAction(c)]));person.current='Idle';if(person.actions.Wave){person.actions.Talking=person.actions.Wave;person.actions.Talking.setLoop(T.LoopOnce,1);person.actions.Talking.clampWhenFinished=true;}}}
       avatar.updateMatrixWorld(true);const bounds=new T.Box3().setFromObject(avatar);
       const scale=config.height/(bounds.max.y-bounds.min.y);avatar.scale.multiplyScalar(scale);
       avatar.position.set(-(bounds.min.x+bounds.max.x)*scale/2,-bounds.min.y*scale,-(bounds.min.z+bounds.max.z)*scale/2);
-      avatar.traverse(o=>{if(o.isMesh)o.castShadow=o.receiveShadow=true;});
+      avatar.traverse(o=>{if(o.isMesh){o.castShadow=o.receiveShadow=true;if(!['mia','ben','leo'].includes(person.id)){o.material=o.material.clone();const c=o.material.color;if(c&&c.r>.4&&c.g>.15&&c.b<.25)c.set(['lily','lisa','mary','sue'].includes(person.id)?'#72bba2':['seller','driver','ranger'].includes(person.id)?'#b394cf':'#70a7da');}}});
       for(const child of [...person.root.children])if(child!==person.label)person.root.remove(child);
       person.root.add(avatar);person.label.position.y=-.42;
     }).catch(error=>{failures.push(environmentLayout.people[person.id].name);console.error('NPC model:',person.id,error);}).finally(()=>{pending--;report();});
