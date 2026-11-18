@@ -6,7 +6,7 @@ Source and CC0 declaration: https://www.innerscene.com/tools/library/3d-parts/lo
 
 Download: https://www.innerscene.com/api/library/locomotion-collection-sam-3d-person-animated-dc23800f/download
 
-License: CC0 (https://creativecommons.org/publicdomain/zero/1.0/). The source explicitly permits use, modification and redistribution including commercially. Downloaded 2026-11-12. Originally used as the Alex coach; now used as the stationary Ben NPC in campus-environment. original mesh and textures retained, runtime scale adjusted to 1.78 m. Idle_Standing and Walk_Brisk clips used with blending. No third-party account or paid service needed at runtime.
+License: CC0 (https://creativecommons.org/publicdomain/zero/1.0/). The source explicitly permits use, modification and redistribution including commercially. Downloaded 2026-11-12. Originally used as the Jalor coach; now used as the stationary Ben NPC in campus-environment. original mesh and textures retained, runtime scale adjusted to 1.78 m. Idle_Standing and Walk_Brisk clips used with blending. No third-party account or paid service needed at runtime.
 
 SHA-256: b29700eeba1607d879f85f0a93a58ad458d5397ec509226826b0868b2ce40777
 

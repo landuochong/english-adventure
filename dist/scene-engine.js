@@ -1,5 +1,6 @@
+import {sandwichAtCounter} from './sandwich-order.js';
 import {generatedTurn} from './generated-story.js';
-import {conversationPlans,continueConversation,restoreConversation,conversationQuestion} from './scene-conversation.js?v=2';
+import {conversationPlans,continueConversation,restoreConversation,conversationQuestion} from './scene-conversation.js?v=sandwich-slots-20261118';
 // Daily adventures share Pip's student-led loop. All dialogue is scripted, not AI.
 const scenePair=(en,zh)=>({en,zh});
 const sceneIntent={
@@ -10,6 +11,17 @@ const sceneIntent={
 };
 const sceneHas=(t,...patterns)=>patterns.every(p=>p.test(t));
 const sceneAction=(id,npc,label,test,en,zh,hint)=>({id,npc,label,test,reply:scenePair(en,zh),hint:scenePair(...hint)});
+// Tim is asking about the one invitation Sue has already accepted.
+function reportsAcceptedInvitation(words,utterance){
+ if(utterance?.includes('?')||/\b(if|maybe|might|perhaps|whether|unsure|declined|refused|can't|couldn't|wouldn't|isn't)\b/.test(words))return false;
+ const report=words.replace(/^(?:yes|yeah|yep)\b\s*/,'');
+ if(!report)return true;
+ if(/^(?:(?:sue|she|he) said )?yes$/.test(report))return true;
+ const answer=report.replace(/^(?:sue|she|he|they) said (?:that )?/,'');
+ return /^(?:sue|she|he|they)(?:'ll| will| can| could| would| would like to| wants? to| likes? to| agreed to) (?:join|come|swim)\b/.test(answer)
+  || /^(?:sue|she|he|they)(?:'s| is| are) (?:joining|coming)\b/.test(answer)
+  || /^(?:sue|she|he) (?:agreed|accepted)(?: the invitation)?$/.test(report);
+}
 export const dailyScenes={
  school:{title:'课前借书',hook:'上课前，Tom 遇到一个小麻烦。',theme:'classroom',giver:'tom',mission:scenePair('I forgot my maths book at home. Could you borrow one from Lisa for me? Tell her I will return it tomorrow, then bring it back here.','我把数学书忘在家里了。能帮我向 Lisa 借一本吗？告诉她我明天归还，再把书带回来。'),
   intro:scenePair('We are in the classroom before a lesson. Walk over to Tom and listen to his request. You do the talking; I will help you think.','我们在上课前的教室。先走近 Tom，听听他的请求。你来交流，我帮你分析。'),
@@ -25,7 +37,7 @@ export const dailyScenes={
   places:[['☕','Counter',76,23],['🍽️','Tables',26,22],['🚪','Entrance',48,84]],npcs:[{id:'lily',name:'Lily',icon:'👧',x:250,y:330},{id:'waiter',name:'Waiter',icon:'🧑‍🍳',x:760,y:330}],phrases:['Could I see the menu?','I would like …, please.','With / without …'],
   actions:[
    sceneAction('menu','waiter','了解菜单',t=>sceneIntent.question(t)&&/\b(menu|serve|sandwich|food|recommend)\b/.test(t),'We serve chicken sandwiches. You can have one with or without onions. We also have water and juice. What would you like?','我们有鸡肉三明治，可加或不加洋葱，还有水和果汁。你想要什么？',['Ask the waiter about the menu.','向服务员询问菜单。']),
-   sceneAction('order','waiter','按要求点餐',t=>sceneIntent.request(t)&&sceneHas(t,/\bchicken\b/,/\bsandwich\b/,/\b(no|without)\s+(any\s+)?onions?\b/,/\bwater\b/)&&! /\b(with|add|extra)\s+onions?\b|\bjuice\b/.test(t),'One chicken sandwich, no onions, and a glass of water. Your order is ready for Lily.','一份无洋葱鸡肉三明治，一杯水。Lily 的餐点好了。',['Remember the food, the drink, and what Lily does not want. Replay her request if you need to.','注意食物、饮料和 Lily 不要的配料；可以重听她的请求。']),
+   sceneAction('order','waiter','按要求点餐',t=>sceneIntent.request(t)&&sceneHas(t,/\bchicken\b/,/\bsandwich\b/,/\b(no|without)\s+(any\s+)?onions?\b/,/\bwater\b/)&&! /\b(with|add|extra)\s+onions?\b|\bjuice\b/.test(t),'One chicken sandwich, no onions, and a glass of water. Your order is ready for Lily. Please pick it up at the pickup counter.','一份无洋葱鸡肉三明治，一杯水。Lily 的餐点好了。请到取餐台领取。',['Remember the food, the drink, and what Lily does not want. Replay her request if you need to.','注意食物、饮料和 Lily 不要的配料；可以重听她的请求。']),
    sceneAction('report','lily','告知点餐结果',t=>sceneHas(t,/\b(ordered|order|here|got)\b/,/\b(lunch|food|sandwich|meal)\b/),'Thank you for ordering my lunch! You remembered what I needed. Enjoy your meal too!','谢谢你帮我点午餐，记住了我的要求！也祝你用餐愉快！',['Go back to Lily and tell her you have ordered lunch.','回到 Lily 身边，告诉她午餐点好了。'])]},
  shopping:{title:'挑选帽子',hook:'Jack 正在商店里选礼物。',theme:'shop',giver:'jack',mission:scenePair('Please help me buy a blue cap in medium. Ask the shop assistant how much it costs first. My budget is thirty yuan. Bring the cap to me when you have it.','请帮我买一顶蓝色中号帽子。先向店员问价，我的预算是三十元。拿到后带给我。'),intro:scenePair('We are at a clothes shop. Talk to Jack first, then use what you hear to choose the right item.','我们在服装店，先听 Jack 的需求，再挑选合适的物品。'),places:[['🧢','Accessories',76,22],['👕','Clothes',25,22],['🛍️','Entrance',50,84]],npcs:[{id:'jack',name:'Jack',icon:'👦',x:250,y:330},{id:'seller',name:'Shop assistant',icon:'🧑‍💼',x:760,y:330}],phrases:['How much is the …?','Do you have this in …?','I would like a … in size …'],
   actions:[
@@ -46,7 +58,7 @@ export const dailyScenes={
   actions:[
    sceneAction('sport','sue','了解对方爱好',t=>sceneIntent.question(t)&&sceneHas(t,/\b(sport|play|hobby|hobbies|doing|do)\b/,/\b(favourite|favorite|like|enjoy|love)\b/),'My favourite sport is basketball. But I would like to try another sport. What do you have in mind?','我最喜欢篮球，不过也想试试别的运动。你有什么想法？',['Ask Sue what sport she likes.','问问 Sue 喜欢什么运动。']),
    sceneAction('invite','sue','发出运动邀请',t=>sceneIntent.request(t)&&sceneHas(t,/\bswim(ming)?\b/,/\bsunday\b/)&&! /\b(saturday|basketball)\b/.test(t),'Yes, I would love to go swimming with you this Sunday. Please tell Tim I will join you.','好呀，这周日我愿意和你们游泳，请告诉 Tim。',['Invite Sue to the activity and day Tim mentioned.','邀请 Sue 参加 Tim 提到的运动，说明日期。']),
-   sceneAction('confirm','tim','告知邀请结果',t=>sceneHas(t,/\bsue\b/,/\b(come|coming|join|yes|can|swim|swimming)\b/),'Great! Sue is joining us on Sunday. Thank you for inviting her. See you at the pool!','太好了，Sue 周日会加入。谢谢你邀请她，泳池见！',['Tell Tim whether Sue will join you.','告诉 Tim，Sue 是否愿意参加。'])]}
+   sceneAction('confirm','tim','告知邀请结果',reportsAcceptedInvitation,'Great! Sue is joining us on Sunday. Thank you for inviting her. See you at the pool!','太好了，Sue 周日会加入。谢谢你邀请她，泳池见！',['Tell Tim whether Sue will join you.','告诉 Tim，Sue 是否愿意参加。'])]}
 };
 export const sceneVocabulary={
  school:[['maths book','数学课本','A maths book is a textbook for mathematics.'],['borrow','借入','Borrow means use something and give it back later.'],['lend','借出','Lend means let another person borrow something.'],['return','归还','Return means give something back.'],['tomorrow','明天','Tomorrow is the day after today.'],['forgot','忘记了','Forgot means did not remember to bring or do something.']],
@@ -97,6 +109,14 @@ export function sceneInteract(id,st,npcId,text=null){
  if(a.npc!==npcId)return scenePair('You still have something to do with someone else. Check what you have heard, or ask Nova for help.','你还有需要和其他人交流的事。可以重听已获得的信息，或向 Nova 求助。');
  let t=String(text).toLowerCase().replace(/[’']/g,"'").replace(/[?.!,]/g,' ').replace(/\s+/g,' ').trim();
  if(/\b(again|repeat|slower|slowly)\b/.test(t))return (st.lastNpc===npcId&&st.response)||st.replies[npcId]||scenePair('Please ask me about what you need first.','请先问我你需要的信息。');
+ // A student can order directly; retain their details instead of forcing a menu phrase.
+ if(id==='restaurant'&&a.id==='menu'&&(sceneIntent.request(t)||sandwichAtCounter(t))){
+  const order=continueConversation('restaurant.order',null,t);
+  if(order.draft.values.food==='chicken'){
+   st.done.push('menu');st.replies[npcId]=a.reply;st.journal.push({npc:npcId,...a.reply});
+   return sceneInteract(id,st,npcId,text);
+  }
+ }
  const key=id+'.'+a.id;
  if(!/[a-z]/.test(t)||/[\u3400-\u9fff]/.test(t))return (w.generated?a.slots[0].question:scenePair(...sceneClarifications[id][st.done.length]));
  if(a.generatedSlots){
@@ -110,7 +130,7 @@ export function sceneInteract(id,st,npcId,text=null){
  }else{
   t=t.replace(/^(no\s+)?(sorry\s+)?i (meant|mean)\s+/,'');
   const negated=/\b(not|never|don't|doesn't|didn't|can't|cannot|won't|no)\b/.test(t);
-  if(negated||!a.test(t))return (w.generated?a.slots[0].question:scenePair(...sceneClarifications[id][st.done.length]));
+  if(negated||!a.test(t,String(text)))return (w.generated?a.slots[0].question:scenePair(...sceneClarifications[id][st.done.length]));
  }
  st.conversation=null;st.response=null;
  st.done.push(a.id);st.replies[npcId]=a.reply;st.journal.push({npc:npcId,...a.reply});st.complete=st.done.length===w.actions.length;return a.reply;

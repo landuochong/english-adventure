@@ -52,8 +52,8 @@ const intentMatch=(t,intent)=>{
  if(intent==='question')return /^(what|where|when|which|how|can|could|do|does|is|are|have|would|tell)\b|^please tell\b|^i (would like|want|need) to know\b/.test(t);
  if(intent==='request')return /^(can|could|may|please|let)\b|^i (would like|want|need|will take)\b|\bplease$/.test(t);
  // Asking about an outcome or promising it is not a completed report.
- if(/^(what|where|when|which|how|can|could|do|does|did|is|are|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t))return false;
- return /\b(here|have|has|had|got|ready|found|ordered|brought|written|wrote|is|are|said)\b/.test(t);
+ if(/^(what|where|when|which|how|can|could|do|does|did|is|are|was|were|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t))return false;
+ return /\b(here|have|has|had|got|ready|found|ordered|brought|written|wrote|is|are|was|were|said)\b/.test(t);
 };
 // After a follow-up, accept concise answers containing several declared details.
 // Arbitrary sentences with an embedded keyword are still not short answers.
@@ -75,7 +75,7 @@ function literalMatch(text,alias){
  }
  return false;
 }
-export function generatedTurn(slots,raw,text){
+export function generatedTurn(slots,raw,text,acceptRequestDetails){
  const d={values:{},asked:null,pending:null};
  for(const s of slots)if(s.options.some(o=>o.value===raw?.values?.[s.key]))d.values[s.key]=raw.values[s.key];
  if(slots.some(s=>s.key===raw?.pending))d.pending=raw.pending;
@@ -92,10 +92,16 @@ export function generatedTurn(slots,raw,text){
  // Match an explicitly stated negative phrase, but never turn a negated positive into progress.
  if(t&&!/\b(if|maybe|perhaps)\b/.test(t)&&!/[\u3400-\u9fff]/.test(text)){
   for(const s of slots){
-   const matched=s.options.filter(o=>o.aliases.some(a=>literalMatch(t,a)));
+   // Evaluate intent within a sentence, so a later question cannot negate an earlier report.
+   const clauses=correction?[t]:String(text).split(/[.!?;]+/).map(norm).filter(Boolean);
+   const eligible=clauses.filter(clause=>{
+    if(s.intent==='report'&&(/^(what|where|when|which|how|can|could|do|does|did|is|are|was|were|has|have|would|will)\b/.test(clause)||/\b(will|would|going to|want to|need to|plan to)\b/.test(clause)))return false;
+    return correction||intentMatch(clause,s.intent)||(raw&&shortAnswer(clause,slots))
+     ||(s.intent==='request'&&acceptRequestDetails?.(clause));
+   });
+   const matched=s.options.filter(o=>o.aliases.some(a=>eligible.some(clause=>literalMatch(clause,a))));
    if(matched.length>1){delete d.values[s.key];d.pending=s.key;continue;}
-   if(s.intent==='report'&&(/^(what|where|when|which|how|can|could|do|does|did|is|are|has|have|would|will)\b/.test(t)||/\b(will|would|going to|want to|need to|plan to)\b/.test(t)))continue;
-   if(matched.length===1&&(correction||intentMatch(t,s.intent)||(raw&&shortAnswer(t,slots)))){
+   if(matched.length===1){
     const value=matched[0].value;
     if(d.values[s.key]&&d.values[s.key]!==value&&!correction){d.values[s.key]=value;d.pending=s.key;}
     else {d.values[s.key]=value;if(d.pending===s.key)d.pending=null;}

@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 from whisper_asr import health, transcribe
 from course_extract import extract
 from story_generate import generate
+from npc_reply import generate_reply
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT / 'dist'), **kwargs)
@@ -27,6 +28,40 @@ class Handler(SimpleHTTPRequestHandler):
         else: super().do_GET()
     def do_POST(self):
         if not self.valid_origin(): self.reply(403,{'error':'Origin rejected'});return
+        if self.path == '/api/npc-reply':
+            stream = self.headers.get('Accept') == 'application/x-ndjson'
+            started = False
+            def send_line(event):
+                nonlocal started
+                if not started:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/x-ndjson')
+                    self.send_header('Cache-Control', 'no-store')
+                    self.end_headers()
+                    started = True
+                self.wfile.write(json.dumps(event).encode() + b'\n')
+                self.wfile.flush()
+            try:
+                size = int(self.headers.get('Content-Length', '0'))
+                if not 0 < size <= 16000:
+                    self.reply(413, {'error':'Invalid turn size'})
+                    return
+                self.connection.settimeout(8)
+                result = generate_reply(json.loads(self.rfile.read(size)), send_line if stream else None)
+            except (BrokenPipeError, ConnectionResetError):
+                return
+            except BlockingIOError:
+                self.reply(429, {'error':'Local model busy'})
+            except (ValueError, KeyError, TypeError, OSError):
+                if started:
+                    return
+                self.reply(503, {'error':'Use scripted reply'})
+            else:
+                if stream:
+                    send_line(result)
+                else:
+                    self.reply(200, result)
+            return
         if self.path in ('/api/course-extract','/api/story-generate'):
             try:
                 size=int(self.headers.get('Content-Length','0'))

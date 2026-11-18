@@ -1,5 +1,5 @@
 // World definitions are independent of story progression. Other worlds can supply their own layout.
-export const campusWorld={id:'campus',name:'青岚校园',bounds:{minX:-45,maxX:75,minZ:-42,maxZ:70},regions:[
+export const campusWorld={id:'campus',name:'未来校园',bounds:{minX:-45,maxX:75,minZ:-42,maxZ:70},regions:[
  {id:'science',name:'科学中心',x:0,z:-10},
  {id:'courtyard',name:'中央庭院',x:0,z:15},
  {id:'cafe',name:'咖啡馆',x:0,z:49},
@@ -7,6 +7,7 @@ export const campusWorld={id:'campus',name:'青岚校园',bounds:{minX:-45,maxX:
  {id:'transit',name:'校车站',x:60,z:37},
  {id:'garden',name:'探索草坪',x:-25,z:51},
  {id:'sports',name:'运动区',x:-24,z:25},
+ {id:'workshop',name:'手工坊',x:65,z:15},
  {id:'shop',name:'校园商店',x:24,z:45}
 ]};
 export const worlds={campus:campusWorld};

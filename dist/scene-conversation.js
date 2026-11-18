@@ -1,10 +1,11 @@
+import {sandwichAtCounter} from './sandwich-order.js';
 // Scripted, task-scoped clarification. Never silently replace the raw transcript.
 const slot=(key,expected,question,zh,choices,ambiguity)=>({key,expected,question,zh,choices,ambiguity});
 export const conversationPlans={
  'school.borrow':[
   slot('book','maths','Which book would you like to borrow?','你想借哪本书？',[[/\b(math|maths|mathematics)\s*(book|textbook)\b/,'maths'],[/\b(english|science|history)\s*(book|textbook)\b/,'other']],{pattern:/\bmac\s*book\b/,value:'maths',en:'Do you mean my maths book?',zh:'你是说我的数学课本吗？'})],
  'restaurant.order':[
-  slot('food','chicken','What would you like to eat?','你想吃什么？',[[/\bchicken\s+sandwich\b/,'chicken'],[/\b(tuna|beef|cheese)\s+sandwich\b|\bpizza\b/,'other']]),
+  slot('food','chicken','What would you like to eat?','你想吃什么？',[[/\bchicken\s+sandwich(?:es)?\b/,'chicken'],[/\b(tuna|beef|cheese)\s+sandwich(?:es)?\b|\bpizza\b/,'other']]),
   slot('onions','without','Would you like onions?','你要加洋葱吗？',[[/\b(no|without)\s+(any\s+|the\s+)?onions?\b/,'without'],[/\b(with|add|extra)\s+(some\s+)?onions?\b/,'with']],{pattern:/\bwithout\s+(the\s+)?audience\b/,value:'without',en:'Did you say no onions? Is that right?',zh:'你说的是不要洋葱，对吗？'}),
   slot('drink','water','What would you like to drink?','你想喝什么？',[[/\bwater\b/,'water'],[/\b(juice|cola|coffee|tea)\b/,'other']])],
  'shopping.buy':[
@@ -60,7 +61,7 @@ export function continueConversation(key,draft,text){
   if(noReply(t))d.values.onions='without';
   else if(yesReply(t))d.values.onions='with';
  }
- const plausible=key==='directions.bus'||/\b(can|could|may|would|please|like|want|need|borrow|lend|take|go|come|join|get|bring|here|is)\b/.test(t)||t.split(' ').length<=6;
+ const plausible=key==='restaurant.order'&&sandwichAtCounter(t)||key==='directions.bus'||/\b(can|could|may|would|please|like|prefer|want|need|borrow|lend|take|go|come|join|get|bring|here|is)\b/.test(t)||t.split(' ').length<=6;
  if(plausible){
   for(const f of plan){
    const values=[...new Set(f.choices.filter(([re])=>re.test(t)).map(([,v])=>v))];

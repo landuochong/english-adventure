@@ -1,12 +1,14 @@
-import {campusWorld} from './campus-world.js?v=world-2';
-import {missions} from './campus-missions.js?v=world-2';
+import {workshopBench,workshopParts} from './campus-workshop.js?v=workshop-20261118';
+import {levelStarts} from './campus-level-catalog.js?v=workshop-20261118';
+import {campusWorld} from './campus-world.js?v=workshop-20261118';
+import {missions} from './campus-missions.js?v=invite-finish-1';
 import {createCampusProps} from './campus-props.js?v=school-1';
-import {createStudent} from './campus-student.js?v=robot-player-1';
+import {createStudent} from './campus-student.js?v=pace-2';
 import {findCampusPath} from './campus-navigation.js?v=world-1';
 import {createCampusTreeFactory} from './campus-landscape.js';
-import {environmentLayout} from './campus-environment-layout.js?v=world-2';
-import {createEnvironmentGame} from './campus-environment-game.js?v=world-2';
-import { createCampusCharacters } from './campus-characters.js?v=world-2';
+import {environmentLayout} from './campus-environment-layout.js?v=workshop-20261118';
+import {createEnvironmentGame} from './campus-environment-game.js?v=invite-finish-1';
+import { createCampusCharacters } from './campus-characters.js?v=workshop-20261118';
 import * as T from './vendor/three/three.module.js';
 const scene=new T.Scene();scene.background=new T.Color('#b8d1df');scene.fog=new T.FogExp2('#bfd3dd',.0075);
 let renderer;try{renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});}catch(e){const el=document.getElementById('error');el.style.display='block';el.textContent='此浏览器无法启动 3D 场景，请启用硬件加速后重试。';throw e;}
@@ -112,6 +114,52 @@ for(const z of [17.5,25,32.5])box(11,.02,.06,white,-24,.08,z);
 const courtCircle=new T.Mesh(new T.RingGeometry(1.9,1.95,48),new T.MeshBasicMaterial({color:'#eff2ef',side:T.DoubleSide}));courtCircle.rotation.x=-Math.PI/2;courtCircle.position.set(-24,.08,25);scene.add(courtCircle);
 sign('Sports Club',-24,2.6,16.5,6,.7);
 sign('Cafe  ↓',3.5,1.5,30.5,2.5,.65);
+// Open front and low walls keep the workshop interior legible from the campus camera.
+const workshopPaint=mat('#79968e'),workshopWood=mat('#bd9365'),workshopMetal=mat('#365664');
+box(14,.06,14,mat('#e4d5be'),65,.03,14);
+box(14,1.25,.3,workshopPaint,65,.625,7,true);
+for(const x of [58,72])box(.3,1.25,14,workshopPaint,x,.625,14,true);
+box(12,.19,.26,workshopMetal,65,3.18,7);
+for(const x of [59,71])box(.2,3.2,.25,workshopMetal,x,1.6,7,true);
+sign('Campus Workshop',65,2.75,7.23,7,.76);
+const benchTop=box(3.4,.15,1.6,workshopWood,workshopBench.x,.95,workshopBench.z,true);
+benchTop.userData.learningWord='workbench';
+for(const x of [63.6,66.4])for(const z of [10.5,11.5])box(.15,.9,.15,workshopMetal,x,.45,z);
+const roomParts=new Map(),benchParts=new Map();
+const bulbMaterial=new T.MeshStandardMaterial({color:'#ffe6ad',emissive:'#ffc552',emissiveIntensity:0,roughness:.25});
+function partModel(part,x,y,z,installed=false){
+ if(part.id==='base')return cylinder(.36,.13,workshopMetal,x,y,z);
+ if(part.id==='battery')return box(.23,.32,.24,mat('#49a78b'),x,y,z);
+ const bulb=cylinder(.24,.29,installed?bulbMaterial:mat('#fff0ca'),x,y,z);
+ return bulb;
+}
+for(const [index,part] of workshopParts.entries()){
+ box(.92,.65,.85,workshopWood,part.x,.33,part.z,true);
+ box(1,.08,.92,workshopMetal,part.x,.68,part.z);
+ const prop=partModel(part,part.x,.86,part.z);prop.userData.learningWord=part.word;prop.userData.workshopPart=part.id;
+ roomParts.set(part.id,prop);
+ const model=partModel(part,workshopBench.x,1.08+index*.22,workshopBench.z,true);model.userData.learningWord=part.word;
+ benchParts.set(part.id,model);
+}
+const lanternLight=new T.PointLight('#ffcc69',0,5);lanternLight.position.set(workshopBench.x,1.6,workshopBench.z);scene.add(lanternLight);
+function updateWorkshop(state){
+ for(const [id,mesh] of roomParts)mesh.visible=!state?.collected.includes(id);
+ const carried=state?.owner==='student';
+ const delivered=state?.complete===true;
+ const x=carried?player.position.x+.35:delivered?62.85:workshopBench.x;
+ const z=carried?player.position.z+.24:delivered?15.25:workshopBench.z;
+ for(const [index,part] of workshopParts.entries()){
+  const mesh=benchParts.get(part.id);
+  mesh.visible=!!state?.installed.includes(part.id);
+  mesh.position.set(x,(carried?.85:delivered?.03:1.08)+index*.22,z);
+  mesh.scale.setScalar(carried?.7:1);
+ }
+ const lit=carried||delivered;
+ lanternLight.position.set(x,carried?1.4:delivered?.65:1.6,z);
+ bulbMaterial.emissiveIntensity=lit?1.8:0;
+ lanternLight.intensity=lit?6:0;
+}
+updateWorkshop(null);
 createCampusProps(scene,obstacles,solidMeshes);
 let yaw=0,pitch=-.04,active=false,drag=false,lastX=0,lastY=0;let route=[];const keys=new Set(),entry=document.getElementById('entry');
 document.getElementById('start').onclick=()=>{entry.hidden=true;game.begin();};
@@ -122,18 +170,26 @@ addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 renderer.domElement.style.touchAction='none';
 let pointerStart=null;const npcRay=new T.Raycaster(),npcPointer=new T.Vector2();
 const interactionHint=document.createElement('div');interactionHint.id='interaction-hint';interactionHint.hidden=true;document.body.append(interactionHint);
-function clearHover(){interactionHint.hidden=true;renderer.domElement.style.cursor='default';}
-function pickPerson(e){
+function clearHover(){dispatchEvent(new CustomEvent('campus-hover-word',{detail:''}));interactionHint.hidden=true;renderer.domElement.style.cursor='default';}
+function pickSceneObject(e){
  const rect=renderer.domElement.getBoundingClientRect();npcPointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);npcRay.setFromCamera(npcPointer,camera);
  const hit=npcRay.intersectObjects(scene.children,true).find(h=>{if(!h.object.isMesh||h.object.material?.visible===false)return false;for(let o=h.object;o;o=o.parent)if(!o.visible||o.userData.student||o.userData.cameraFaded)return false;return true;});
- if(!hit)return null;let o=hit.object;while(o&&!o.userData.npcId)o=o.parent;return o;
+ return hit?.object||null;
+}
+function findObjectTag(object,tag){
+ while(object&&!object.userData[tag])object=object.parent;
+ return object;
 }
 renderer.domElement.onpointerdown=e=>{if(!active||game.movementLocked)return;clearHover();pointerStart={x:e.clientX,y:e.clientY};drag=true;lastX=e.clientX;lastY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId);};
 renderer.domElement.onpointermove=e=>{
  if(!active||game.movementLocked){clearHover();return;}
  if(drag)return;
- const person=pickPerson(e);if(!person){clearHover();return;}
- const id=person.userData.npcId,p=id==='nova'?person.userData.interactionPosition:environmentLayout.people[id],name=id==='nova'?'Alex':p.name;
+ const object=pickSceneObject(e);
+ const person=findObjectTag(object,'npcId');
+ const learningWord=findObjectTag(object,'learningWord')?.userData.learningWord||'';
+ dispatchEvent(new CustomEvent('campus-hover-word',{detail:learningWord}));
+ if(!person){interactionHint.hidden=true;renderer.domElement.style.cursor=(game.canPickItem(findObjectTag(object,'pickupMission')?.userData.pickupMission)||findObjectTag(object,'workshopPart'))?'pointer':'default';return;}
+ const id=person.userData.npcId,p=id==='nova'?person.userData.interactionPosition:environmentLayout.people[id],name=id==='nova'?'Jalor':p.name;
  const near=Math.hypot(player.position.x-p.x,player.position.z-p.z)<=environmentLayout.interactionRadius&&clearLine(p);
  interactionHint.textContent=near?'点击与 '+name+' 交谈':'走近 '+name+' 后交谈';interactionHint.hidden=false;renderer.domElement.style.cursor=near?'pointer':'default';
 };
@@ -142,7 +198,11 @@ renderer.domElement.onpointerup=e=>{
  const click=pointerStart&&Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)<6;pointerStart=null;drag=false;
  if(!active||game.movementLocked)return;
  if(!click){renderer.domElement.onpointermove(e);return;}
- const person=pickPerson(e);if(person){keys.clear();route=[];clearHover();game.interact(person.userData.npcId);}else{const point=npcRay.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());if(point){route=findCampusPath(player.position,point,valid,{bounds:campusWorld.bounds});destination.visible=route.length>0;destination.position.set(point.x,.08,point.z);}}
+ const object=pickSceneObject(e);const part=findObjectTag(object,'workshopPart');
+ if(part&&game.pickWorkshopPart(part.userData.workshopPart)){keys.clear();route=[];clearHover();return;}
+ const item=findObjectTag(object,'pickupMission');
+ if(item&&game.pickItem(item.userData.pickupMission)){keys.clear();route=[];destination.visible=false;clearHover();return;}
+ const person=findObjectTag(object,'npcId');if(person){keys.clear();route=[];clearHover();game.interact(person.userData.npcId);}else{const point=npcRay.ray.intersectPlane(new T.Plane(new T.Vector3(0,1,0),0),new T.Vector3());if(point){route=findCampusPath(player.position,point,valid,{bounds:campusWorld.bounds});destination.visible=route.length>0;destination.position.set(point.x,.08,point.z);}}
 };
 renderer.domElement.onpointercancel=()=>{drag=false;pointerStart=null;};
 for(const b of document.querySelectorAll('[data-dir]')){b.onpointerdown=e=>{if(!active||game.movementLocked)return;e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.dir);};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.dir);}
@@ -158,23 +218,25 @@ function mapRect(x,z,w,d,fill){const el=document.createElementNS(svgNS,'rect');f
 mapRect(-11,-5,22,35,'#46616b');mapRect(-16,-17.5,32,15,'#54717b');mapRect(-18,-15,5,30,'#3f5864');
 for(const o of obstacles)mapRect(o.x-o.w+.3,o.z-o.d+.3,(o.w-.3)*2,(o.d-.3)*2,'#91a8ae');
 for(const [x,z] of [[-9,8],[9,8],[-9,20],[9,20]])mapRect(x-1.55,z-2.35,3.1,4.7,'#729a7e');
-mapRect(36.5,8,17,16,'#54717b');mapRect(50,30,17,12,'#54717b');mapRect(-34,40,18,24,'#729a7e');mapRect(-30,17,12,16,'#54717b');mapRect(-3.7,-3,7.4,.9,'#7ce0d3');mapRect(-4,28,8,15,'#46616b');mapRect(-12,39,24,18,'#54717b');
-for(const [label,x,z] of [['科学中心',0,-7],['庭院',0,12],['咖啡馆',0,55],['商店',25,46],['图书馆',45,18],['车站',60,36],['草坪',-25,52],['运动区',-24,25]]){const el=document.createElementNS(svgNS,'text');el.setAttribute('x',x);el.setAttribute('y',z);el.setAttribute('fill','#e1edf0');el.setAttribute('font-size','3.5');el.setAttribute('text-anchor','middle');el.textContent=label;mapLayout.append(el);}
+mapRect(58,7,14,14,'#887b62');mapRect(36.5,8,17,16,'#54717b');mapRect(50,30,17,12,'#54717b');mapRect(-34,40,18,24,'#729a7e');mapRect(-30,17,12,16,'#54717b');mapRect(-3.7,-3,7.4,.9,'#7ce0d3');mapRect(-4,28,8,15,'#46616b');mapRect(-12,39,24,18,'#54717b');
+for(const [label,x,z] of [['科学中心',0,-7],['庭院',0,12],['咖啡馆',0,55],['商店',25,46],['手工坊',65,14],['图书馆',45,18],['车站',60,36],['草坪',-25,52],['运动区',-24,25]]){const el=document.createElementNS(svgNS,'text');el.setAttribute('x',x);el.setAttribute('y',z);el.setAttribute('fill','#e1edf0');el.setAttribute('font-size','3.5');el.setAttribute('text-anchor','middle');el.textContent=label;mapLayout.append(el);}
 mapToggle.onclick=()=>{mapBody.hidden=!mapBody.hidden;mapToggle.setAttribute('aria-expanded',String(!mapBody.hidden));mapToggle.querySelector('span').textContent=mapBody.hidden?'展开 ＋':'收起 −';document.getElementById('minimap').classList.toggle('collapsed',mapBody.hidden);mapToggle.blur();};
 function updateMap(){if(!mapBody.hidden)mapPlayer.setAttribute('transform',`translate(${player.position.x} ${player.position.z}) rotate(${180-player.rotation.y*180/Math.PI})`);}
 const sightRay=new T.Raycaster();
 function clearLine(point){const origin=player.position.clone().add(new T.Vector3(0,1.3,0)),end=new T.Vector3(point.x,1.3,point.z),delta=end.sub(origin);sightRay.set(origin,delta.clone().normalize());sightRay.far=Math.max(0,delta.length()-.15);return sightRay.intersectObjects(solidMeshes,false).length===0;}
 const destination=new T.Mesh(new T.RingGeometry(.25,.34,32),new T.MeshBasicMaterial({color:'#5de5d4',side:T.DoubleSide}));destination.rotation.x=-Math.PI/2;destination.visible=false;scene.add(destination);
+const initialMission=new URLSearchParams(location.search).get('mission');if(levelStarts[initialMission]){const start=levelStarts[initialMission];player.position.set(start.x,0,start.z);}
 const updateCharacters=createCampusCharacters(scene,camera,valid,player);
 const game=createEnvironmentGame(scene,camera,value=>{active=value;keys.clear();route=[];drag=false;},player,clearLine);
+const requestedMode=new URLSearchParams(location.search);if(requestedMode.has('mission')||requestedMode.get('explore')==='1'){entry.hidden=true;game.begin();}else location.replace('./');
 const fadeRay=new T.Raycaster();
 function fadeBuildings(dt){const target=player.position.clone().add(new T.Vector3(0,1,0)),direction=target.clone().sub(camera.position);fadeRay.set(camera.position,direction.clone().normalize());fadeRay.far=direction.length();const hits=new Set(fadeRay.intersectObjects(occluders,false).map(h=>h.object));for(const o of occluders){const f=o.userData.fade,roof=f.overhead&&Math.abs(player.position.x-f.x)<f.w/2+2&&Math.abs(player.position.z-f.z)<f.d/2+2;const faded=hits.has(o)||roof||(f.canopy&&Math.abs(player.position.x)<7&&Math.abs(player.position.z)<5);o.material.transparent=true;o.material.opacity+=( (faded?.07:f.opacity)-o.material.opacity)*Math.min(1,dt*10);o.material.depthWrite=!faded&&f.opacity===1;o.userData.cameraFaded=o.material.opacity<.15;}}
 let prev=0;
 renderer.setAnimationLoop(time=>{const dt=Math.min((time-prev)/1000||.016,.04);prev=time;let moving=false;
  if(game.movementLocked){keys.clear();route=[];}
- if(active&&!game.movementLocked){const f=Number(keys.has('w')||keys.has('arrowup'))-Number(keys.has('s')||keys.has('arrowdown')),r=Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));let dx=0,dz=0;const n=Math.hypot(f,r),speed=keys.has('shift')?2.8:1.4;
+ if(active&&!game.movementLocked){const f=Number(keys.has('w')||keys.has('arrowup'))-Number(keys.has('s')||keys.has('arrowdown')),r=Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));let dx=0,dz=0;const n=Math.hypot(f,r),speed=keys.has('shift')?3.8:2.1;
  if(n){route=[];dx=(r*Math.cos(viewYaw)-f*Math.sin(viewYaw))/n;dz=(-r*Math.sin(viewYaw)-f*Math.cos(viewYaw))/n;}
  else if(route.length){const next=route[0],x=next.x-player.position.x,z=next.z-player.position.z,d=Math.hypot(x,z);if(d<.12)route.shift();else{dx=x/d;dz=z/d;}}
  if(dx||dz){const x=player.position.x,z=player.position.z,step=dt*speed;if(valid(x+dx*step,z))player.position.x+=dx*step;if(valid(player.position.x,z+dz*step))player.position.z+=dz*step;moving=Math.hypot(player.position.x-x,player.position.z-z)>.001;if(moving){const target=Math.atan2(player.position.x-x,player.position.z-z),delta=Math.atan2(Math.sin(target-player.rotation.y),Math.cos(target-player.rotation.y));player.rotation.y+=Math.max(-dt*9,Math.min(dt*9,delta));}else route=[];}}
- destination.visible=active&&route.length>0;if(moving||game.movementLocked||!active)clearHover();student.update(dt,moving);followCamera();fadeBuildings(dt);updateCharacters(dt,time,active&&!game.movementLocked,matchMedia('(prefers-reduced-motion: reduce)').matches);game.update(active);renderer.render(scene,camera);updateMap();});
+ destination.visible=active&&route.length>0;if(moving||game.movementLocked||!active)clearHover();student.update(dt,moving);followCamera();fadeBuildings(dt);updateCharacters(dt,time,active&&!game.movementLocked,matchMedia('(prefers-reduced-motion: reduce)').matches);game.update(active);updateWorkshop(game.workshopState);renderer.render(scene,camera);updateMap();});
 addEventListener('resize',()=>{camera.left=-8*innerWidth/innerHeight;camera.right=8*innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});

@@ -13,6 +13,7 @@ MODEL=Path(os.environ.get('WHISPER_MODEL',Path.home()/'whb/music/models/ggml-sma
 CLI=os.environ.get('WHISPER_CLI',shutil.which('whisper-cli') or '')
 LOCK=threading.Lock()
 PROMPTS={
+ 'campus-welcome':'An English conversation welcoming a new student to Future Campus. Vocabulary: nickname, my name is, I like, library, cafe, sports area, meet, explore. People: Mia, Lisa, Kai, Sue, Jalor.',
  'campus-picnic':'An English conversation at a campus cafe about lunch for a picnic. Vocabulary: menu, chicken sandwich, cheese sandwich, sold out, instead, onions, with, without, water, juice, lunch, picnic.',
  'campus-level-one':'An English conversation at a school science fair. Vocabulary: science fair, robot, information desk, laboratory, battery check, bring back, light, colour.',
  'directions':'An English conversation about getting around town by public transport. Vocabulary: bus, bus stop, route, museum, library, get off. Which bus should I take?',

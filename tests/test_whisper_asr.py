@@ -29,7 +29,7 @@ class WhisperTests(unittest.TestCase):
   scenes=re.findall(r"asrScene:'([^']+)'",registry)
   daily=(Path(__file__).resolve().parents[1]/'dist/campus-daily-missions.js').read_text()
   scenes+=re.findall(r"\['([^']+)','[^']+','(?:book|cap|lunch|none)'",daily)
-  self.assertEqual(len(scenes),8)
+  self.assertEqual(len(scenes),9)
   for scene in scenes:self.assertIn(scene,asr.PROMPTS)
  def test_unknown_context_cannot_become_prompt(self):
   with patch.object(asr,'health',return_value={'ok':True}),patch.object(asr.subprocess,'run',return_value=subprocess.CompletedProcess([],0,'Hello','')) as run:

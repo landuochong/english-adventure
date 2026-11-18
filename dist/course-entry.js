@@ -1,8 +1,11 @@
+import {createResourcePicker} from './story-resources-ui.js';
+import {bindResources} from './story-resources.js';
 import {validateStory,generateCheckedStory} from './generated-story.js';
 import {saveStory,setStoryRemoved} from './story-store.js';
 const $=id=>document.getElementById(id),fields=['title','text','level','extra','scenario'];
 let db,images=[],urls=[],busy=0,dirty=false,revision=0,extraction=null,confirmed=false,extracting=false,storyDraft=null,generating=false,clearedStoryDraft=null,clearingStory=false;
 const status=text=>$('status').textContent=text;
+const resourcePicker=createResourcePicker($('story-resources'),()=>{revision++;dirty=true;if(storyDraft){storyDraft.stale=true;checkStory();}$('story-status').textContent='场景或人物有修改，请重新生成故事。';status('有未保存的场景或人物选择');});
 function changed(source=false){revision++;dirty=true;if(clearedStoryDraft){clearedStoryDraft.stale=true;clearedStoryDraft.reviewed=false;}if(extraction){if(source){extraction.stale=true;$('review-warning').textContent='课程材料或要求已修改，请重新提取后再确认。';}confirmed=false;$('confirmed').textContent='内容有修改，请重新检查并确认';}if(storyDraft){storyDraft.stale=true;if($('story-status'))$('story-status').textContent='学习重点或要求已改变，请重新生成故事。';}updateStoryAccess();if(storyDraft)checkStory();status('有未保存的修改');}
 function renderImages(){
  urls.forEach(URL.revokeObjectURL);urls=[];$('images').replaceChildren();
@@ -25,7 +28,7 @@ for(const id of fields)$(id).addEventListener('input',()=>changed(true));
 async function persistDraft(e){
  e?.preventDefault();if(!db||busy||extracting||generating)return;
  if(!$('text').value.trim()&&!images.length){$('error').textContent='请先粘贴课程文字或添加至少一张图片。';$('text').focus();return;}
- $('save').disabled=true;$('error').textContent='';const savedRevision=revision;const draft={version:1,updatedAt:new Date().toISOString(),images:[...images],extraction,confirmed,storyDraft,clearedStoryDraft};for(const id of fields)draft[id]=$(id).value;
+ $('save').disabled=true;$('error').textContent='';const savedRevision=revision;const draft={version:1,updatedAt:new Date().toISOString(),images:[...images],resourceSelection:resourcePicker.getSelection(),extraction,confirmed,storyDraft,clearedStoryDraft};for(const id of fields)draft[id]=$(id).value;
  try{await new Promise((resolve,reject)=>{const tx=db.transaction('drafts','readwrite');tx.objectStore('drafts').put(draft,'current');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});dirty=revision!==savedRevision;status(dirty?'已保存上一版，仍有未保存的修改':'草稿已保存 · 可随时回来继续编辑');return !dirty;}
  catch{status('保存失败，当前素材仍在页面中');$('error').textContent='浏览器存储不可用或空间不足，请保留原材料后重试。';}
  finally{$('save').disabled=false;}
@@ -35,7 +38,7 @@ window.addEventListener('beforeunload',e=>{if(dirty||busy||extracting||generatin
 try{
  db=await new Promise((resolve,reject)=>{const r=indexedDB.open('campus-course-drafts',1);r.onupgradeneeded=()=>r.result.createObjectStore('drafts');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>reject(Error('Blocked'));});
  const draft=await new Promise((resolve,reject)=>{const r=db.transaction('drafts').objectStore('drafts').get('current');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
- if(draft){for(const id of fields)if(typeof draft[id]==='string')$(id).value=draft[id];images=(draft.images||[]).filter(f=>f instanceof Blob);extraction=draft.extraction||null;confirmed=draft.confirmed===true;storyDraft=draft.storyDraft||null;clearedStoryDraft=draft.clearedStoryDraft||null;renderReview();renderStory();renderImages();status('已恢复上次保存的草稿');}else status('添加文字或图片后即可保存');
+ if(draft){resourcePicker.restore(draft.resourceSelection);for(const id of fields)if(typeof draft[id]==='string')$(id).value=draft[id];images=(draft.images||[]).filter(f=>f instanceof Blob);extraction=draft.extraction||null;confirmed=draft.confirmed===true;storyDraft=draft.storyDraft||null;clearedStoryDraft=draft.clearedStoryDraft||null;renderReview();renderStory();renderImages();status('已恢复上次保存的草稿');}else status('添加文字或图片后即可保存');
  $('save').disabled=busy>0;
 }catch{status('本地草稿存储不可用');$('error').textContent='可以输入和预览，但无法保存；请保留原材料。';}
 
@@ -121,14 +124,14 @@ $('story-json').oninput=()=>{storyChanged();$('story-check').textContent='完整
 $('apply-story-json').onclick=()=>{try{const config=JSON.parse($('story-json').value);if(!config||!Array.isArray(config.actions)||!Array.isArray(config.npcs))throw Error('缺少人物或情节');const errors=validateStory(config,storyDraft.learning);if(errors.length)throw Error(errors.join('；'));storyDraft.config=config;storyChanged();renderStory();}catch(e){$('story-check').textContent='无法应用配置：'+e.message;}};
 $('check-story').onclick=()=>checkStory();
 async function requestStory(payload){
- const r=await fetch('/api/story-generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(320000)});const result=await r.json();if(!r.ok)throw Error(result.error||'故事处理失败');return result;
+ const r=await fetch('/api/story-generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(320000)});const result=await r.json();if(!r.ok)throw Error(result.error||'故事处理失败');result.story=bindResources(result.story,payload.resources);return result;
 }
 async function buildStory(repair=false){
  if(!confirmed||extraction?.stale||generating||busy)return;
  if(repair&&(!storyDraft||storyDraft.stale))return;
  generating=true;const controls=[...document.querySelectorAll('input,textarea,select,button')],disabled=controls.map(c=>c.disabled);controls.forEach(c=>c.disabled=true);$('story-status').textContent=repair?'正在本机修复当前故事的线索与交互，请稍候…':'正在本机编排故事，生成后会自动检查；如需修复会再处理一次…';
  try{
- const learning=repair?storyDraft.learning:learningItems(),payload={learning,title:$('title').value,level:$('level').value,scenario:$('scenario').value};
+ const learning=repair?storyDraft.learning:learningItems(),payload={learning,title:$('title').value,level:$('level').value,scenario:$('scenario').value,resources:repair?(storyDraft.config.resources||null):resourcePicker.snapshot()};
  if(repair)payload.story=storyDraft.config;
  const result=await generateCheckedStory(requestStory,payload,errors=>{$('story-status').textContent='初稿有 '+errors.length+' 处流程问题，正在自动修复（最多一次），请稍候…';}),errors=result.errors;
  const previousConfig=storyDraft?.config;storyDraft={id:repair?storyDraft.id:crypto.randomUUID(),config:result.story,learning,reviewed:false,stale:false,previousConfig};revision++;dirty=true;renderStory();
@@ -146,7 +149,7 @@ async function storePlayable(mode){
  const record={id:mode==='preview'?'preview-'+storyDraft.id:storyDraft.id,version:crypto.randomUUID(),mode,config:storyDraft.config,learning:storyDraft.learning,updatedAt:new Date().toISOString()};
  await saveStory(record);return record;
 }
-$('play-story').onclick=async()=>{try{const record=await storePlayable('preview');if(!await persistDraft())throw Error('课程草稿未保存，请保留修改后重试');location.href='./?play='+encodeURIComponent(record.id);}catch(e){$('story-save-status').textContent='无法试玩：'+e.message;}};
+$('play-story').onclick=async()=>{try{const record=await storePlayable('preview');if(!await persistDraft())throw Error('课程草稿未保存，请保留修改后重试');location.href='./practice.html?play='+encodeURIComponent(record.id);}catch(e){$('story-save-status').textContent='无法试玩：'+e.message;}};
 $('save-story').onclick=async()=>{try{if(!storyDraft.reviewed)throw Error('请先试玩并勾选核对确认');await storePlayable('saved');$('story-save-status').textContent='已保存到本机故事列表，主页可选择；再次保存会更新版本并从头开始。';$('course-form').requestSubmit();}catch(e){$('story-save-status').textContent='保存失败：'+e.message;}};
 updateStoryAccess();
 

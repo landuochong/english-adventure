@@ -1,7 +1,7 @@
 import {GLTFLoader} from './vendor/three/loaders/GLTFLoader.js';
 import * as T from './vendor/three/three.module.js';
-import {environmentLayout} from './campus-environment-layout.js?v=world-2';
-import { createRobotCoach } from './robot-coach.js?v=school-1';
+import {environmentLayout} from './campus-environment-layout.js?v=workshop-20261118';
+import { createRobotCoach } from './robot-coach.js?v=jalor-8';
 
 // Stylized campus cast. Characters provide presence only; they never complete tasks.
 export function createCampusCharacters(scene, camera, canWalk, actor=camera) {

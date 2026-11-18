@@ -4,6 +4,19 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import story_generate as m
 class StoryTests(unittest.TestCase):
+ def test_resource_selection_validation(self):
+  good={'scene':{'id':'cafe','theme':'cafe'},'cast':[{'slot':'npc'+str(i+1),'characterId':name.lower(),'name':name,'identity':'student','personality':'friendly','role':'friend'} for i,name in enumerate(['Lily','Kai'])]}
+  self.assertEqual(m.validate_resources(good),good)
+  for bad in [{}, {**good,'scene':{'id':'forest','theme':'park'}}, {**good,'cast':[good['cast'][0]]}, {**good,'cast':[good['cast'][0],good['cast'][0]]}]:
+   with self.assertRaises(ValueError):m.validate_resources(bad)
+ def test_selected_cast_reaches_model_and_is_saved(self):
+  story=json.loads((Path(__file__).resolve().parents[1]/'scripts/story-example.json').read_text())
+  resources={'scene':{'id':'cafe','theme':'cafe'},'cast':[{'slot':p['id'],'characterId':p['id'],'name':p['name'],'identity':'student','personality':'friendly','role':'friend'} for p in story['npcs']]}
+  with patch.object(m,'call',side_effect=[{}, {'message':{'content':json.dumps(story)}}]) as model,patch.object(m,'check_story',return_value=[]):
+   result=m.generate({**self.payload(),'resources':resources})
+  self.assertEqual(result['story']['resources'],resources)
+  sent=json.loads(model.call_args.args[1]['messages'][1]['content'])
+  self.assertEqual(sent['resources'],resources)
  def payload(self):return {'learning':[{'id':'v0','type':'vocabulary','term':'sandwich','meaning':'三明治'}],'scenario':'cafe','level':'basic'}
  def test_reject_invalid_input_before_model(self):
   for data in [{}, {'learning':[]}, {'learning':[{}]}, {**self.payload(),'scenario':'x'*301}]:
