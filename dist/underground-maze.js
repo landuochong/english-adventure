@@ -12,6 +12,18 @@ export const maze = [
  '#.......b.R.D..c..#',
  '###################'
 ];
+const keyMaze = [
+ '#############',
+ '#S..+....*###',
+ '####.########',
+ '####.########',
+ '####.r#######',
+ '####..M..K###',
+ '####.B#######',
+ '#############'
+];
+export const layoutFor = run => run?.mission === 'key' ? keyMaze : maze;
+const keyActions = {M:'推门', B:'拉蓝色拉杆', r:'拉红色拉杆', K:'拿起钥匙'};
 const words = {
  a: ['Triangle', 'The triangle marks a pressure plate. Look for another passage.', '三角形标记了压力踏板。找找有没有另一条通道。'],
  b: ['Diamond', 'The diamond marks loose stone. A hammer can break it.', '菱形标记了松动的岩石。锤子能把它敲开。'],
@@ -20,23 +32,27 @@ const words = {
 export const briefing = ['Find the amber prism and bring it back to the stairs. Look closely at the marks on the walls.', '找到琥珀棱镜，带回入口的楼梯。留意墙上的图案。'];
 const start = [1, 1];
 export const trailKey=(x,y)=>x+','+y;
-export const tileAt = (x, y) => maze[y]?.[x] ?? '#';
-export function newRun() {
- return {phase:'brief', x:start[0], y:start[1], hammer:false, cleared:false, powered:true, prism:false, clues:[], seen:[], announced:[], audioVersion:1, trail:[trailKey(...start)], surveyed:[], resets:0};
+export const tileAt = (x, y, run) => layoutFor(run)[y]?.[x] ?? '#';
+export function newRun(mission) {
+ return {...(mission==='key'?{mission,askedAboutSymbol:false,doorOpen:false,key:false}:{}),phase:'brief', x:start[0], y:start[1], hammer:false, cleared:false, powered:true, prism:false, clues:[], seen:[], announced:[], audioVersion:1, trail:[trailKey(...start)], surveyed:[], resets:0};
 }
-export function restoreRun(raw) {
- const run = newRun();
+export function restoreRun(raw, mission=raw?.mission) {
+ const run = newRun(mission);
+ const layout=layoutFor(run);
  // An older save may be standing on the tile that now contains the dangerous plate.
  if(raw&&raw.y===9&&raw.x===12&&!Array.isArray(raw.seen))raw={...raw,x:11};
  if (!raw || !['search','return','complete','failed'].includes(raw.phase) || !Number.isInteger(raw.x) || !Number.isInteger(raw.y)
-     || tileAt(raw.x, raw.y)==='#' || (tileAt(raw.x,raw.y)==='D')!==(raw.phase==='failed')) return run;
+     || tileAt(raw.x, raw.y,run)==='#' || (tileAt(raw.x,raw.y,run)==='D')!==(raw.phase==='failed')) return run;
  for (const key of ['hammer','cleared','powered','prism']) if (typeof raw[key] !== 'boolean') return run;
- if ((raw.phase!=='failed'&&(raw.phase !== 'search') !== raw.prism) || (raw.prism && (raw.powered || !raw.cleared)) || (raw.cleared && !raw.hammer)
-     || (tileAt(raw.x, raw.y)==='R' && !raw.cleared) || (tileAt(raw.x, raw.y)==='G' && raw.powered)) return run;
+ if(mission==='key'){
+  if(raw.mission!=='key'||!['search','complete'].includes(raw.phase)||typeof raw.doorOpen!=='boolean'||
+     raw.key!==(raw.phase==='complete')||(!raw.doorOpen&&(raw.key||raw.x>=6&&raw.y===5)))return run;
+ }else if ((raw.phase!=='failed'&&(raw.phase !== 'search') !== raw.prism) || (raw.prism && (raw.powered || !raw.cleared)) || (raw.cleared && !raw.hammer)
+     || (tileAt(raw.x, raw.y,run)==='R' && !raw.cleared) || (tileAt(raw.x, raw.y,run)==='G' && raw.powered)) return run;
  const coordinates=(data,allowWalls)=>Array.isArray(data)?data.filter(key=>{
   if(typeof key!=='string'||!/^\d{1,2},\d{1,2}$/.test(key))return false;
   const [x,y]=key.split(',').map(Number);
-  return key===trailKey(x,y)&&maze[y]?.[x]!==undefined&&(allowWalls||tileAt(x,y)!=='#');
+  return key===trailKey(x,y)&&layout[y]?.[x]!==undefined&&(allowWalls||tileAt(x,y,run)!=='#');
  }):[];
  const trail=[...new Set([...run.trail,...coordinates(raw.trail,false),trailKey(raw.x,raw.y)])];
  const surveyed=new Set(coordinates(raw.surveyed,true));
@@ -44,17 +60,17 @@ export function restoreRun(raw) {
   // Recover side passages conservatively from positions saved before the survey existed.
   for(const key of trail){
    const [x,y]=key.split(',').map(Number);
-   for(const cell of surveyTiles({x,y,powered:true,cleared:false}))surveyed.add(trailKey(cell.x,cell.y));
+   for(const cell of surveyTiles({...run,x,y}))surveyed.add(trailKey(cell.x,cell.y));
   }
  }
- return {...run, phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
-  clues:Array.isArray(raw.clues)?[...new Set(raw.clues.filter(key=>Object.hasOwn(words,key)))]:[],
+ return {...run, ...(mission==='key'?{askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
+  clues:Array.isArray(raw.clues)?[...new Set(raw.clues.filter(key=>(mission==='key'?['moon-route','blue-lever'].includes(key):Object.hasOwn(words,key))))]:[],
   seen:Array.isArray(raw.seen)?[...new Set(raw.seen.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
   announced:raw.audioVersion===1&&Array.isArray(raw.announced)?[...new Set(raw.announced.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
   trail,surveyed:[...surveyed],
   resets:Number.isSafeInteger(raw.resets)&&raw.resets>=0?raw.resets:0};
 }
-const blocks = (run, tile) => tile==='#' || (tile==='R'&&!run.cleared) || (tile==='G'&&run.powered);
+const blocks = (run, tile) => tile==='#' || (tile==='M'&&!run.doorOpen) || (tile==='R'&&!run.cleared) || (tile==='G'&&run.powered);
 export function visible(run, x, y) {
  const dx=x-run.x, dy=y-run.y;
  if (Math.hypot(dx,dy)>3.5) return false;
@@ -63,17 +79,17 @@ export function visible(run, x, y) {
  let px=run.x, py=run.y;
  for(let i=1;i<=count;i++){
   const tx=Math.round(run.x+dx*i/count), ty=Math.round(run.y+dy*i/count);
-  if(tx!==px&&ty!==py&&blocks(run,tileAt(px,ty))&&blocks(run,tileAt(tx,py)))return false;
+  if(tx!==px&&ty!==py&&blocks(run,tileAt(px,ty,run))&&blocks(run,tileAt(tx,py,run)))return false;
   if(tx===x&&ty===y)return true;
-  if(blocks(run,tileAt(tx,ty)))return false;
+  if(blocks(run,tileAt(tx,ty,run)))return false;
   px=tx;py=ty;
  }
  return true;
 }
 export function move(run, dx, dy) {
  if (!['search','return'].includes(run.phase) || !Number.isInteger(dx) || !Number.isInteger(dy) || Math.abs(dx)+Math.abs(dy)!==1) return null;
- const x=run.x+dx, y=run.y+dy, tile=tileAt(x,y);
- if(blocks(run,tile)) return tile==='R'?'石障挡住了路。':tile==='G'?'门还通着电。':'';
+ const x=run.x+dx, y=run.y+dy, tile=tileAt(x,y,run);
+ if(blocks(run,tile)) return tile==='M'?'门锁着。':tile==='R'?'石障挡住了路。':tile==='G'?'门还通着电。':'';
  const visited=trailKey(x,y);
  if(!run.trail.includes(visited))run.trail=[...run.trail,visited];
  if(tile==='D'){run.x=x;run.y=y;run.phase='failed';return '踩中危险踏板，本轮结束。';}
@@ -87,7 +103,7 @@ export function move(run, dx, dy) {
 export function lanternTiles(run){
  const candidates=[];
  for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){
-  if((!dx&&!dy)||tileAt(run.x+dx,run.y+dy)==='#'||!visible(run,run.x+dx,run.y+dy))continue;
+  if((!dx&&!dy)||tileAt(run.x+dx,run.y+dy,run)==='#'||!visible(run,run.x+dx,run.y+dy))continue;
   candidates.push({x:run.x+dx,y:run.y+dy,distance:Math.hypot(dx,dy)});
  }
  return [{x:run.x,y:run.y},...candidates.sort((a,b)=>a.distance-b.distance).slice(0,6)];
@@ -97,7 +113,7 @@ export function surveyTiles(run){
  const edges=new Set();
  for(const {x,y} of [...tiles])for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
   const tx=x+dx,ty=y+dy,key=trailKey(tx,ty);
-  if(!edges.has(key)&&maze[ty]?.[tx]==='#'&&visible(run,tx,ty)){
+  if(!edges.has(key)&&layoutFor(run)[ty]?.[tx]==='#'&&visible(run,tx,ty)){
    tiles.push({x:tx,y:ty});edges.add(key);
   }
  }
@@ -111,16 +127,17 @@ export function rememberSurvey(run){
 export function encounterTiles(run){
  return lanternTiles(run)
   .filter(({x,y})=>Math.abs(x-run.x)+Math.abs(y-run.y)<=1)
-  .map(({x,y})=>tileAt(x,y))
+  .map(({x,y})=>tileAt(x,y,run))
   .filter(id=>'abcHTRVGPD'.includes(id)&&(!run.hammer||id!=='H')&&(!run.prism||id!=='P'));
 }
 export function nearby(run) {
  const actions=[];
  for(const [dx,dy] of [[0,0],[0,-1],[1,0],[0,1],[-1,0]]){
-  const x=run.x+dx,y=run.y+dy,key=tileAt(x,y);
+  const x=run.x+dx,y=run.y+dy,key=tileAt(x,y,run);
   if(!visible(run,x,y))continue;
   const label=words[key]?.[0];
-  if(label)actions.push({id:key,label:'查看'+({a:'三角形',b:'菱形',c:'螺旋'})[key]+'刻纹'});
+  if(keyActions[key]&&(!run.doorOpen||!['B','r','M'].includes(key))&&(key!=='K'||run.doorOpen))actions.push({id:key,label:keyActions[key]});
+  else if(label)actions.push({id:key,label:'查看'+({a:'三角形',b:'菱形',c:'螺旋'})[key]+'刻纹'});
   else if(key==='H'&&!run.hammer)actions.push({id:key,label:'拿起锤子'});
   else if(key==='R'&&!run.cleared)actions.push({id:key,label:run.hammer?'用锤子破开石障':'查看石障'});
   else if(key==='V'&&run.powered)actions.push({id:key,label:'转动阀门'});
@@ -136,6 +153,10 @@ export function interact(run,id) {
   return words[id][2];
  }
  switch(id){
+ case 'M':return '门纹丝不动。';
+ case 'r':return '拉杆咔哒一响，弹回原位。门仍然关着。';
+ case 'B':run.doorOpen=true;return '门闩滑开了。';
+ case 'K':run.key=true;run.phase='complete';return '你拿到了钥匙。';
  case 'H':run.hammer=true;return '锤子已放进背包。';
  case 'R':
   if(!run.hammer)return '石块上有裂缝。附近也许有能敲开它的工具。';
@@ -158,7 +179,7 @@ export function routeTo(run, target){
  for(const {x,y,path} of open){
   if(trailKey(x,y)===goal)return path;
   for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){
-   const nx=x+dx,ny=y+dy,key=trailKey(nx,ny),tile=tileAt(nx,ny);
+   const nx=x+dx,ny=y+dy,key=trailKey(nx,ny),tile=tileAt(nx,ny,run);
    if(!allowed.has(key)||seen.has(key)||blocks(run,tile)||tile==='T'||tile==='D')continue;
    seen.add(key);
    open.push({x:nx,y:ny,path:[...path,[dx,dy]]});
@@ -173,7 +194,7 @@ export function advancePosition(run, position, dx, dy){
  for(const [axis,offset] of [['x',dx],['y',dy]]){
   if(!offset)continue;
   const ahead=Math.sign(offset);
-  const boundary=tileAt(run.x+(axis==='x'?ahead:0),run.y+(axis==='y'?ahead:0));
+  const boundary=tileAt(run.x+(axis==='x'?ahead:0),run.y+(axis==='y'?ahead:0),run);
   const wall=boundary==='#';
   const proposed=position[axis]+offset;
   const next=wall?run[axis]+ahead*Math.min((proposed-run[axis])*ahead,.41):proposed;

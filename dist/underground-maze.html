@@ -36,13 +36,15 @@
 <button id="retry-voice" type="button" hidden>重新播放英语</button>
 <audio id="voice-audio" preload="none"></audio>
 <p id="notice" role="status"></p>
+<div id="room-actions"></div>
 <div id="ask-slot"></div>
 
+<a id="other-room" href="underground-maze.html?room=key">探索遗失的钥匙</a>
 <p id="bag" hidden></p>
 </aside>
 </div>
 <section id="questions" aria-labelledby="questions-title" hidden>
-<div class="coach-speaker"><img src="assets/maze-characters/jalor.png" alt=""><div><strong>Jalor</strong><h2 id="questions-title"></h2></div></div>
+<div class="coach-speaker"><img src="assets/maze-characters/jalor.png" alt=""><div><strong>教练 Jalor</strong><h2 id="questions-title"></h2></div></div>
 <p id="question-hint" tabindex="0" role="button">按空格或点这里开口提问</p>
 <p id="record-status" role="status"></p>
 <small id="question-source"></small>
@@ -55,6 +57,6 @@
 <dialog id="failure"><h2>本轮探险结束</h2><p>你踩中了危险踏板。</p><a href="./">返回校园地图</a><button id="retry">重新开始</button></dialog>
 <dialog id="finish"><h2>委托完成</h2><p>你把琥珀棱镜带回了地面。</p><a href="./">返回校园地图</a><button id="replay">再次探索</button></dialog>
 </main>
-<script type="module" src="underground-maze-page.js?v=hover-1"></script>
+<script type="module" src="underground-maze-page.js?v=key-room"></script>
 </body>
 </html>

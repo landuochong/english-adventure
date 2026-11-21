@@ -1,6 +1,6 @@
-import {tileAt, maze, surveyTiles, trailKey} from './underground-maze.js?v=survey-1';
+import {tileAt, layoutFor, surveyTiles, trailKey} from './underground-maze.js';
 
-const glyphs={a:['△','#ffd192'],b:['◇','#9be0c6'],c:['◎','#c4b9fb']};
+const glyphs={M:['☾','#57aaff'],'*':['★','#ffe59b'],a:['△','#ffd192'],b:['◇','#9be0c6'],c:['◎','#c4b9fb']};
 const stone={top:'#46515a',front:'#27313b',side:'#323e47'};
 
 export function createMazeView(canvas){
@@ -41,9 +41,9 @@ export function createMazeView(canvas){
   poly(side,palette.side);poly(front,palette.front);poly(top,palette.top);
   return [side,front,top];
  }
- function plate(x,y,mark){
+ function plate(x,y,mark,run){
   const palette={top:'#665549',front:'#44362f',side:'#3c3032'};
-  const northWall=tileAt(x,y-1)==='#';
+  const northWall=tileAt(x,y-1,run)==='#';
   const wallY=northWall?y-.49:y+.39;
   const height=northWall?23:33;
   const faces=box(x-.31,wallY,.62,.11,height,palette);
@@ -53,7 +53,22 @@ export function createMazeView(canvas){
   return faces;
  }
  function prop(x,y,tile,run){
-  if(glyphs[tile])return plate(x,y,tile);
+  if(tile==='M'){
+   if(run.doorOpen)return box(x-.46,y-.45,.12,.75,37,stone);
+   return [...box(x-.28,y-.40,.56,.76,36,{top:'#927154',front:'#705039',side:'#503c30'}),...plate(x,y,tile,run)];
+  }
+  if(glyphs[tile])return plate(x,y,tile,run);
+  if(tile==='r'||tile==='B'){
+   const color=tile==='B'?'#57aaff':'#fc766a';
+   return [...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
+    ...box(x-.15,y-.07,.30,.14,6,{top:color,front:color,side:color},18)];
+  }
+  if(tile==='K'&&!run.key){
+   const base=box(x-.26,y-.24,.52,.48,11,stone);
+   const [sx,sy]=point(x,y,19);
+   ctx.font='bold '+Math.round(25*scale)+'px sans-serif';ctx.textAlign='center';ctx.fillStyle='#ffdb79';ctx.fillText('⚿',sx,sy);
+   return base;
+  }
   if(tile==='S')return Array.from({length:4},(_,i)=>box(x-.33,y-.36+i*.17,.66,.18,3+i*4,stone)).flat();
   if(tile==='T'||tile==='D'){
    const faces=box(x-.34,y-.32,.68,.64,4,{top:'#904d46',front:'#4f292b',side:'#643a38'});
@@ -124,10 +139,11 @@ export function createMazeView(canvas){
   const lit=new Set(surveyTiles(run).map(({x,y})=>trailKey(x,y)));
   const surveyed=new Set([...run.surveyed,...lit]);
   const walked=new Set(run.trail);
+  const maze=layoutFor(run);
   for(let y=0;y<maze.length;y++){
    const cells=[];
    for(let x=0;x<maze[y].length;x++){
-    const key=trailKey(x,y),tile=tileAt(x,y);
+    const key=trailKey(x,y),tile=tileAt(x,y,run);
     if(!surveyed.has(key)&&!walked.has(key))continue;
     if(tile==='#'){
      const height=y>run.y&&Math.hypot(x-run.x,y-run.y)<2.3?11:37;

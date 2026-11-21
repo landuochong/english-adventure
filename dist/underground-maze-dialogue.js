@@ -41,3 +41,40 @@ export function mazeAnswers(mark,run){
  return ({a:['a','a-route'],b:['b',run.hammer?'b-have':'b-tool'],c:['c',run.powered?'c-valve':'c-off'],
   H:['hammer'],P:['prism'],D:['d-warning']}[subject]||[]).concat('clarify');
 }
+
+export const keyLines = {
+ 'key-brief': ['Find the lost key. Ask me if you need help.', '找到遗失的钥匙。需要帮助时可以问我。'],
+ 'key-ask': ['What would you like to know?', '你想问什么？'],
+ 'moon-route': ['Look for the moon on the wall.', '找找墙上的月亮图案。'],
+ 'door-symbol': ['Look at the color of the moon.', '看看月亮是什么颜色。'],
+ 'check-symbol': ['Look at the shape on the door.', '看看门上的图案。'],
+ 'blue-lever': ['Look for the blue lever.', '找找蓝色的拉杆。'],
+ 'blue-yes': ['Yes, the blue one.', '对，蓝色的。'],
+ 'red-no': ['No, the blue one.', '不是，是蓝色的。'],
+ 'key-open': ['The door is open. Look inside.', '门开了，进去看看。'],
+ 'key-clarify': ['What are you trying to find?', '你想找什么？'],
+ 'lever-clarify': ['Are you asking about the door?', '你想问这扇门吗？']
+};
+export function keyScene(run){
+ if(run.phase!=='search')return null;
+ return run.y>=4?'door':'junction';
+}
+export function keyAnswer(scene,text,run,previous='key-ask'){
+ const words=text.toLowerCase().replace(/[’']/g,"'").replace(/[^a-z' ]/g,' ').replace(/\s+/g,' ').trim();
+ if(/\b(again|repeat|pardon|slower)\b/.test(words))return previous;
+ if(scene==='door'){
+  if(run.doorOpen)return 'key-open';
+  const moonReport=/^(?:(?:i (?:can )?see|there is|there's|it is|it's|the symbol is|the door (?:has|shows)) )?(?:(?:a|the) )?(?:crescent |half )?moon(?: (?:shape|symbol|picture))?(?: on (?:the|this) door)?$/.test(words);
+  if(/^(blue|the blue one|blue one|is it blue|the blue lever)$/.test(words))return 'blue-yes';
+  if(/^(red|the red one|red one|is it red|the red lever)$/.test(words))return 'red-no';
+  if(moonReport)return 'blue-lever';
+  if(!run.clues.includes('blue-lever')){
+   if(/\b(moon|star|sun|square|triangle|circle)\b/.test(words))return 'check-symbol';
+   if(run.askedAboutSymbol||/\b(which|pull|lever|door|open|stuck|help|key|blue|red)\b/.test(words))return 'door-symbol';
+   return 'lever-clarify';
+  }
+  if(/\b(which|pull|lever|door|open|stuck|help|key)\b/.test(words))return 'blue-lever';
+  return 'lever-clarify';
+ }
+ return /\b(key|where|way|direction|go|lost|help|moon)\b/.test(words)?'moon-route':'key-clarify';
+}

@@ -1,20 +1,32 @@
 import {createBackpack} from './campus-backpack.js';
-import {createMazeView} from './underground-maze-view.js?v=hover-1';
-import {briefing, clueText, interact, advancePosition, nearby, newRun, restoreRun, tileAt, encounterTiles, maze, routeTo, rememberSurvey} from './underground-maze.js?v=hover-1';
+import {createMazeView} from './underground-maze-view.js';
+import {briefing as prismBriefing, clueText, interact, advancePosition, nearby, newRun, restoreRun, tileAt, encounterTiles, layoutFor, routeTo, rememberSurvey} from './underground-maze.js';
 import {chooseVoice} from './speech.js';
-import {answerMazeQuestion, mazeDialogueLine, discoveries, mazeAnswers} from './underground-maze-dialogue.js';
+import {keyScene, keyAnswer, keyLines, answerMazeQuestion, mazeDialogueLine, discoveries, mazeAnswers} from './underground-maze-dialogue.js';
 import {createLocalVoiceTurn} from './local-voice-turn.js';
 import {createVoiceTurn} from './voice-turn.js';
 import {createBrowserVAD} from './vad-loader.js';
 
 const $=id=>document.getElementById(id);
-const saveKey='campus-underground-maze-v1';
-let run=newRun(), voiceRequest=0, playbackTimer, bagOpen=false, speaking=false;
+const keyRoom=new URLSearchParams(location.search).get('room')==='key';
+const mission=keyRoom?'key':'prism';
+const briefing=keyRoom?keyLines['key-brief']:prismBriefing;
+const briefAudio=keyRoom?'key-brief':'brief';
+const title=keyRoom?'遗失的钥匙':'琥珀棱镜';
+const saveKey=keyRoom?'campus-moon-key-v1':'campus-underground-maze-v1';
+const line=id=>keyLines[id]||mazeDialogueLine(id);
+if(keyRoom){
+ $('other-room').href='underground-maze.html';$('other-room').textContent='探索琥珀棱镜';
+ document.querySelector('.maze-header h1 + p').textContent=title;
+ document.querySelector('#intro p').textContent='在地下走廊找到遗失的钥匙。需要提示时，可以问教练 Jalor。';
+ document.querySelector('#finish p').textContent='你在门后找到了遗失的钥匙。';
+}
+let run=newRun(mission), voiceRequest=0, playbackTimer, bagOpen=false, speaking=false;
 const discoveryQueue=[];
-try{run=restoreRun(JSON.parse(localStorage.getItem(saveKey)));}catch{}
+try{run=restoreRun(JSON.parse(localStorage.getItem(saveKey)),mission);}catch{}
 const canvas=$('maze'), view=createMazeView(canvas);
 const hoverLabel=$('maze-word');
-const vocabulary={S:'stairs',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
+const vocabulary={S:'stairs',M:'moon door','*':'star',B:'blue lever',r:'red lever',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
  H:'hammer',T:'pressure plate',D:'dangerous pressure plate',R:'rubble',V:'valve',G:'powered gate',P:'amber prism'};
 let pointer=null;
 function sceneTarget(event){
@@ -23,7 +35,7 @@ function sceneTarget(event){
 }
 function refreshHover(){
  const target=pointer&&!bagOpen&&['search','return'].includes(run.phase)?sceneTarget(pointer):null;
- const tile=target?tileAt(target.x,target.y):'';
+ const tile=target?tileAt(target.x,target.y,run):'';
  const removed=(tile==='H'&&run.hammer)||(tile==='R'&&run.cleared)||(tile==='P'&&run.prism);
  const word=removed?'':vocabulary[tile]||'';
  if(hoverLabel.textContent!==word)hoverLabel.textContent=word;
@@ -92,9 +104,9 @@ function stopVoice(){
 function speak(id,onFinished,textOverride,slow=false){
  stopVoice();
  speaking=true;retryVoice.hidden=true;
- const request=voiceRequest, status=bagOpen?document.getElementById('bag-audio-status'):$(id==='brief'||questions.hidden?'voice-status':'record-status'), synth=window.speechSynthesis;
+ const request=voiceRequest, status=bagOpen?document.getElementById('bag-audio-status'):$(id===briefAudio||questions.hidden?'voice-status':'record-status'), synth=window.speechSynthesis;
  status.textContent='正在准备英语音频…';
- const text=textOverride??(id==='brief'?briefing[0]:mazeDialogueLine(id)[0]);
+ const text=textOverride??(id===briefAudio?briefing[0]:line(id)[0]);
  let preferred='', rate=.85;
  try{
   preferred=localStorage.getItem('campus-voice')||'';
@@ -154,6 +166,11 @@ function commit(message){
  $('notice').textContent=message;save();render();
 }
 function operate(id){
+ if(keyRoom){
+  const message=interact(run,id);
+  if(message!==null){stopWalking();commit(message);if(run.phase==='complete'){stopVoice();focusOn(null);}}
+  return;
+ }
  discover();
  if(discoveries[id])focusOn(id);
  if(clueText(id))return;
@@ -165,7 +182,7 @@ $('ask-slot').replaceWith(questions);
 let mark=null,answer='ask',turn=null,pendingQuestion=null;
 function playAnswer(id){
  answer=id;
- [$('answer-en').textContent,$('answer-zh').textContent]=mazeDialogueLine(id);
+ [$('answer-en').textContent,$('answer-zh').textContent]=line(id);
  speak(id);
 }
 function focusOn(id){
@@ -175,13 +192,26 @@ function focusOn(id){
  mark=id;
  questions.hidden=!id;
  if(!id)return;
- $('questions-title').textContent=discoveries[id][1];
+ $('questions-title').textContent=keyRoom?(id==='door'?'门边':'地下走廊'):discoveries[id][1];
  $('heard').textContent='';$('question-source').textContent='';$('question-input').value='';$('question-text').open=false;
- answer='ask';[$('answer-en').textContent,$('answer-zh').textContent]=mazeDialogueLine('ask');
+ answer=keyRoom?'key-ask':'ask';
+ if(keyRoom&&id==='door'){
+  if(run.doorOpen)answer='key-open';
+  else if(run.clues.includes('blue-lever'))answer='blue-lever';
+  else if(run.askedAboutSymbol)answer='door-symbol';
+ }
+ [$('answer-en').textContent,$('answer-zh').textContent]=line(answer);
 }
 async function submitQuestion(text){
  text=text.trim().slice(0,300);
  if(!mark||!text)return;
+ if(keyRoom){
+  const reply=keyAnswer(mark,text,run,answer);
+  $('heard').textContent='你说：'+text;
+  if(['door-symbol','check-symbol'].includes(reply)&&!run.askedAboutSymbol){run.askedAboutSymbol=true;save();}
+  if(['moon-route','blue-lever'].includes(reply)&&!run.clues.includes(reply)){run.clues.push(reply);save();}
+  playAnswer(reply);return;
+ }
  const subject=mark,fallback=answerMazeQuestion(mark,text,run,answer);
  $('heard').textContent='你说：'+text;
  if(clueText(mark)&&fallback!=='clarify'&&!run.clues.includes(mark)){
@@ -262,6 +292,7 @@ function playDiscovery(){
  });
 }
 function discover(){
+ if(keyRoom){focusOn(keyScene(run));return;}
  const around=encounterTiles(run);
  const newlyFound=around.filter(id=>!run.seen.includes(id));
  focusOn(newlyFound[0]||(around.includes(mark)?mark:around[0]));
@@ -277,14 +308,14 @@ function discover(){
 }
 const backpack=createBackpack({
  getContext:()=>({
-  config:{title:'地下迷宫 · 琥珀棱镜',words:[],phrases:[]},
+  config:{title:'地下迷宫 · '+title,words:[],phrases:[]},
   state:{stage:run.phase,complete:run.phase==='complete'},
   briefing:run.phase==='brief'?null:{en:briefing[0],zh:briefing[1]},
   status:run.phase==='brief'?'尚未领取委托。':'携带物品：'+$('bag').textContent,
-  clues:run.clues.map(id=>({name:discoveries[id][1],en:clueText(id)[0],zh:clueText(id)[1]}))
+  clues:run.clues.map(id=>({name:keyRoom?(id==='moon-route'?'走廊':'门边'):discoveries[id][1],en:line(id)[0],zh:line(id)[1]}))
  }),
  speak(text,slow=false){
-  const id=text===briefing[0]?'brief':run.clues.find(clue=>clueText(clue)[0]===text);
+  const id=text===briefing[0]?briefAudio:run.clues.find(clue=>line(clue)[0]===text);
   speak(id,undefined,text,slow);
  },
  pause(){bagOpen=true;stopWalking();cancelRecording();pendingQuestion?.abort();pendingQuestion=null;stopVoice();},
@@ -294,11 +325,11 @@ const backpack=createBackpack({
 $('open-backpack').onclick=()=>backpack.open();
 function renderTrail(){
  const map=$('trail'),ctx=map.getContext('2d');
- const size=map.width/maze[0].length;
+ const size=Math.min(map.width/layoutFor(run)[0].length,map.height/layoutFor(run).length);
  ctx.fillStyle='#0c1419';ctx.fillRect(0,0,map.width,map.height);
  for(const key of run.surveyed){
   const [x,y]=key.split(',').map(Number);
-  ctx.fillStyle=tileAt(x,y)==='#'?'#213239':'#3c5553';
+  ctx.fillStyle=tileAt(x,y,run)==='#'?'#213239':'#3c5553';
   ctx.fillRect(x*size,y*size,size,size);
  }
  ctx.fillStyle='#516f65';
@@ -318,21 +349,33 @@ function render(){
  $('goal').textContent=({brief:'在楼梯旁领取委托。',search:'找到琥珀棱镜。',return:'把棱镜带回入口楼梯。',complete:'琥珀棱镜已带回地面。',failed:'本轮探险结束。'})[run.phase];
  $('bag').textContent=[run.hammer?'锤子':'',run.prism?'琥珀棱镜':''].filter(Boolean).join('、')||'空';
 
+ if(keyRoom){
+  if(run.phase==='search')$('goal').textContent='找到遗失的钥匙。';
+  if(run.key)$('goal').textContent='已找到遗失的钥匙。';
+  $('bag').textContent=run.key?'钥匙':'空';
+  const actions=$('room-actions');
+  actions.replaceChildren();
+  if(run.phase==='search')for(const {id,label} of nearby(run)){
+   const button=document.createElement('button');
+   button.textContent=label;button.onclick=()=>operate(id);actions.append(button);
+  }
+ }
  if(run.phase==='failed'&&!$('failure').open)$('failure').showModal();
  if(run.phase==='complete'&&!$('finish').open)$('finish').showModal();
 }
 function startRun(){
  if(run.phase!=='brief')return;
  run.phase='search';commit('提灯已点亮。');
- speak('brief');
+ speak(briefAudio);
+ if(keyRoom)discover();
  canvas.focus({preventScroll:true});
 }
 $('enter-maze').onclick=startRun;
-$('listen').onclick=()=>speak('brief');
+$('listen').onclick=()=>speak(briefAudio);
 $('brief-en').textContent=briefing[0];$('brief-zh').textContent=briefing[1];
 function restart(id){
  stopWalking();discoveryQueue.length=0;stopVoice();focusOn(null);$('voice-status').textContent='';
- $(id).close();run=newRun();Object.assign(position,{x:run.x,y:run.y});commit('');
+ $(id).close();run=newRun(mission);Object.assign(position,{x:run.x,y:run.y});commit('');
 }
 $('replay').onclick=()=>restart('finish');
 $('retry').onclick=()=>restart('failure');
@@ -361,7 +404,7 @@ canvas.onclick=event=>{
  canvas.focus({preventScroll:true});
  if(!target){discover();return;}
  const dx=target.x-run.x,dy=target.y-run.y;
- const tile=tileAt(run.x+dx,run.y+dy);
+ const tile=tileAt(run.x+dx,run.y+dy,run);
  held.clear();waypoints=[];
  if(Math.abs(dx)+Math.abs(dy)<=1&&(nearby(run).some(action=>action.id===tile)||discoveries[tile]&&!['T','D'].includes(tile))){
   stopWalking();operate(tile);return;
@@ -374,4 +417,4 @@ canvas.onclick=event=>{
 };
 render();
 
-if(['search','return'].includes(run.phase))focusOn(encounterTiles(run)[0]);
+if(['search','return'].includes(run.phase))focusOn(keyRoom?keyScene(run):encounterTiles(run)[0]);

@@ -149,3 +149,36 @@ test('terrain beside the route remains surveyed after leaving and refreshing',as
  assert.ok(legacy.surveyed.includes('1,0'));
  assert.deepEqual(legacy.announced,[]);
 });
+
+test('moon door can be solved by listening or experimenting and survives a refresh',async()=>{
+ const {keyScene,keyAnswer}=await import('../dist/underground-maze-dialogue.js');
+ let run=newRun('key');
+ run.phase='search';
+ for(let i=0;i<3;i++)move(run,1,0);
+ for(const text of ['Which way?','Key?'])assert.equal(keyAnswer(keyScene(run),text,run),'moon-route');
+ assert.equal(interact(run,'B'),null);
+ for(let i=0;i<4;i++)move(run,0,1);
+ move(run,1,0);
+ assert.match(move(run,1,0),/锁/);
+ assert.equal(interact(run,'K'),null);
+ assert.equal(keyAnswer('door','Which one?',run),'door-symbol');
+ assert.equal(keyAnswer('door','Blue?',run),'blue-yes');
+ for(const text of ['Star.','Not a moon.',"I don't see a moon.",'A star or a moon?'])assert.equal(keyAnswer('door',text,run),'check-symbol');
+ assert.equal(keyAnswer('junction','Moon.',run),'moon-route');
+ for(const text of ['Moon.','I see a moon on the door.', "It's a crescent moon."])assert.equal(keyAnswer('door',text,run),'blue-lever');
+ run.clues.push('blue-lever');
+ for(const [text,line] of [['Which one?','blue-lever'],['Blue?','blue-yes'],['Red?','red-no'],['Hello','lever-clarify']]){
+  assert.equal(keyAnswer(keyScene(run),text,run),line);
+  assert.equal(run.doorOpen,false);
+ }
+ assert.match(interact(run,'r'),/弹回/);
+ assert.equal(run.doorOpen,false);
+ interact(run,'B');
+ run=restoreRun(structuredClone(run),'key');
+ assert.equal(run.doorOpen,true);
+ assert.equal(run.key,false);
+ for(let i=0;i<3;i++)move(run,1,0);
+ assert.match(interact(run,'K'),/钥匙/);
+ assert.equal(restoreRun(run,'key').phase,'complete');
+ assert.equal(newRun('key').doorOpen,false);
+});
