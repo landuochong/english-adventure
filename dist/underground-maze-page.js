@@ -18,9 +18,9 @@ const line=id=>keyLines[id]||mazeDialogueLine(id);
 if(keyRoom){
  $('other-room').href='underground-maze.html';$('other-room').textContent='探索琥珀棱镜';
  document.querySelector('.maze-header h1 + p').textContent=title;
- document.querySelector('#intro p').textContent='在地下走廊寻找遗失的钥匙。留意墙上的图案。先向星纹问路，再请门上的图案启动机关。';
+ document.querySelector('#intro p').textContent='在地下走廊寻找遗失的钥匙，找到后向教练汇报。留意墙上的图案。先向星纹问路，再请门上的图案启动机关。';
  document.querySelector('#failure p').textContent='拉错了拉杆，月亮门已经封闭。';
- document.querySelector('#finish p').textContent='你在门后找到了遗失的钥匙。';
+ document.querySelector('#finish p').textContent='你带着遗失的钥匙回到了出发点。';
 }
 let run=newRun(mission), voiceRequest=0, playbackTimer, bagOpen=false, speaking=false;
 const discoveryQueue=[];
@@ -37,7 +37,7 @@ function sceneTarget(event){
 function refreshHover(){
  const target=pointer&&!bagOpen&&['search','return'].includes(run.phase)?sceneTarget(pointer):null;
  const tile=target?tileAt(target.x,target.y,run):'';
- const removed=(tile==='H'&&run.hammer)||(tile==='R'&&run.cleared)||(tile==='P'&&run.prism);
+ const removed=(tile==='K'&&run.key)||(tile==='H'&&run.hammer)||(tile==='R'&&run.cleared)||(tile==='P'&&run.prism);
  const word=removed?'':vocabulary[tile]||'';
  if(hoverLabel.textContent!==word)hoverLabel.textContent=word;
  hoverLabel.hidden=!word;
@@ -82,7 +82,7 @@ function animate(time){
   if(run.resets===resets&&run.phase!=='failed')view.setMotion(position.x-before.x,position.y-before.y);
   if(run.x!==x||run.y!==y||run.resets!==resets){
    commit(message);
-   if(run.phase==='failed'){discoveryQueue.length=0;focusOn(null);stopVoice();stopWalking();return;}
+   if(['complete','failed'].includes(run.phase)){discoveryQueue.length=0;focusOn(null);stopVoice();stopWalking();return;}
    if(run.resets!==resets){stopWalking();discover();return;}
    discover();
   }else if(message)$('notice').textContent=message;
@@ -169,7 +169,7 @@ function commit(message){
 function operate(id){
  if(keyRoom){
   const message=interact(run,id);
-  if(message!==null){stopWalking();commit(message);if(['complete','failed'].includes(run.phase)){stopVoice();focusOn(null);}}
+  if(message!==null){stopWalking();commit(message);if(id==='K')discover();if(['complete','failed'].includes(run.phase)){stopVoice();focusOn(null);}}
   return;
  }
  discover();
@@ -193,13 +193,14 @@ function focusOn(id){
  mark=id;
  questions.hidden=!id;
  if(!id)return;
- $('questions-title').textContent=keyRoom?(id==='keeper'?'值守室':id==='inner'?'内通道':id==='levers'?'拉杆刻纹':id==='door'?'门边':id==='star'?'墙上的图案':'地下走廊'):discoveries[id][1];
+ $('questions-title').textContent=keyRoom?(id==='coach'?'钥匙委托':id==='keeper'?'值守室':id==='inner'?'内通道':id==='levers'?'拉杆刻纹':id==='door'?'门边':id==='star'?'墙上的图案':'地下走廊'):discoveries[id][1];
  if(keyRoom){
-  document.querySelector('.coach-speaker strong').textContent=({keeper:'值守人 Robin',inner:'教练 Jalor',levers:'机关回声',star:'星纹回声',door:'月亮门',junction:'教练 Jalor'})[id];
-  document.querySelector('.coach-speaker img').hidden=!['junction','inner'].includes(id);
+  document.querySelector('.coach-speaker strong').textContent=({coach:'教练 Jalor',keeper:'值守人 Robin',inner:'教练 Jalor',levers:'机关回声',star:'星纹回声',door:'月亮门',junction:'教练 Jalor'})[id];
+  document.querySelector('.coach-speaker img').hidden=!['junction','inner','coach'].includes(id);
  }
  $('heard').textContent='';$('question-source').textContent='';$('question-input').value='';$('question-text').open=false;
  answer=keyRoom?'key-ask':'ask';
+ if(keyRoom&&id==='coach')answer=run.phase==='return'?'key-return':'key-report';
  if(keyRoom&&id==='keeper')answer=run.clues.includes('keeper-order')?'keeper-order':'keeper-ask';
  if(keyRoom&&id==='levers')answer=run.clues.includes('lever-rule')?'lever-rule':'lever-prompt';
  if(keyRoom&&id==='door'){
@@ -331,6 +332,11 @@ const backpack=createBackpack({
  resume(){bagOpen=false;playDiscovery();},
  stop:stopVoice
 });
+$('equip-hammer').onclick=()=>{
+ if(!keyRoom||run.phase!=='search'||!run.hammer)return;
+ run.hammerEquipped=!run.hammerEquipped;
+ commit(run.hammerEquipped?'锤子已拿在手中。':'锤子已收回工具箱。');
+};
 $('open-backpack').onclick=()=>backpack.open();
 function renderTrail(){
  const map=$('trail'),ctx=map.getContext('2d');
@@ -359,6 +365,12 @@ function render(){
  $('bag').textContent=[run.hammer?'锤子':'',run.prism?'琥珀棱镜':''].filter(Boolean).join('、')||'空';
 
  if(keyRoom){
+  $('toolbox').hidden=run.phase!=='search';
+  if(run.phase!=='search')$('toolbox').open=false;
+  $('held-tool').textContent=run.hammerEquipped?'手持锤子':'空手';
+  $('empty-toolbox').hidden=run.hammer;
+  $('equip-hammer').hidden=!run.hammer;
+  $('equip-hammer').textContent=run.hammerEquipped?'收起锤子':'拿出锤子';
   if(run.phase==='search'){
    if(run.dialStep===3)$('goal').textContent='通道门开了，进去取钥匙。';
    else if(run.clues.includes('keeper-order'))$('goal').textContent='按值守人说的顺序点亮轮盘。已点亮 '+run.dialStep+' / 3。';
@@ -369,7 +381,7 @@ function render(){
    else if(run.starAwake)$('goal').textContent='找到月亮门，开口请它启动拉杆。';
    else $('goal').textContent='找到墙上的星纹，开口问路。';
   }
-  if(run.key)$('goal').textContent='已找到遗失的钥匙。';
+  if(run.key)$('goal').textContent=run.phase==='complete'?'钥匙已带回出发点。':run.phase==='return'?'带着钥匙回到出发时的楼梯。':'向教练 Jalor 汇报你找到了什么。';
   $('bag').textContent=[run.hammer?'锤子':'',run.key?'钥匙':''].filter(Boolean).join('、')||'空';
   const actions=$('room-actions');
   actions.replaceChildren();

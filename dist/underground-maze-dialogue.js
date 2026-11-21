@@ -43,7 +43,7 @@ export function mazeAnswers(mark,run){
 }
 
 export const keyLines = {
- 'key-brief': ['Find the lost key. Look at the shapes on the walls. Ask the star to show you the way.', '找到遗失的钥匙。留意墙上的图案，先向星纹问路。'],
+ 'key-brief': ['Find the lost key and tell your coach. Look at the shapes on the walls. Ask the star to show you the way.', '找到遗失的钥匙并向教练汇报。留意墙上的图案，先向星纹问路。'],
  'keeper-order': ['First, what shines in the sky. Next, what falls from a cloud. Last, what grows on a tree.', '先点在天空中发光的，再点从云里落下的，最后点长在树上的。'],
  'keeper-ask': ['I look after the dial. What would you like to know?', '我看守这个轮盘。你想问什么？'],
  'keeper-find': ['Find the keeper in the north passage.', '去北边的支路找值守人。'],
@@ -56,6 +56,8 @@ export const keyLines = {
  'find-star': ['Ask the star on the wall.', '向墙上的星纹问路。'],
  'star-awake': ['Follow the moon. Ask the moon door to turn on the levers.', '去找月亮。请月亮门启动拉杆。'],
  'levers-ready': ['Take the west passage. Ask about the marks on the levers.', '走西侧通道，问问拉杆上的刻纹。'],
+ 'key-report': ['What did you find?', '你找到了什么？'],
+ 'key-return': ['Go back to where you started.', '回到出发点。'],
  'key-ask': ['What would you like to know?', '你想问什么？'],
  'star-hint': ["That's a star. Look for a moon.", '这是星星。找找月亮。'],
  'moon-route': ['Look for the moon on the wall.', '找找墙上的月亮图案。'],
@@ -69,6 +71,7 @@ export const keyLines = {
  'lever-clarify': ['Are you asking about the door?', '你想问这扇门吗？']
 };
 export function keyScene(run){
+ if(run.mission==='key'&&run.key&&['search','return'].includes(run.phase))return 'coach';
  if(run.phase!=='search')return null;
  if(run.doorOpen&&[[0,0],[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>tileAt(run.x+dx,run.y+dy,run)==='N'))return 'keeper';
  if(run.doorOpen&&run.x>=7)return 'inner';
@@ -93,6 +96,13 @@ export function talkToKeyRoom(run,text,previous){
  const scene=keyScene(run);
  const reply=keyAnswer(scene,text,run,previous);
  const words=text.toLowerCase().replace(/[’']/g,"'").replace(/[^a-z' ]/g,' ').replace(/\s+/g,' ').trim();
+ if(scene==='coach'){
+  if(run.phase==='return')return 'key-return';
+  const report=/^(?:(?:coach|jalor) )?(?:(?:i (?:have|got|found|picked up)|i've (?:got|found|picked up)|i have (?:got|found|picked up)|here(?:'s| is)) (?:a |the |my )?(?:lost )?key|(?:the |a )?key|i (?:found|got) it)$/.test(words);
+  if(!report)return 'key-report';
+  run.phase=tileAt(run.x,run.y,run)==='S'?'complete':'return';
+  return 'key-return';
+ }
  const routeRequest=/^(?:please )?(?:which way(?: should i go)?|where(?: is|'s) the key|where (?:do|should) i go|(?:can you )?(?:show|tell) me the way|key|help)(?: please)?$/.test(words);
  if(scene==='keeper'){
   if(/^(repeat|again|say that again|slower|pardon)$/.test(words)&&run.clues.includes('keeper-order'))return 'keeper-order';

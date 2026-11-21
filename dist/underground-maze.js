@@ -38,7 +38,7 @@ const start = [1, 1];
 export const trailKey=(x,y)=>x+','+y;
 export const tileAt = (x, y, run) => layoutFor(run)[y]?.[x] ?? '#';
 export function newRun(mission) {
- return {...(mission==='key'?{mission,dialStep:0,starAwake:false,leversReady:false,askedAboutSymbol:false,doorOpen:false,key:false}:{}),phase:'brief', x:start[0], y:start[1], hammer:false, cleared:false, powered:true, prism:false, clues:[], seen:[], announced:[], audioVersion:1, trail:[trailKey(...start)], surveyed:[], resets:0};
+ return {...(mission==='key'?{mission,hammerEquipped:false,dialStep:0,starAwake:false,leversReady:false,askedAboutSymbol:false,doorOpen:false,key:false}:{}),phase:'brief', x:start[0], y:start[1], hammer:false, cleared:false, powered:true, prism:false, clues:[], seen:[], announced:[], audioVersion:1, trail:[trailKey(...start)], surveyed:[], resets:0};
 }
 export function restoreRun(raw, mission=raw?.mission) {
  const run = newRun(mission);
@@ -49,8 +49,8 @@ export function restoreRun(raw, mission=raw?.mission) {
      || tileAt(raw.x, raw.y,run)==='#' || (mission!=='key'&&(tileAt(raw.x,raw.y,run)==='D')!==(raw.phase==='failed'))) return run;
  for (const key of ['hammer','cleared','powered','prism']) if (typeof raw[key] !== 'boolean') return run;
  if(mission==='key'){
-  if(raw.mission!=='key'||!['search','failed','complete'].includes(raw.phase)||typeof raw.doorOpen!=='boolean'||
-     (raw.phase==='failed'&&raw.doorOpen)||raw.key!==(raw.phase==='complete')||(!raw.doorOpen&&(raw.key||raw.x>=6&&raw.y===5)))return run;
+  if(raw.mission!=='key'||!['search','return','failed','complete'].includes(raw.phase)||typeof raw.doorOpen!=='boolean'||
+     (raw.phase==='failed'&&raw.doorOpen)||(typeof raw.key!=='boolean'||(raw.phase==='failed'&&raw.key)||(['return','complete'].includes(raw.phase)&&!raw.key))||(!raw.doorOpen&&(raw.key||raw.x>=6&&raw.y===5)))return run;
  }else if ((raw.phase!=='failed'&&(raw.phase !== 'search') !== raw.prism) || (raw.prism && (raw.powered || !raw.cleared)) || (raw.cleared && !raw.hammer)
      || (tileAt(raw.x, raw.y,run)==='R' && !raw.cleared) || (tileAt(raw.x, raw.y,run)==='G' && raw.powered)) return run;
  const coordinates=(data,allowWalls)=>Array.isArray(data)?data.filter(key=>{
@@ -67,7 +67,7 @@ export function restoreRun(raw, mission=raw?.mission) {
    for(const cell of surveyTiles({...run,x,y}))surveyed.add(trailKey(cell.x,cell.y));
   }
  }
- return {...run, ...(mission==='key'?{dialStep:raw.key?3:raw.cleared&&Array.isArray(raw.clues)&&raw.clues.includes('keeper-order')&&Number.isInteger(raw.dialStep)&&raw.dialStep>=0&&raw.dialStep<=3?raw.dialStep:0,starAwake:raw.doorOpen||raw.starAwake===true,leversReady:raw.doorOpen||(raw.starAwake===true&&raw.leversReady===true),askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
+ return {...run, ...(mission==='key'?{hammerEquipped:raw.hammer&&raw.hammerEquipped===true,dialStep:raw.key?3:raw.cleared&&Array.isArray(raw.clues)&&raw.clues.includes('keeper-order')&&Number.isInteger(raw.dialStep)&&raw.dialStep>=0&&raw.dialStep<=3?raw.dialStep:0,starAwake:raw.doorOpen||raw.starAwake===true,leversReady:raw.doorOpen||(raw.starAwake===true&&raw.leversReady===true),askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
   clues:Array.isArray(raw.clues)?[...new Set(raw.clues.filter(key=>(mission==='key'?['moon-route','star-awake','levers-ready','lever-rule','keeper-order'].includes(key):Object.hasOwn(words,key))))]:[],
   seen:Array.isArray(raw.seen)?[...new Set(raw.seen.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
   announced:raw.audioVersion===1&&Array.isArray(raw.announced)?[...new Set(raw.announced.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
@@ -102,6 +102,9 @@ export function move(run, dx, dy) {
   return '踏板触发了机关。你回到了楼梯，已找到的物品和线索还在。';
  }
  run.x=x;run.y=y;
+ if(tile==='S'&&run.mission==='key'&&run.phase==='return'){
+  run.phase='complete';return '你带着钥匙回到了出发点。';
+ }
  return '';
 }
 export function lanternTiles(run){
@@ -140,13 +143,13 @@ export function nearby(run) {
   const x=run.x+dx,y=run.y+dy,key=tileAt(x,y,run);
   if(!visible(run,x,y))continue;
   const label=words[key]?.[0];
-  if(keyActions[key]&&(!run.doorOpen||!['B','r','M'].includes(key))&&(key!=='K'||run.doorOpen&&run.cleared&&run.dialStep===3))actions.push({id:key,label:keyActions[key]});
+  if(keyActions[key]&&(!run.doorOpen||!['B','r','M'].includes(key))&&(key!=='K'||!run.key&&run.doorOpen&&run.cleared&&run.dialStep===3))actions.push({id:key,label:keyActions[key]});
   else if(key==='W'&&run.dialStep<3){
    for(const mark of ['leaf','sun','drop'])actions.push({id:mark,label:'点亮 '+dialMarks[mark]});
   }
   else if(label)actions.push({id:key,label:'查看'+({a:'三角形',b:'菱形',c:'螺旋'})[key]+'刻纹'});
   else if(key==='H'&&!run.hammer)actions.push({id:key,label:'拿起锤子'});
-  else if(key==='R'&&!run.cleared)actions.push({id:key,label:run.hammer?'用锤子破开石障':'查看石障'});
+  else if(key==='R'&&!run.cleared)actions.push({id:key,label:run.hammer&&(run.mission!=='key'||run.hammerEquipped)?'用锤子破开石障':'查看石障'});
   else if(key==='V'&&run.powered)actions.push({id:key,label:'转动阀门'});
   else if(key==='P'&&!run.prism&&run.cleared&&!run.powered)actions.push({id:key,label:'拿起琥珀棱镜'});
   else if(key==='S'&&run.prism)actions.push({id:key,label:'从楼梯带出棱镜'});
@@ -173,10 +176,11 @@ export function interact(run,id) {
  case 'M':return '门纹丝不动。';
  case 'r':run.phase='failed';return '机关落锁，月亮门封闭了。';
  case 'B':run.doorOpen=true;return '门闩滑开了。';
- case 'K':run.key=true;run.phase='complete';return '你拿到了钥匙。';
- case 'H':run.hammer=true;return '锤子已放进背包。';
+ case 'K':run.key=true;return '钥匙已放进背包。告诉教练你的发现。';
+ case 'H':run.hammer=true;return run.mission==='key'?'锤子已收入工具箱。':'锤子已放进背包。';
  case 'R':
   if(!run.hammer)return '石块上有裂缝。附近也许有能敲开它的工具。';
+  if(run.mission==='key'&&!run.hammerEquipped)return '石障挡住了路。打开工具箱，选择要拿在手里的工具。';
   run.cleared=true;return '石障碎开了，通道打开。';
  case 'V':run.powered=false;return '阀门关闭了。通电门已经可以穿过。';
  case 'P':run.prism=true;run.phase='return';return '已找到琥珀棱镜。沿走过的路回楼梯。';

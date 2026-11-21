@@ -198,7 +198,11 @@ test('moon door needs three local exchanges and survives a refresh',async()=>{
  assert.match(interact(run,'R'),/工具/);assert.equal(run.cleared,false);
  step(-1,0,1);step(0,1,2);interact(run,'H');
  run=restoreRun(run,'key');assert.equal(run.hammer,true);
- step(0,-1,2);step(1,0,1);interact(run,'R');step(1,0,4);
+ step(0,-1,2);step(1,0,1);
+ assert.equal(restoreRun({...run,hammerEquipped:undefined},'key').hammerEquipped,false);
+ assert.match(interact(run,'R'),/工具箱/);assert.equal(run.cleared,false);
+ run.hammerEquipped=true;run=restoreRun(run,'key');assert.equal(run.hammerEquipped,true);
+ interact(run,'R');step(1,0,4);
  assert.equal(talkToKeyRoom(run,'Order?'),'keeper-find');
  assert.match(interact(run,'sun'),/值守人/);assert.equal(run.dialStep,0);
  step(-1,0,1);step(0,-1,2);
@@ -209,6 +213,12 @@ test('moon door needs three local exchanges and survives a refresh',async()=>{
  interact(run,'sun');run=restoreRun(run,'key');assert.equal(run.dialStep,1);
  interact(run,'drop');interact(run,'leaf');step(1,0,3);
  assert.match(interact(run,'K'),/钥匙/);
+ run=restoreRun(run,'key');assert.equal(run.phase,'search');assert.equal(keyScene(run),'coach');
+ for(const text of ["I don't have the key.",'Where is the key?','I found a hammer.'])assert.equal(talkToKeyRoom(run,text),'key-report');
+ assert.equal(talkToKeyRoom(run,'I have the key.'),'key-return');
+ run=restoreRun(run,'key');assert.equal(run.phase,'return');
+ step(-1,0,12);step(0,-1,4);step(-1,0,2);
+ assert.equal(run.phase,'return');assert.match(move(run,-1,0),/出发点/);
  assert.equal(restoreRun(run,'key').phase,'complete');
  assert.equal(newRun('key').doorOpen,false);
 });
