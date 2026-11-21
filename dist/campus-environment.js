@@ -1,13 +1,13 @@
 import {workshopBench,workshopParts} from './campus-workshop.js?v=workshop-20261118';
-import {levelStarts} from './campus-level-catalog.js?v=workshop-20261118';
+import {levelStarts} from './campus-level-catalog.js?v=difficulty-1';
 import {campusWorld} from './campus-world.js?v=workshop-20261118';
-import {missions} from './campus-missions.js?v=invite-finish-1';
+import {missions} from './campus-missions.js?v=difficulty-1';
 import {createCampusProps} from './campus-props.js?v=school-1';
 import {createStudent} from './campus-student.js?v=pace-2';
 import {findCampusPath} from './campus-navigation.js?v=world-1';
 import {createCampusTreeFactory} from './campus-landscape.js';
 import {environmentLayout} from './campus-environment-layout.js?v=workshop-20261118';
-import {createEnvironmentGame} from './campus-environment-game.js?v=invite-finish-1';
+import {createEnvironmentGame} from './campus-environment-game.js?v=difficulty-1';
 import { createCampusCharacters } from './campus-characters.js?v=workshop-20261118';
 import * as T from './vendor/three/three.module.js';
 const scene=new T.Scene();scene.background=new T.Color('#b8d1df');scene.fog=new T.FogExp2('#bfd3dd',.0075);

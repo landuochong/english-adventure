@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>地下迷宫 · Campus Quest</title>
+<link rel="stylesheet" href="campus-environment-game.css">
+<link rel="stylesheet" href="underground-maze.css?v=hover-1">
+</head>
+<body>
+<main>
+<header class="maze-header">
+<a class="maze-brand" href="./"><span aria-hidden="true">✦</span><span>Campus Quest<small>返回校园地图</small></span></a>
+<div><h1>地下迷宫</h1><p>琥珀棱镜</p></div>
+<button id="open-backpack" type="button">任务背包</button>
+</header>
+<div class="layout">
+<section class="field" aria-label="迷宫探索区">
+<canvas id="maze" width="1056" height="592" tabindex="0" aria-label="斜俯视迷宫。提灯照亮玩家附近的石墙和通道。"></canvas>
+<div id="maze-word" role="status" lang="en" hidden></div>
+<figure id="trail-panel" hidden>
+<figcaption id="trail-title">已探索区域</figcaption>
+<canvas id="trail" width="228" height="132" aria-labelledby="trail-title"></canvas>
+</figure>
+<div id="intro" class="intro">
+<p>校园地下发现了一座封闭的迷宫。带上提灯，把琥珀棱镜带回楼梯。</p>
+<button id="enter-maze" type="button">进入迷宫</button>
+<p>按方向键也可以直接出发。</p>
+</div>
+<p id="controls" hidden>按住方向键 / WASD，或点击已亮起的通道移动 · 点击物品操作 · 空格提问</p>
+</section>
+<aside>
+<h2>当前委托</h2><p id="goal">在楼梯旁领取委托。</p>
+<button id="listen" hidden>重听英语委托</button>
+<details id="brief-text" hidden><summary>查看委托文字</summary><p id="brief-en" lang="en"></p><p id="brief-zh"></p></details>
+<p id="voice-status" role="status"></p>
+<button id="retry-voice" type="button" hidden>重新播放英语</button>
+<audio id="voice-audio" preload="none"></audio>
+<p id="notice" role="status"></p>
+<div id="ask-slot"></div>
+
+<p id="bag" hidden></p>
+</aside>
+</div>
+<section id="questions" aria-labelledby="questions-title" hidden>
+<div class="coach-speaker"><img src="assets/maze-characters/jalor.png" alt=""><div><strong>Jalor</strong><h2 id="questions-title"></h2></div></div>
+<p id="question-hint" tabindex="0" role="button">按空格或点这里开口提问</p>
+<p id="record-status" role="status"></p>
+<small id="question-source"></small>
+<p id="heard" lang="en"></p>
+<details id="question-text"><summary>文字辅助</summary><p id="answer-en" lang="en"></p><p id="answer-zh"></p>
+<form id="question-form"><label for="question-input">输入英语问题后按回车</label>
+<input id="question-input" lang="en" maxlength="300" placeholder="What is this for?" required>
+</form></details>
+</section>
+<dialog id="failure"><h2>本轮探险结束</h2><p>你踩中了危险踏板。</p><a href="./">返回校园地图</a><button id="retry">重新开始</button></dialog>
+<dialog id="finish"><h2>委托完成</h2><p>你把琥珀棱镜带回了地面。</p><a href="./">返回校园地图</a><button id="replay">再次探索</button></dialog>
+</main>
+<script type="module" src="underground-maze-page.js?v=hover-1"></script>
+</body>
+</html>

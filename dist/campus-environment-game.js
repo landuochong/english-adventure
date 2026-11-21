@@ -1,10 +1,10 @@
 import {workshopBench,workshopParts} from './campus-workshop.js?v=workshop-20261118';
-import {createMissionSession} from './mission-session.js?v=invite-finish-1';
+import {createMissionSession} from './mission-session.js?v=difficulty-1';
 import {createBackpack} from './campus-backpack.js?v=bag-clues-20261118';
-import {levels,readProgress,finishLevel,nextLevel} from './campus-level-catalog.js?v=workshop-20261118';
+import {levels,readProgress,finishLevel,nextLevel} from './campus-level-catalog.js?v=difficulty-1';
 import {createExhibit} from './campus-exhibit.js?v=click-pickup-1';
 import * as T from './vendor/three/three.module.js';
-import {createMission,missions} from './campus-missions.js?v=invite-finish-1';
+import {createMission,missions} from './campus-missions.js?v=difficulty-1';
 import {environmentLayout as layout} from './campus-environment-layout.js?v=workshop-20261118';
 import {createLocalVoiceTurn} from './local-voice-turn.js?v=campus-silence-3';
 import {createVoiceTurn} from './voice-turn.js';
@@ -12,16 +12,22 @@ import {createBrowserVAD} from './vad-loader.js';
 import {englishVoices,chooseVoice,voiceKey,loadVoices} from './speech.js';
 export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clearLine=()=>true){
  const encountered=new Set(),mapNodes=new Map();
- const params=new URLSearchParams(location.search);let exploring=params.get('explore')==='1';
- let progress;try{progress=readProgress(localStorage);}catch{progress={completed:[]};}
+ const params=new URLSearchParams(location.search);const difficulty=params.get('difficulty')==='2'?2:1;let exploring=params.get('explore')==='1';
+ let progress;try{progress=readProgress(localStorage,difficulty);}catch{progress={completed:[]};}
  let sessionNotice='';
- const session=(id,fresh=false)=>{let storage;try{storage=localStorage;}catch{}return createMissionSession(id,storage,message=>{sessionNotice=message;},fresh);};
+ const session=(id,fresh=false)=>{let storage;try{storage=localStorage;}catch{}return createMissionSession(id,storage,message=>{sessionNotice=message;},fresh,difficulty);};
  let controller=session(missions.some(m=>m.id===params.get('mission'))?params.get('mission'):'science'),s=controller.state;const campusMarker=(_,id)=>exploring?(missions.some(m=>m.giver===id)?'ask':'idle'):controller.marker(id);const root=document.createElement('section');root.id='quest-ui';
  root.innerHTML=`<p id="quest-save-status" role="status"></p><div id="quest-keyword" role="status" lang="en"></div><div id="quest-labels"></div><button type="button" id="quest-pickup-label" hidden></button><div id="quest-workshop-parts"></div><section id="quest-workbench" hidden aria-label="组装工作台"><b>组装工作台</b><p id="quest-workbench-state"></p><div id="quest-workbench-parts"></div><button id="quest-test-lamp" hidden>开灯测试</button></section><div id="quest-controls" hidden><button id="quest-briefing" hidden>重听委托</button><button id="quest-bag">任务背包</button><button id="quest-keyword-hint">一点提示</button><button id="quest-coach">问教练</button><button id="quest-settings">音色 / 语速</button><button id="quest-action" hidden></button><span id="quest-status" role="status"></span></div>
  <aside id="quest-note" hidden><button id="quest-close" aria-label="关闭对话">×</button><b id="quest-person"></b><div><button id="quest-replay">🔊 再听一次</button><button id="quest-slow">慢速听</button><button id="quest-talk">🎙 继续交流</button><button id="quest-chat" hidden>闲聊</button><button id="quest-new-task" hidden>查看新委托</button><button id="quest-cancel" hidden>取消录音</button></div><p id="quest-voice-status" role="status"></p><details id="quest-help"><summary>文字辅助</summary><p id="quest-en" lang="en"></p><details><summary>中文提示</summary><p id="quest-zh"></p></details><p id="quest-raw"></p><form id="quest-form"><input id="quest-input" aria-label="英语回答" maxlength="300" autocomplete="off"><button>发送</button></form><audio id="quest-recording" controls hidden></audio></details></aside>
  <dialog id="quest-ready"><a class="ready-back" href="./">返回关卡地图</a><h2 id="quest-ready-title">出发前，听一听</h2><label id="quest-mission-label" hidden>校园故事<select id="quest-mission"></select></label><p id="quest-ready-caption">先熟悉这些表达，进入场景后认真听取委托。</p><details id="quest-audio-settings"><summary>声音设置</summary><label>英语音色<select id="quest-voice"></select></label><label>语速<select id="quest-rate"><option value="0.65">0.65×</option><option value="0.75">0.75×</option><option value="0.85">0.85×</option><option value="1">1×</option></select></label><button id="quest-sample">试听</button></details><section id="quest-resume" hidden><p>继续上次任务：已保留你的进度。</p><button id="quest-resume-listen">🔊 重听原始委托</button><details><summary>查看委托文字</summary><p id="quest-resume-text"></p></details></section><div id="quest-words"></div><button id="quest-begin">准备好了</button> <button id="quest-start-fresh" hidden>从头挑战</button><p id="quest-asr-status" role="status"></p><p id="quest-ready-status" role="status"></p></dialog>
  <dialog id="quest-goodbye" aria-label="Tim"><b>Tim</b><p id="quest-goodbye-line" lang="en"></p></dialog><dialog id="quest-win"><div class="quest-stars">★★★</div><h2>任务完成！</h2><p id="quest-summary"></p><button id="quest-view">回到校园看看</button><button id="quest-next">下一关</button><button id="quest-thanks">🔊 再听感谢</button><button id="quest-again">再玩一次</button><a href="./">返回关卡地图</a></dialog>`;
  document.body.append(root);const $=id=>document.getElementById('quest-'+id);
+ function updateMapLinks(){
+  if(difficulty!==2)return;
+  const mapURL='./?level='+controller.config.id+'&difficulty=2';
+  for(const link of document.querySelectorAll('#hud a, .ready-back, #quest-win a'))link.href=mapURL;
+ }
+ updateMapLinks();
  const localASR=location.port==='4174';
  const asrStatus=$('asr-status');
  if(localASR){
@@ -97,57 +103,50 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
    $('raw').textContent='你说：'+text;
    return;
   }
-  const stage=s.stage+' / '+(['ask Sue about her favourite sport','invite Sue to swim on Sunday','report Sue’s answer to Tim'][controller.clueStep]||controller.clueStep),previous=last?.en||'';
-  const scripted=act(id,'say',text);
+  const previous=last?.en||'';
   $('raw').textContent='你说：'+text;
-  if(!scripted){$('voice-status').textContent='请先走近当前任务人物。';return;}
-  if(controller.config.id==='hobbies'&&s.complete){
-   $('goodbye-line').textContent='…';$('goodbye').showModal();
+  function present(reply,source=''){
+   if(!reply){$('voice-status').textContent='请先走近当前任务人物。';return;}
+   if(controller.config.id==='hobbies'&&s.complete){$('goodbye-line').textContent='…';$('goodbye').showModal();}
+   show(reply,id);$('raw').textContent='你说：'+text;
+   if(source)$('voice-status').textContent=source;
   }
-  let reply=scripted,source='';
-  if(localASR&&controller.config.id==='hobbies'&&['sue','tim'].includes(id)){
-   const request=new AbortController();pendingReply=request;
-   const timer=setTimeout(()=>request.abort(),4500);
-   let spoken=null;
-   ++token;speechSynthesis.cancel();$('talk').disabled=true;
-   $('voice-status').textContent='本地模型正在回答…';
-   try{
-    const response=await fetch('/api/npc-reply',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/x-ndjson'},
-     body:JSON.stringify({npc:id,stage,briefing:briefing?.en||'',previous,student:text,required:scripted.en}),signal:request.signal});
-    if(!response.ok)throw Error('fallback');
-    if(response.headers.get('Content-Type')?.includes('application/x-ndjson')){
-     const reader=response.body.pipeThrough(new TextDecoderStream()).getReader();
-     let buffer='';
-     while(true){
-      const {done,value}=await reader.read();if(done)break;
-      const lines=(buffer+value).split('\n');buffer=lines.pop();
-      for(const line of lines){
-       const event=JSON.parse(line);
-       if(!event.en)continue;
-       if(!spoken){
-        if(pendingReply!==request)return;
-        pendingReply=null;
-        spoken={en:event.en,zh:event.zh||scripted.zh};
-        show(spoken,id);
-        $('voice-status').textContent='本地模型 · '+event.model;
-       }else if(last===spoken&&event.zh){
-        spoken.zh=event.zh;$('zh').textContent=event.zh;
-       }
-      }
+  if(!localASR||controller.config.id!=='hobbies'||s.stage==='brief'||!['sue','tim'].includes(id)){
+   present(act(id,'say',text));return;
+  }
+  const request=new AbortController();pendingReply=request;
+  const timer=setTimeout(()=>request.abort(),4500);
+  ++token;speechSynthesis.cancel();$('talk').disabled=true;
+  $('voice-status').textContent='本地模型正在回答…';
+  let spoken=null;
+  try{
+   const response=await fetch('/api/invitation-turn',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/x-ndjson'},
+    body:JSON.stringify({npc:id,student:text,previous,facts:{...s.facts,difficulty}}),signal:request.signal});
+   if(!response.ok)throw Error('fallback');
+   const reader=response.body.pipeThrough(new TextDecoderStream()).getReader();let buffer='';
+   while(true){
+    const {done,value}=await reader.read();if(done)break;
+    const lines=(buffer+value).split('\n');buffer=lines.pop();
+    for(const line of lines){
+     const event=JSON.parse(line);
+     if(!spoken){
+      if(pendingReply!==request)return;
+      if(!Array.isArray(event.topics)||!event.en)throw Error('Incomplete interpretation');
+      pendingReply=null;
+      spoken=act(id,'invitation-turn',JSON.stringify({...event,student:text,zh:event.zh||''}));
+      present(spoken,spoken?.model?'本地模型 · '+spoken.model:'任务规则 · 已核对人物信息');
+      if(!spoken)return;
+     }else if(last===spoken&&spoken.model&&event.zh){
+      spoken.zh=event.zh;$('zh').textContent=event.zh;
+      controller.translateLastTurn?.(id,spoken);
      }
-     if(!spoken)throw Error('empty');
-     return;
     }
-    const generated=await response.json();
-    if(!generated.en||!generated.zh)throw Error('empty');
-    reply=generated;source='本地模型 · '+generated.model;
-   }catch{source='任务台词 · 本轮使用预设回应';}
-   finally{clearTimeout(timer);}
+   }
+   if(!spoken)throw Error('empty');
+  }catch{
    if(pendingReply!==request)return;
-   pendingReply=null;
-  }
-  show(reply,id);$('raw').textContent='你说：'+text;
-  if(source)$('voice-status').textContent=source;
+   pendingReply=null;present(act(id,'say',text),'任务台词 · 本轮使用预设回应');
+  }finally{clearTimeout(timer);}
  }
  async function talk(){if(turn){turn.stop();return;}if(pendingReply||$('talk').disabled)return;if(!selected||selected==='nova'||(conversationMode!=='chat'&&(!controller.config.people.includes(selected)||exploring)))return;const id=selected;if(Math.hypot(actor.position.x-layout.people[id].x,actor.position.z-layout.people[id].z)>layout.interactionRadius)return;
  ++token;speechSynthesis.cancel();const options={createVAD:createBrowserVAD,silenceMs:3000,scene:controller.config.asrScene,onUpdate:r=>{voiceState('listening',id);$('voice-status').textContent=({preparing:'准备麦克风…',listening:'请说英语',waiting:'正在听，停顿 3 秒后结束',finalizing:'正在识别…'})[r.phase]||'';},onComplete:r=>{voiceState();turn=null;$('cancel').hidden=true;$('talk').disabled=false;$('talk').textContent=talkLabel();if(selected===id){if(r.needsReview){$('input').value=r.text;$('help').open=true;$('voice-status').textContent='识别尚未定稿，请核对后发送。';}else submit(r.text);}if(r.audioWav){if(audioUrl)URL.revokeObjectURL(audioUrl);audioUrl=URL.createObjectURL(new Blob([r.audioWav],{type:'audio/wav'}));$('recording').src=audioUrl;$('recording').hidden=false;}},onError:code=>{voiceState();turn=null;$('cancel').hidden=true;$('talk').textContent='🎙 再试一次';$('voice-status').textContent=({'not-allowed':'麦克风权限未开启，请允许本站使用麦克风。','no-speech':'没有检测到语音，请靠近麦克风再试。','local-asr':'本机识别请求失败，请检查 Whisper 服务后重试。','vad-stalled':'录音检测中断，请重新开始。','network':'浏览器识别网络失败，可切换到本机 Whisper 试玩。'})[code]||'录音或识别未完成，可以重试，也可展开文字辅助。';}};
@@ -167,7 +166,9 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
  $('sample').onclick=()=>{remember();void speak('Hello! I am Jalor. Let us explore the campus together.');};
  function renderWords(){ $('words').replaceChildren();for(const word of [...controller.config.words,...controller.config.phrases]){const b=document.createElement('button');b.textContent='🔊 '+word;b.onclick=()=>speak(word);$('words').append(b);}}
  for(const mission of missions)$('mission').add(new Option(mission.title,mission.id));
- function chooseMission(id,fresh=false){close();briefing=null;exploring=false;if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}$('recording').removeAttribute('src');$('recording').hidden=true;controller=session(id,fresh);s=controller.state;briefing=controller.briefing;renderWords();$('mission').value=id;}
+ function chooseMission(id,fresh=false){close();briefing=null;exploring=false;if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}$('recording').removeAttribute('src');$('recording').hidden=true;controller=session(id,fresh);s=controller.state;briefing=controller.briefing;
+  if(difficulty===2){const url=new URL(location.href);url.searchParams.set('mission',id);url.searchParams.delete('explore');history.replaceState(null,'',url);updateMapLinks();}
+  renderWords();$('mission').value=id;}
  $('mission').onchange=()=>chooseMission($('mission').value);renderWords();
  $('resume-listen').onclick=()=>{if(briefing)void speak(briefing.en);};
  $('start-fresh').onclick=()=>{
@@ -183,7 +184,7 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
  $('resume-text').textContent=briefing?.en||'';
  $('begin').textContent=begun?'返回任务':exploring?'开始探索':canResume?'继续上次任务':controller.config.id==='picnic'?'进入校园，去找 Lily':'准备好了';
  document.querySelector('#hud h1').textContent=exploring?'未来校园 · 自由探索':controller.config.title;
-  $('mission-label').hidden=true;$('ready-title').textContent=begun?'声音设置':exploring?'和 Jalor 出发':levels.find(l=>l.id===controller.config.id).title;$('ready-caption').textContent=canResume?'有一局做了一半，你可以接着玩。':!exploring&&controller.config.id==='picnic'?'尚未领取委托。进入校园后，去咖啡馆露台找 Lily。':'先熟悉这些表达，进入场景后认真听取委托。';$('ready-caption').hidden=begun;$('words').hidden=begun||exploring;$('audio-settings').open=begun||!voice;cancel();++token;speechSynthesis.cancel();setPlaying(false);$('ready').showModal();}
+  $('mission-label').hidden=true;$('ready-title').textContent=begun?'声音设置':exploring?'和 Jalor 出发':(difficulty===2?'Level 2 · '+controller.config.title:levels.find(l=>l.id===controller.config.id).title);$('ready-caption').textContent=canResume?'有一局做了一半，你可以接着玩。':!exploring&&controller.config.id==='picnic'?'尚未领取委托。进入校园后，去咖啡馆露台找 Lily。':'先熟悉这些表达，进入场景后认真听取委托。';$('ready-caption').hidden=begun;$('words').hidden=begun||exploring;$('audio-settings').open=begun||!voice;cancel();++token;speechSynthesis.cancel();setPlaying(false);$('ready').showModal();}
  $('settings').onclick=settings;$('ready').addEventListener('cancel',e=>e.preventDefault());
  $('begin').onclick=()=>{remember();if(!voice){$('ready-status').textContent='英语音色仍在加载，请稍后选择。';voices();return;}$('ready').close();begun=true;setPlaying(true);$('controls').hidden=false;if(controller.restored&&briefing){show(briefing,controller.config.giver);}else hint();};
  function interact(id){
@@ -216,6 +217,7 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
     if(review){$('raw').textContent='';show(review,id,'review');return;}
    }
    if(id===controller.config.giver&&s.stage==='brief'){show(act(id,'mission'),id);return;}
+   if(mode==='ask'&&s.advancedStep!=null){show(act(id,'greet'),id);return;}
    if(mode==='ask'&&id==='waiter'&&['restaurant','picnic'].includes(controller.config.id)){
      $('raw').textContent='';
      show(s.records[id]||{en:'Hi! Welcome to the cafe. What can I get for you?',zh:'你好！欢迎来到咖啡馆。你想点些什么？'},id);
@@ -328,7 +330,7 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
  function showCompletion(){
   close();setPlaying(false);$('summary').textContent=controller.config.summary;
   let saved=false;
-  try{saved=finishLevel(localStorage,controller.config.id);progress=readProgress(localStorage);}catch{}
+  try{saved=finishLevel(localStorage,controller.config.id,difficulty);progress=readProgress(localStorage,difficulty);}catch{}
   if(!progress.completed.includes(controller.config.id))progress.completed.push(controller.config.id);
   if(!saved)$('summary').textContent+=' 本次完成记录未能保存。';
   $('next').hidden=!nextLevel(controller.config.id,progress);$('win').showModal();

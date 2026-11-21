@@ -1,3 +1,5 @@
+import {createInvitationMission} from './campus-invitation.js';
+import {withAdvancedStory} from './campus-level-two.js';
 import {createWorkshopMission,workshopMission} from './campus-workshop.js?v=workshop-20261118';
 import {createWelcomeMission,welcomeThanks} from './campus-welcome.js?v=3';
 import {dailyMissions,createDailyMission} from './campus-daily-missions.js?v=invite-finish-1';
@@ -42,7 +44,8 @@ function createMissionCore(id){
 
 
 // Optional conversation never grants clues or changes task state.
-export function createMission(id){
+export function createMission(id,difficulty=1){
+ if(id==='hobbies')return createInvitationMission(missions.find(m=>m.id===id),environmentLayout,difficulty);
  const controller=createMissionCore(id),taskAct=controller.act;
  const pair=(en,zh)=>({en,zh});
  controller.act=(npc,type,text='',pos,clearLine=()=>true)=>{
@@ -63,5 +66,5 @@ export function createMission(id){
   if(relevant&&s.records[npc])return s.records[npc];
   return pair('I can discuss what we have talked about for this task. What would you like to check?','我可以和你讨论这次任务中我们已经谈过的信息，你想确认什么？');
  };
- return controller;
+ return difficulty===2?withAdvancedStory(controller,environmentLayout):controller;
 }

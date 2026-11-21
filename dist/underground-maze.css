@@ -1,0 +1,43 @@
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+:root{--paper:#e8eeea;--ink:#203f49;--teal:#254c59;--night:#172e3c;--amber:#e9b765;--edge:#b7c8c6}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 "PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+main{max-width:1720px;margin:auto;padding:clamp(12px,2.2vw,36px)}
+.maze-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;border-bottom:1px solid var(--edge);padding-bottom:10px;margin-bottom:12px}
+.maze-brand{display:inline-flex;align-items:center;gap:10px;width:max-content;text-decoration:none;font-weight:750;color:inherit}
+.maze-brand>span:first-child{display:grid;place-items:center;background:var(--teal);color:#fff5d7;border-radius:7px;width:38px;height:38px}
+.maze-brand small{display:block;font-size:.75rem;font-weight:500;color:#4e6d72}
+h1{font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;margin:0;font-weight:750}
+.maze-header p{margin:4px 0 0;color:#48646d}
+h2{font-size:1rem;margin:0 0 6px}p{margin:0 0 10px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,234px);gap:14px}
+.field{position:relative;align-self:start;background:#0a1017;border:1px solid #536a72;border-radius:10px;overflow:hidden}
+#maze{display:block;width:100%;height:auto;aspect-ratio:66/37;touch-action:manipulation}
+#maze:focus-visible{outline:2px solid var(--amber);outline-offset:-3px}
+aside{border-left:1px solid var(--edge);padding-left:12px;min-width:0}
+button{font:inherit;background:#dce9e7;color:#203f49;border:1px solid #a4babd;border-radius:6px;padding:7px 12px;cursor:pointer;touch-action:manipulation}
+button:hover{border-color:#447380}button:focus-visible,a:focus-visible,#question-hint:focus-visible{outline:3px solid #b18039;outline-offset:3px}
+#open-backpack{background:var(--teal);color:#ffdfad;border-color:#254c59}
+#notice,#voice-status{font-size:.85rem;color:#375d60}p:empty{display:none}
+.intro{position:absolute;inset:0;display:grid;align-content:center;justify-items:start;gap:8px;padding:clamp(18px,6vw,65px);background:linear-gradient(90deg,#102d3ef5,#0d1c2533);color:#edf5f5;pointer-events:none}
+#enter-maze{pointer-events:auto;background:var(--amber);color:var(--night);border-color:var(--amber);font-weight:700}
+.intro p{max-width:21em;font-size:clamp(1rem,2vw,1.35rem)}
+#controls{padding:10px 14px;border-top:1px solid #35515a;margin:0;font-size:.83rem;color:#c3d9db;background:var(--night)}
+dialog{background:#edf3f1;color:var(--ink);border:1px solid #69818b;border-radius:12px;padding:24px;max-width:calc(100% - 24px)}
+dialog::backdrop{background:#102d3e88}dialog a{color:inherit}dialog button{margin-left:10px}
+#questions{margin-top:16px;padding:12px 14px;border:1px solid #71899380;border-top:3px solid var(--amber);border-radius:8px;background:var(--night);color:#edf5f5}
+.coach-speaker{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.coach-speaker img{width:48px;height:48px;object-fit:contain;background:#203b49;border-radius:6px}
+.coach-speaker h2{font-size:.78rem;font-weight:500;color:#c3d5dc;margin:0}
+#questions p,#questions summary{font-size:.86rem}
+#questions summary{cursor:pointer;color:#bed2db}
+#question-hint{cursor:pointer;color:#ffe2ad;text-decoration:underline;text-underline-offset:3px}
+#question-form{display:grid;gap:4px;margin-top:10px}
+#question-form label{font-size:.75rem}
+#question-input{width:100%;font:inherit;padding:6px;color:var(--ink);background:#f0f6f7;border:1px solid #abc1c8;border-radius:5px}
+#trail-panel{position:absolute;top:10px;right:10px;width:clamp(106px,24%,174px);margin:0;padding:5px 7px 7px;background:#10232cf2;color:#ecf5f2;border:1px solid #71899390;border-radius:6px;pointer-events:none}
+#trail-title{font-size:clamp(.64rem,2vw,.78rem);letter-spacing:.04em}
+#trail{display:block;width:100%;height:auto;aspect-ratio:19/11;border-radius:3px}
+@media(max-width:700px){.layout{grid-template-columns:1fr;gap:12px}aside{border-left:0;border-top:1px solid var(--edge);padding:12px 0}.maze-header{grid-template-columns:1fr auto;margin-bottom:12px}.maze-brand{grid-column:1/-1}#open-backpack{font-size:.87rem}}
+
+#maze-word{position:absolute;top:10px;left:10px;max-width:58%;padding:4px 10px;background:#172e3cf5;border:1px solid #e9b76599;border-radius:5px;color:#ffe2ad;font-weight:700;font-size:clamp(.8rem,1.4vw,1rem);pointer-events:none}

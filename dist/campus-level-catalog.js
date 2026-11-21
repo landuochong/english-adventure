@@ -11,8 +11,8 @@ export const levels=[
  {id:'workshop',title:'给阅读角做一盏灯',area:'手工坊',theme:'听懂顺序 · 搜集与组装',hook:'阅读角缺一盏灯。听 Alex 的委托，在手工坊找零件并组装。',minutes:'约 4–6 分钟',x:88,y:23}
 ];
 export const progressKey='campus-quest-levels-v1';
-export function readProgress(storage){try{const raw=JSON.parse(storage.getItem(progressKey)||'{}');return {completed:levels.filter(l=>Array.isArray(raw?.completed)&&raw.completed.includes(l.id)).map(l=>l.id)};}catch{return {completed:[]};}}
-export function finishLevel(storage,id){const p=readProgress(storage);if(!levels.some(l=>l.id===id))return false;if(!p.completed.includes(id))p.completed.push(id);try{storage.setItem(progressKey,JSON.stringify(p));return true;}catch{return false;}}
+export function readProgress(storage,difficulty=1){try{const raw=JSON.parse(storage.getItem(difficulty===2?progressKey+'-l2':progressKey)||'{}');return {completed:levels.filter(l=>Array.isArray(raw?.completed)&&raw.completed.includes(l.id)).map(l=>l.id)};}catch{return {completed:[]};}}
+export function finishLevel(storage,id,difficulty=1){const p=readProgress(storage,difficulty);if(!levels.some(l=>l.id===id))return false;if(!p.completed.includes(id))p.completed.push(id);try{storage.setItem(difficulty===2?progressKey+'-l2':progressKey,JSON.stringify(p));return true;}catch{return false;}}
 export function nextLevel(id,progress){const i=levels.findIndex(l=>l.id===id);return levels.slice(i+1).find(l=>!progress.completed.includes(l.id))||levels.find(l=>!progress.completed.includes(l.id))||null;}
 
 export const levelStarts={workshop:{x:64,z:22},welcome:{x:1,z:4},science:{x:1,z:4},school:{x:42,z:25},restaurant:{x:0,z:39},picnic:{x:0,z:39},shopping:{x:25,z:38},directions:{x:54,z:31},weather:{x:-17,z:40},hobbies:{x:-19,z:18}};

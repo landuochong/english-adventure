@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 from whisper_asr import health, transcribe
 from course_extract import extract
 from story_generate import generate
-from npc_reply import generate_reply
+from npc_reply import generate_reply, invitation_reply, maze_reply
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT / 'dist'), **kwargs)
@@ -28,7 +28,19 @@ class Handler(SimpleHTTPRequestHandler):
         else: super().do_GET()
     def do_POST(self):
         if not self.valid_origin(): self.reply(403,{'error':'Origin rejected'});return
-        if self.path == '/api/npc-reply':
+        if self.path == '/api/maze-reply':
+            try:
+                size = int(self.headers.get('Content-Length', '0'))
+                if not 0 < size <= 8192:
+                    raise ValueError('Invalid request size')
+                self.connection.settimeout(5)
+                answer = maze_reply(json.loads(self.rfile.read(size)))
+            except (ValueError, KeyError, TypeError, OSError):
+                self.reply(503, {'error':'Use scripted reply'})
+            else:
+                self.reply(200, answer)
+            return
+        if self.path in ('/api/npc-reply','/api/invitation-turn'):
             stream = self.headers.get('Accept') == 'application/x-ndjson'
             started = False
             def send_line(event):
@@ -47,7 +59,8 @@ class Handler(SimpleHTTPRequestHandler):
                     self.reply(413, {'error':'Invalid turn size'})
                     return
                 self.connection.settimeout(8)
-                result = generate_reply(json.loads(self.rfile.read(size)), send_line if stream else None)
+                respond = invitation_reply if self.path == '/api/invitation-turn' else generate_reply
+                result = respond(json.loads(self.rfile.read(size)), send_line if stream else None)
             except (BrokenPipeError, ConnectionResetError):
                 return
             except BlockingIOError:
