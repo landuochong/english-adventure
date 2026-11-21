@@ -2,7 +2,7 @@ import {createBackpack} from './campus-backpack.js';
 import {createMazeView} from './underground-maze-view.js';
 import {briefing as prismBriefing, clueText, interact, advancePosition, nearby, newRun, restoreRun, tileAt, encounterTiles, layoutFor, routeTo, rememberSurvey} from './underground-maze.js';
 import {chooseVoice} from './speech.js';
-import {keyScene, keyAnswer, keyLines, answerMazeQuestion, mazeDialogueLine, discoveries, mazeAnswers} from './underground-maze-dialogue.js';
+import {keyScene, talkToKeyRoom, keyLines, answerMazeQuestion, mazeDialogueLine, discoveries, mazeAnswers} from './underground-maze-dialogue.js';
 import {createLocalVoiceTurn} from './local-voice-turn.js';
 import {createVoiceTurn} from './voice-turn.js';
 import {createBrowserVAD} from './vad-loader.js';
@@ -18,7 +18,8 @@ const line=id=>keyLines[id]||mazeDialogueLine(id);
 if(keyRoom){
  $('other-room').href='underground-maze.html';$('other-room').textContent='探索琥珀棱镜';
  document.querySelector('.maze-header h1 + p').textContent=title;
- document.querySelector('#intro p').textContent='在地下走廊找到遗失的钥匙。需要提示时，可以问教练 Jalor。';
+ document.querySelector('#intro p').textContent='在地下走廊寻找遗失的钥匙。留意墙上的图案。先向星纹问路，再请门上的图案启动机关。';
+ document.querySelector('#failure p').textContent='拉错了拉杆，月亮门已经封闭。';
  document.querySelector('#finish p').textContent='你在门后找到了遗失的钥匙。';
 }
 let run=newRun(mission), voiceRequest=0, playbackTimer, bagOpen=false, speaking=false;
@@ -26,7 +27,7 @@ const discoveryQueue=[];
 try{run=restoreRun(JSON.parse(localStorage.getItem(saveKey)),mission);}catch{}
 const canvas=$('maze'), view=createMazeView(canvas);
 const hoverLabel=$('maze-word');
-const vocabulary={S:'stairs',M:'moon door','*':'star',B:'blue lever',r:'red lever',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
+const vocabulary={N:'keeper',W:'dial',S:'stairs',M:'moon door','*':'star',B:'marked lever',r:'marked lever',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
  H:'hammer',T:'pressure plate',D:'dangerous pressure plate',R:'rubble',V:'valve',G:'powered gate',P:'amber prism'};
 let pointer=null;
 function sceneTarget(event){
@@ -168,7 +169,7 @@ function commit(message){
 function operate(id){
  if(keyRoom){
   const message=interact(run,id);
-  if(message!==null){stopWalking();commit(message);if(run.phase==='complete'){stopVoice();focusOn(null);}}
+  if(message!==null){stopWalking();commit(message);if(['complete','failed'].includes(run.phase)){stopVoice();focusOn(null);}}
   return;
  }
  discover();
@@ -192,13 +193,19 @@ function focusOn(id){
  mark=id;
  questions.hidden=!id;
  if(!id)return;
- $('questions-title').textContent=keyRoom?(id==='door'?'门边':'地下走廊'):discoveries[id][1];
+ $('questions-title').textContent=keyRoom?(id==='keeper'?'值守室':id==='inner'?'内通道':id==='levers'?'拉杆刻纹':id==='door'?'门边':id==='star'?'墙上的图案':'地下走廊'):discoveries[id][1];
+ if(keyRoom){
+  document.querySelector('.coach-speaker strong').textContent=({keeper:'值守人 Robin',inner:'教练 Jalor',levers:'机关回声',star:'星纹回声',door:'月亮门',junction:'教练 Jalor'})[id];
+  document.querySelector('.coach-speaker img').hidden=!['junction','inner'].includes(id);
+ }
  $('heard').textContent='';$('question-source').textContent='';$('question-input').value='';$('question-text').open=false;
  answer=keyRoom?'key-ask':'ask';
+ if(keyRoom&&id==='keeper')answer=run.clues.includes('keeper-order')?'keeper-order':'keeper-ask';
+ if(keyRoom&&id==='levers')answer=run.clues.includes('lever-rule')?'lever-rule':'lever-prompt';
  if(keyRoom&&id==='door'){
   if(run.doorOpen)answer='key-open';
-  else if(run.clues.includes('blue-lever'))answer='blue-lever';
-  else if(run.askedAboutSymbol)answer='door-symbol';
+  else if(run.leversReady)answer='levers-ready';
+  else answer='door-request';
  }
  [$('answer-en').textContent,$('answer-zh').textContent]=line(answer);
 }
@@ -206,10 +213,12 @@ async function submitQuestion(text){
  text=text.trim().slice(0,300);
  if(!mark||!text)return;
  if(keyRoom){
-  const reply=keyAnswer(mark,text,run,answer);
+  const reply=talkToKeyRoom(run,text,answer);
   $('heard').textContent='你说：'+text;
-  if(['door-symbol','check-symbol'].includes(reply)&&!run.askedAboutSymbol){run.askedAboutSymbol=true;save();}
-  if(['moon-route','blue-lever'].includes(reply)&&!run.clues.includes(reply)){run.clues.push(reply);save();}
+
+  const clue=reply==='star-hint'?'moon-route':reply;
+  if(['moon-route','star-awake','levers-ready','lever-rule'].includes(clue)&&!run.clues.includes(clue))run.clues.push(clue);
+  save();render();
   playAnswer(reply);return;
  }
  const subject=mark,fallback=answerMazeQuestion(mark,text,run,answer);
@@ -312,7 +321,7 @@ const backpack=createBackpack({
   state:{stage:run.phase,complete:run.phase==='complete'},
   briefing:run.phase==='brief'?null:{en:briefing[0],zh:briefing[1]},
   status:run.phase==='brief'?'尚未领取委托。':'携带物品：'+$('bag').textContent,
-  clues:run.clues.map(id=>({name:keyRoom?(id==='moon-route'?'走廊':'门边'):discoveries[id][1],en:line(id)[0],zh:line(id)[1]}))
+  clues:run.clues.map(id=>({name:keyRoom?(['moon-route','star-awake'].includes(id)?'走廊':id==='keeper-order'?'值守人 Robin':id==='lever-rule'?'拉杆刻纹':'门边'):discoveries[id][1],en:line(id)[0],zh:line(id)[1]}))
  }),
  speak(text,slow=false){
   const id=text===briefing[0]?briefAudio:run.clues.find(clue=>line(clue)[0]===text);
@@ -350,9 +359,18 @@ function render(){
  $('bag').textContent=[run.hammer?'锤子':'',run.prism?'琥珀棱镜':''].filter(Boolean).join('、')||'空';
 
  if(keyRoom){
-  if(run.phase==='search')$('goal').textContent='找到遗失的钥匙。';
+  if(run.phase==='search'){
+   if(run.dialStep===3)$('goal').textContent='通道门开了，进去取钥匙。';
+   else if(run.clues.includes('keeper-order'))$('goal').textContent='按值守人说的顺序点亮轮盘。已点亮 '+run.dialStep+' / 3。';
+   else if(run.cleared)$('goal').textContent='找到值守人，用英语问出轮盘的点亮顺序。';
+   else if(run.doorOpen)$('goal').textContent=run.hammer?'带锤子回到石障。':'月亮门已开。探索门后的通道，寻找清除石障的工具。';
+   else if(run.clues.includes('lever-rule'))$('goal').textContent='根据线索选择拉杆。拉错会封住月亮门，本轮结束。';
+   else if(run.leversReady)$('goal').textContent='寻找拉杆，询问刻纹。拉错会结束本轮。';
+   else if(run.starAwake)$('goal').textContent='找到月亮门，开口请它启动拉杆。';
+   else $('goal').textContent='找到墙上的星纹，开口问路。';
+  }
   if(run.key)$('goal').textContent='已找到遗失的钥匙。';
-  $('bag').textContent=run.key?'钥匙':'空';
+  $('bag').textContent=[run.hammer?'锤子':'',run.key?'钥匙':''].filter(Boolean).join('、')||'空';
   const actions=$('room-actions');
   actions.replaceChildren();
   if(run.phase==='search')for(const {id,label} of nearby(run)){
@@ -406,6 +424,8 @@ canvas.onclick=event=>{
  const dx=target.x-run.x,dy=target.y-run.y;
  const tile=tileAt(run.x+dx,run.y+dy,run);
  held.clear();waypoints=[];
+ if(Math.abs(dx)+Math.abs(dy)<=1&&target.mark){stopWalking();operate(target.mark);return;}
+ if(Math.abs(dx)+Math.abs(dy)<=1&&tile==='N'){stopWalking();discover();recordQuestion();return;}
  if(Math.abs(dx)+Math.abs(dy)<=1&&(nearby(run).some(action=>action.id===tile)||discoveries[tile]&&!['T','D'].includes(tile))){
   stopWalking();operate(tile);return;
  }

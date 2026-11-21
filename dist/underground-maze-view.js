@@ -1,4 +1,4 @@
-import {tileAt, layoutFor, surveyTiles, trailKey} from './underground-maze.js';
+import {dialOrder,dialMarks,tileAt, layoutFor, surveyTiles, trailKey} from './underground-maze.js';
 
 const glyphs={M:['☾','#57aaff'],'*':['★','#ffe59b'],a:['△','#ffd192'],b:['◇','#9be0c6'],c:['◎','#c4b9fb']};
 const stone={top:'#46515a',front:'#27313b',side:'#323e47'};
@@ -53,14 +53,31 @@ export function createMazeView(canvas){
   return faces;
  }
  function prop(x,y,tile,run){
+  if(tile==='N'){
+   const base=box(x-.16,y-.12,.32,.24,25,{top:'#587f95',front:'#37596b',side:'#294958'});
+   const head=box(x-.10,y-.09,.20,.18,13,{top:'#705441',front:'#deb38a',side:'#c19573'},25);
+   const [sx,sy]=point(x,y,47);ctx.font='bold '+Math.round(12*scale)+'px sans-serif';ctx.fillStyle='#fff1b1';ctx.textAlign='center';ctx.fillText('Robin',sx,sy);
+   return [...base,...head];
+  }
+  if(tile==='W'){
+   const base=box(x-.38,y-.31,.76,.62,14,stone);
+   const [sx,sy]=point(x,y,18);
+   ctx.beginPath();ctx.ellipse(sx,sy,30*scale,15*scale,0,0,Math.PI*2);ctx.fillStyle='#302c36';ctx.fill();ctx.strokeStyle='#c7a65f';ctx.stroke();
+   for(const [i,mark] of ['leaf','sun','drop'].entries()){
+    const px=sx+(i-1)*18*scale;
+    if(dialOrder.indexOf(mark)<run.dialStep){ctx.beginPath();ctx.arc(px,sy,9*scale,0,Math.PI*2);ctx.fillStyle='#ffe598';ctx.fill();}
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#daa847';ctx.font=Math.round(13*scale)+'px sans-serif';ctx.fillText(dialMarks[mark],px,sy);
+   }
+   return base;
+  }
   if(tile==='M'){
    if(run.doorOpen)return box(x-.46,y-.45,.12,.75,37,stone);
    return [...box(x-.28,y-.40,.56,.76,36,{top:'#927154',front:'#705039',side:'#503c30'}),...plate(x,y,tile,run)];
   }
   if(glyphs[tile])return plate(x,y,tile,run);
   if(tile==='r'||tile==='B'){
-   const color=tile==='B'?'#57aaff':'#fc766a';
-   return [...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
+   const color='#ccb187';
+   return [...plate(x,y,tile==='B'?'b':'a',run),...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
     ...box(x-.15,y-.07,.30,.14,6,{top:color,front:color,side:color},18)];
   }
   if(tile==='K'&&!run.key){
@@ -82,7 +99,7 @@ export function createMazeView(canvas){
   if(tile==='G'){
    const frames=[...box(x-.42,y-.18,.12,.26,49,stone),...box(x+.29,y-.18,.12,.26,49,stone)];
    const gate={top:'#d68c6a',front:'#a45845',side:'#6e3934'};
-   return run.powered?[...frames,...[-.24,0,.24].flatMap(dx=>box(x+dx-.026,y-.11,.052,.11,45,gate))]:frames;
+   return (run.mission==='key'?run.dialStep<3:run.powered)?[...frames,...[-.24,0,.24].flatMap(dx=>box(x+dx-.026,y-.11,.052,.11,45,gate))]:frames;
   }
   if(tile==='V'){
    const stand=box(x-.13,y-.13,.26,.25,17,stone);
@@ -165,6 +182,13 @@ export function createMazeView(canvas){
     }else{
      ctx.globalAlpha=walked.has(trailKey(x,y))?1:.68;
      for(const face of prop(x,y,tile,run))hits.push({face,x,y});
+     if(tile==='W'){
+      const [cx,cy]=point(x,y,18);
+      for(const [index,mark] of ['leaf','sun','drop'].entries()){
+       const px=cx+(index-1)*18*scale,r=9*scale;
+       hits.push({x,y,mark,face:[[px-r,cy-r],[px+r,cy-r],[px+r,cy+r],[px-r,cy+r]]});
+      }
+     }
      ctx.globalAlpha=1;
      if(x===run.x&&y===run.y)player(position.x,position.y);
     }
@@ -179,7 +203,7 @@ export function createMazeView(canvas){
     const [ax,ay]=face[a],[bx,by]=face[b];
     if((ay>y)!==(by>y)&&x<(bx-ax)*(y-ay)/(by-ay)+ax)inside=!inside;
    }
-   if(inside)return {x:hit.x,y:hit.y};
+   if(inside)return {x:hit.x,y:hit.y,mark:hit.mark};
   }
   return null;
  }
