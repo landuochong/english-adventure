@@ -50,7 +50,7 @@ export const keyLines = {
  'hammer-find': ['Look for a tool in the south passage.', '去南边的支路找工具。'],
  'hammer-use': ['Try your hammer on the cracked stones.', '试试用锤子敲有裂缝的石头。'],
  'lever-rule': ['Look at the symbols above the levers. Find the symbol with four corners, then pull that lever.', '看拉杆上方的图案。找到有四个角的图案，再拉动对应的拉杆。'],
- 'lever-prompt': ['Ask about the marks.', '可以问问这些刻纹。'],
+ 'lever-prompt': ['You can ask, “Which lever should I pull?”', '你可以直接问 “Which lever should I pull?”（我该拉哪根拉杆？）'],
  'door-first': ['Ask the moon door first.', '先去问问月亮门。'],
  'door-request': ['Do you need the door open?', '你想打开这扇门吗？'],
  'find-star': ['Find the star at the end of the first hallway. Ask it, “Which way?” Then go to the moon door.', '先到入口走廊的尽头找星纹，问它 “Which way?”，听完线索再去月亮门。'],
@@ -125,8 +125,10 @@ export function talkToKeyRoom(run,text,previous){
   if(run.doorOpen)return 'key-open';
   if(!run.leversReady)return 'door-first';
   if(/^(again|repeat|say that again|slower|pardon)$/.test(words))return previous||'lever-prompt';
-  const question=/^(?:which (?:one|lever|mark|symbol)(?: should i (?:choose|pull))?|what(?:'s| is) (?:this|that)(?: mark| symbol)?|what (?:does (?:this|that)(?: mark| symbol)? mean|do (?:these|the) (?:marks|symbols) mean|are these(?: marks| symbols)?)|(?:the )?(?:marks?|symbols?|shapes?|triangle|diamond)|how many corners|help)$/.test(words);
-  if(question){
+  const leverWords=words.replace(/\bmocks?\b/g,word=>word==='mocks'?'marks':'mark');
+  const askingWhichLever=/^which (?:one|lever|mark|symbol)(?: should i (?:choose|pull|pick|select)(?: or (?:choose|pull|pick|select))?)?$/.test(leverWords);
+  const askingAboutMarks=/^(?:what(?:'s| is) (?:this|that)(?: mark| symbol)?|what (?:does (?:this|that)(?: mark| symbol)? mean|do (?:these|the) (?:marks|symbols)(?: on the levers?)? mean|are these(?: marks| symbols)?)|ask about (?:the|these) (?:marks|symbols)|(?:the )?(?:marks?|symbols?|shapes?|triangle|diamond)|how many corners|help)$/.test(leverWords);
+  if(askingWhichLever||askingAboutMarks){
    if(!run.clues.includes('lever-rule'))run.clues.push('lever-rule');
    return 'lever-rule';
   }

@@ -27,8 +27,9 @@ const discoveryQueue=[];
 try{run=restoreRun(JSON.parse(localStorage.getItem(saveKey)),mission);}catch{}
 const canvas=$('maze'), view=createMazeView(canvas);
 const hoverLabel=$('maze-word');
-const vocabulary={N:'keeper',W:'dial',S:'stairs',M:'moon door','*':'star',B:'diamond mark',r:'triangle mark',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
+const vocabulary={N:'keeper',W:'dial',S:'stairs',M:'moon door','*':'star',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
  H:'hammer',T:'pressure plate',D:'dangerous pressure plate',R:'rubble',V:'valve',G:'powered gate',P:'amber prism'};
+const leverVocabulary={B:'diamond mark',r:'triangle mark'};
 let pointer=null;
 function sceneTarget(event){
  const area=canvas.getBoundingClientRect();
@@ -38,7 +39,9 @@ function refreshHover(){
  const target=pointer&&!bagOpen&&['search','return'].includes(run.phase)?sceneTarget(pointer):null;
  const tile=target?tileAt(target.x,target.y,run):'';
  const removed=(tile==='K'&&run.key)||(tile==='H'&&run.hammer)||(tile==='R'&&run.cleared)||(tile==='P'&&run.prism);
- const word=removed?'':vocabulary[tile]||'';
+ let word=removed?'':vocabulary[tile]||'';
+ if(target?.part==='lever')word='lever';
+ if(target?.part==='lever-symbol')word=leverVocabulary[tile];
  if(hoverLabel.textContent!==word)hoverLabel.textContent=word;
  hoverLabel.hidden=!word;
  canvas.style.cursor=word?'pointer':'';
@@ -395,7 +398,9 @@ function render(){
     :'要打开通道门，得按顺序点亮轮盘。到北边的支路找值守人罗宾，问他先点亮哪个图案。';
    else if(run.doorOpen)$('goal').textContent=run.hammer?'带锤子回到石障。':'月亮门已开。探索门后的通道，寻找清除石障的工具。';
    else if(run.clues.includes('lever-rule'))$('goal').textContent='数一数拉杆上方图案的角，再选择对应的拉杆。拉错会结束本轮。';
-   else if(run.leversReady)$('goal').textContent='寻找拉杆，询问刻纹。拉错会结束本轮。';
+   else if(run.leversReady)$('goal').textContent=keyScene(run)==='levers'
+    ?'可以问 “Which lever should I pull?”（我该拉哪根拉杆？）'
+    :'寻找拉杆，询问刻纹。拉错会结束本轮。';
    else if(run.starAwake)$('goal').textContent='找到月亮门，开口请它启动拉杆。';
    else $('goal').textContent='到入口走廊尽头找星纹，问 “Which way?”。听完线索再去月亮门。';
   }
@@ -454,9 +459,11 @@ canvas.onclick=event=>{
  const dx=target.x-run.x,dy=target.y-run.y;
  const tile=tileAt(run.x+dx,run.y+dy,run);
  held.clear();waypoints=[];
+ if(target.part==='lever-symbol'){stopWalking();return;}
  if(Math.abs(dx)+Math.abs(dy)<=1&&target.mark){stopWalking();operate(target.mark);return;}
  if(Math.abs(dx)+Math.abs(dy)<=1&&tile==='N'){stopWalking();discover();recordQuestion();return;}
- if(Math.abs(dx)+Math.abs(dy)<=1&&(nearby(run).some(action=>action.id===tile)||discoveries[tile]&&!['T','D'].includes(tile))){
+ if(Math.abs(dx)+Math.abs(dy)<=1&&(!Object.hasOwn(leverVocabulary,tile)||target.part==='lever')&&
+   (nearby(run).some(action=>action.id===tile)||discoveries[tile]&&!['T','D'].includes(tile))){
   stopWalking();operate(tile);return;
  }
  if(!dx&&!dy)return;

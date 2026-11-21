@@ -52,6 +52,14 @@ export function createMazeView(canvas){
   ctx.fillStyle=glyphs[mark][1];ctx.fillText(glyphs[mark][0],sx,sy);
   return faces;
  }
+ function leverSymbol(x,y,tile){
+  const [cx,cy]=point(x,y,49), radius=16*scale;
+  ctx.beginPath();ctx.arc(cx,cy,radius,0,2*Math.PI);ctx.fillStyle='#151b24';ctx.fill();
+  ctx.strokeStyle='#ccb187';ctx.stroke();
+  const corners=tile==='B'?[[0,-10],[10,0],[0,10],[-10,0]]:[[0,-10],[10,8],[-10,8]];
+  poly(corners.map(([dx,dy])=>[cx+dx*scale,cy+dy*scale]),'#ffe4a0',null);
+  return [[cx-radius,cy-radius],[cx+radius,cy-radius],[cx+radius,cy+radius],[cx-radius,cy+radius]];
+ }
  function prop(x,y,tile,run){
   if(tile==='N'){
    const base=box(x-.16,y-.12,.32,.24,25,{top:'#587f95',front:'#37596b',side:'#294958'});
@@ -77,14 +85,8 @@ export function createMazeView(canvas){
   if(glyphs[tile])return plate(x,y,tile,run);
   if(tile==='r'||tile==='B'){
    const color='#ccb187';
-   const faces=[...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
+   return [...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
     ...box(x-.15,y-.07,.30,.14,6,{top:color,front:color,side:color},18)];
-   const [cx,cy]=point(x,y,49), radius=16*scale;
-   ctx.beginPath();ctx.arc(cx,cy,radius,0,2*Math.PI);ctx.fillStyle='#151b24';ctx.fill();
-   ctx.strokeStyle=color;ctx.stroke();
-   const corners=tile==='B'?[[0,-10],[10,0],[0,10],[-10,0]]:[[0,-10],[10,8],[-10,8]];
-   poly(corners.map(([dx,dy])=>[cx+dx*scale,cy+dy*scale]),'#ffe4a0',null);
-   return [...faces,[[cx-radius,cy-radius],[cx+radius,cy-radius],[cx+radius,cy+radius],[cx-radius,cy+radius]]];
   }
   if(tile==='K'&&!run.key){
    const base=box(x-.26,y-.24,.52,.48,11,stone);
@@ -187,7 +189,9 @@ export function createMazeView(canvas){
      wallBand(x,end,y,height);
     }else{
      ctx.globalAlpha=walked.has(trailKey(x,y))?1:.68;
-     for(const face of prop(x,y,tile,run))hits.push({face,x,y});
+     const isLever=tile==='r'||tile==='B';
+     for(const face of prop(x,y,tile,run))hits.push({face,x,y,part:isLever?'lever':undefined});
+     if(isLever)hits.push({x,y,face:leverSymbol(x,y,tile),part:'lever-symbol'});
      if(tile==='W'){
       const [cx,cy]=point(x,y,18);
       for(const [index,mark] of ['leaf','sun','drop'].entries()){
@@ -209,7 +213,7 @@ export function createMazeView(canvas){
     const [ax,ay]=face[a],[bx,by]=face[b];
     if((ay>y)!==(by>y)&&x<(bx-ax)*(y-ay)/(by-ay)+ax)inside=!inside;
    }
-   if(inside)return {x:hit.x,y:hit.y,mark:hit.mark};
+   if(inside)return {x:hit.x,y:hit.y,mark:hit.mark,part:hit.part};
   }
   return null;
  }

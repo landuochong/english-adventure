@@ -206,9 +206,17 @@ test('moon door needs three local exchanges and survives a refresh',async()=>{
  const step=(dx,dy,n)=>{for(let i=0;i<n;i++)assert.equal(move(run,dx,dy),'');};
  step(-1,0,1);step(0,-1,2);step(-1,0,3);step(0,1,5);step(1,0,1);
  assert.equal(keyScene(run),'levers');
- talkToKeyRoom(run,'Not a diamond.');
+ for(const text of ['Not a diamond.', "I don't want to ask about the mocks.", 'What do the mocks?', 'My friend mocks me.', 'Which lever should I not pick?']){
+  assert.equal(talkToKeyRoom(run,text),'lever-prompt');
+  assert.ok(!run.clues.includes('lever-rule'));
+ }
  assert.match(interact(run,'B'),/锁/);
- assert.equal(talkToKeyRoom(run,'What do these marks mean?'),'lever-rule');
+ for(const text of ['Which lever should I pull?','Which lever should I pick?','Which lever should I select?','Which lever should I pick or select?','Ask about the marks.','What do these marks mean?','What do these mocks mean?','Mocks?']){
+  const trial=structuredClone(run);
+  assert.equal(talkToKeyRoom(trial,text),'lever-rule');
+  assert.ok(trial.clues.includes('lever-rule'));
+ }
+ assert.equal(talkToKeyRoom(run,'What do these mocks mean?'),'lever-rule');
  run=restoreRun(run,'key');
  const failure=structuredClone(run);
  assert.match(interact(failure,'r'),/封闭/);
