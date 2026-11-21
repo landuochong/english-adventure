@@ -47,6 +47,13 @@ export const keyLines = {
  'keeper-order': ['First, what shines in the sky. Next, what falls from a cloud. Last, what grows on a tree.', '先点在天空中发光的，再点从云里落下的，最后点长在树上的。'],
  'keeper-ask': ['I look after the dial. What would you like to know?', '我看守这个轮盘。你想问什么？'],
  'keeper-find': ['Find the keeper in the north passage.', '去北边的支路找值守人。'],
+ 'radio-see': ['What do you see?', '你看到了什么？'],
+ 'radio-break': ['What are you trying to break?', '你想敲开什么？'],
+ 'radio-cracks': ['Any cracks in the rock?', '石头上有裂缝吗？'],
+ 'radio-dust': ['Try brushing off the dust. What is underneath?', '试试刷掉灰尘。下面有什么？'],
+ 'radio-tools': ['What tools have you found?', '你找到了什么工具？'],
+ 'radio-location': ['I don’t know where it is. Have you seen any tools?', '我不知道它在哪里。你见到过什么工具吗？'],
+ 'radio-keeper': ['Ask the person who looks after the dial.', '去问看守轮盘的人。'],
  'hammer-find': ['Look for a tool in the south passage.', '去南边的支路找工具。'],
  'hammer-use': ['Try your hammer on the cracked stones.', '试试用锤子敲有裂缝的石头。'],
  'lever-rule': ['Count the corners. You need four.', '数数角。你要找的那个有四个角。'],
@@ -91,6 +98,27 @@ export function keyAnswer(scene,text,run,previous='key-ask'){
  return /\b(key|where|way|direction|go|lost|help|moon)\b/.test(words)?'moon-route':'key-clarify';
 }
 
+// The radio has access only to what the student has said.
+function radioReply(words,notes,previous){
+ const remember=fact=>{if(!notes.includes(fact))notes.push(fact);};
+ if(/^(?:again|repeat|pardon|slower|say that again)$/.test(words))return previous||'radio-see';
+ if(/\b(?:where|find)\b.*\b(?:hammer|brush|tools?)\b/.test(words))return 'radio-location';
+ if(/\b(?:order|sequence|dial)\b/.test(words))return 'radio-keeper';
+ if(/\b(?:no|not|never|don't|can't|cannot)\b/.test(words)){
+  if(/\bcracks?\b/.test(words)||previous==='radio-cracks'){if(notes.includes('crack'))notes.splice(notes.indexOf('crack'),1);return 'radio-dust';}
+  return 'radio-see';
+ }
+ if(/^(?:yes|yeah|yes i do)$/.test(words)&&previous==='radio-cracks')remember('crack');
+ if(/^(?:(?:there is|there's|i (?:can )?see|it has|the (?:rock|stone) has) )?(?:a |the )?cracks?(?: in the (?:rock|stone))?$/.test(words))remember('crack');
+ if(/\b(?:rocks?|stones?)\b/.test(words))remember('rocks');
+ if(/^(?:i (?:have|found|got)|i've (?:found|got)) (?:a |the )?hammer$/.test(words))remember('hammer');
+ if(/\b(?:dust|dusty|brush)\b/.test(words))return 'radio-dust';
+ const mentionsHammer=/\bhammer\b/.test(words);
+ if(notes.includes('crack'))return notes.includes('hammer')||mentionsHammer?'hammer-use':'radio-tools';
+ if(notes.includes('rocks'))return 'radio-cracks';
+ return mentionsHammer?'radio-break':'radio-see';
+}
+
 // Only a request made at the matching mechanism can change its state.
 export function talkToKeyRoom(run,text,previous){
  const scene=keyScene(run);
@@ -112,10 +140,7 @@ export function talkToKeyRoom(run,text,previous){
   }
   return 'keeper-ask';
  }
- if(scene==='inner'){
-  if(!run.cleared)return run.hammer?'hammer-use':'hammer-find';
-  return run.dialStep===3?'key-open':'keeper-find';
- }
+ if(scene==='inner')return radioReply(words,run.coachNotes,previous);
  if(scene==='levers'){
   if(run.doorOpen)return 'key-open';
   if(!run.leversReady)return 'door-first';

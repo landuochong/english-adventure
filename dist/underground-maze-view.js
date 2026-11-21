@@ -93,8 +93,20 @@ export function createMazeView(canvas){
    if(tile==='D'){const [sx,sy]=point(x,y,7);ctx.font='bold '+(19*scale)+'px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff0c9';ctx.fillText('!',sx,sy);}
    return faces;
   }
-  if(tile==='R'&&!run.cleared)return [
+  if(tile==='R'&&!run.cleared){
+   const faces=[
    ...box(x-.37,y-.28,.48,.58,22,stone),...box(x+.06,y-.13,.27,.42,15,stone),...box(x-.13,y-.17,.33,.36,17,stone,19)
+  ];
+   if(run.mission==='key'){
+    const marks=run.crackVisible?[[0,-.06,37],[-.04,.02,37],[.03,.08,37],[-.02,.17,37]]:[[-.09,0,37],[0,.01,37],[.08,.03,37]];
+    ctx.beginPath();marks.forEach(([dx,dy,z],i)=>ctx[i?'lineTo':'moveTo'](...point(x+dx,y+dy,z)));
+    ctx.strokeStyle=run.crackVisible?'#171b1c':'#c7bb9f';ctx.lineWidth=(run.crackVisible?2:5)*scale;ctx.stroke();ctx.lineWidth=1;
+   }
+   return faces;
+  }
+  if(tile==='J'&&!run.brush)return [
+   ...box(x-.05,y-.26,.10,.45,5,{top:'#b88960',front:'#95674b',side:'#75543c'}),
+   ...box(x-.16,y+.10,.32,.22,7,{top:'#e6cfa0',front:'#c1a16f',side:'#947d58'})
   ];
   if(tile==='G'){
    const frames=[...box(x-.42,y-.18,.12,.26,49,stone),...box(x+.29,y-.18,.12,.26,49,stone)];
@@ -121,11 +133,11 @@ export function createMazeView(canvas){
   }
   return [];
  }
- function player(x,y){
+ function player(x,y,run){
   const [sx,sy]=point(x,y);
   if(student.naturalWidth)sprite(student,sx-32*scale,sy-57*scale,64*scale);
   else box(x-.13,y-.12,.26,.24,24,{top:'#e3b978',front:'#9a6a48',side:'#704d39'});
-  if(jalor.naturalWidth){
+  if(run.mission!=='key'&&jalor.naturalWidth){
    const [dx,dy]=point(x-.34,y+.16);
    sprite(jalor,dx-20*scale,dy-33*scale,40*scale,2);
   }
@@ -190,7 +202,7 @@ export function createMazeView(canvas){
       }
      }
      ctx.globalAlpha=1;
-     if(x===run.x&&y===run.y)player(position.x,position.y);
+     if(x===run.x&&y===run.y)player(position.x,position.y,run);
     }
    }
   }

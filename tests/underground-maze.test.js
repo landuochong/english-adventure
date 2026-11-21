@@ -201,9 +201,15 @@ test('moon door needs three local exchanges and survives a refresh',async()=>{
  step(0,-1,2);step(1,0,1);
  assert.equal(restoreRun({...run,hammerEquipped:undefined},'key').hammerEquipped,false);
  assert.match(interact(run,'R'),/工具箱/);assert.equal(run.cleared,false);
+ assert.equal(talkToKeyRoom(run,'Help!'),'radio-see');
+ assert.equal(talkToKeyRoom(run,'Can I use the hammer?'),'radio-break');
+ assert.equal(talkToKeyRoom(run,'Rocks.'),'radio-cracks');
+ assert.equal(talkToKeyRoom(run,'There is a crack.'),'radio-tools');
+ run=restoreRun(run,'key');
+ assert.equal(talkToKeyRoom(run,'I have a hammer.'),'hammer-use');
  run.hammerEquipped=true;run=restoreRun(run,'key');assert.equal(run.hammerEquipped,true);
  interact(run,'R');step(1,0,4);
- assert.equal(talkToKeyRoom(run,'Order?'),'keeper-find');
+ assert.equal(talkToKeyRoom(run,'Order?'),'radio-keeper');
  assert.match(interact(run,'sun'),/值守人/);assert.equal(run.dialStep,0);
  step(-1,0,1);step(0,-1,2);
  assert.equal(talkToKeyRoom(run,"I don't want the order."),'keeper-ask');

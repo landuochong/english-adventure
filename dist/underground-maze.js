@@ -20,7 +20,7 @@ const keyMaze = [
  '#.##..######.######',
  '#.##..M...R...WG.K#',
  '#.##..##.##########',
- '#.######.##########',
+ '#.######J##########',
  '#r.B####H##########',
  '###################'
 ];
@@ -38,7 +38,7 @@ const start = [1, 1];
 export const trailKey=(x,y)=>x+','+y;
 export const tileAt = (x, y, run) => layoutFor(run)[y]?.[x] ?? '#';
 export function newRun(mission) {
- return {...(mission==='key'?{mission,hammerEquipped:false,dialStep:0,starAwake:false,leversReady:false,askedAboutSymbol:false,doorOpen:false,key:false}:{}),phase:'brief', x:start[0], y:start[1], hammer:false, cleared:false, powered:true, prism:false, clues:[], seen:[], announced:[], audioVersion:1, trail:[trailKey(...start)], surveyed:[], resets:0};
+ return {...(mission==='key'?{mission,brush:false,brushEquipped:false,crackVisible:false,coachNotes:[],hammerEquipped:false,dialStep:0,starAwake:false,leversReady:false,askedAboutSymbol:false,doorOpen:false,key:false}:{}),phase:'brief', x:start[0], y:start[1], hammer:false, cleared:false, powered:true, prism:false, clues:[], seen:[], announced:[], audioVersion:1, trail:[trailKey(...start)], surveyed:[], resets:0};
 }
 export function restoreRun(raw, mission=raw?.mission) {
  const run = newRun(mission);
@@ -67,7 +67,8 @@ export function restoreRun(raw, mission=raw?.mission) {
    for(const cell of surveyTiles({...run,x,y}))surveyed.add(trailKey(cell.x,cell.y));
   }
  }
- return {...run, ...(mission==='key'?{hammerEquipped:raw.hammer&&raw.hammerEquipped===true,dialStep:raw.key?3:raw.cleared&&Array.isArray(raw.clues)&&raw.clues.includes('keeper-order')&&Number.isInteger(raw.dialStep)&&raw.dialStep>=0&&raw.dialStep<=3?raw.dialStep:0,starAwake:raw.doorOpen||raw.starAwake===true,leversReady:raw.doorOpen||(raw.starAwake===true&&raw.leversReady===true),askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
+ return {...run, ...(mission==='key'?{brush:raw.brush===true,brushEquipped:raw.brush===true&&raw.brushEquipped===true&&!(raw.hammer&&raw.hammerEquipped),crackVisible:raw.crackVisible===true,
+  coachNotes:Array.isArray(raw.coachNotes)?raw.coachNotes.filter(note=>['rocks','crack','hammer'].includes(note)):[],hammerEquipped:raw.hammer&&raw.hammerEquipped===true,dialStep:raw.key?3:raw.cleared&&Array.isArray(raw.clues)&&raw.clues.includes('keeper-order')&&Number.isInteger(raw.dialStep)&&raw.dialStep>=0&&raw.dialStep<=3?raw.dialStep:0,starAwake:raw.doorOpen||raw.starAwake===true,leversReady:raw.doorOpen||(raw.starAwake===true&&raw.leversReady===true),askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
   clues:Array.isArray(raw.clues)?[...new Set(raw.clues.filter(key=>(mission==='key'?['moon-route','star-awake','levers-ready','lever-rule','keeper-order'].includes(key):Object.hasOwn(words,key))))]:[],
   seen:Array.isArray(raw.seen)?[...new Set(raw.seen.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
   announced:raw.audioVersion===1&&Array.isArray(raw.announced)?[...new Set(raw.announced.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
@@ -148,8 +149,9 @@ export function nearby(run) {
    for(const mark of ['leaf','sun','drop'])actions.push({id:mark,label:'点亮 '+dialMarks[mark]});
   }
   else if(label)actions.push({id:key,label:'查看'+({a:'三角形',b:'菱形',c:'螺旋'})[key]+'刻纹'});
+  else if(key==='J'&&!run.brush)actions.push({id:key,label:'拿起刷子'});
   else if(key==='H'&&!run.hammer)actions.push({id:key,label:'拿起锤子'});
-  else if(key==='R'&&!run.cleared)actions.push({id:key,label:run.hammer&&(run.mission!=='key'||run.hammerEquipped)?'用锤子破开石障':'查看石障'});
+  else if(key==='R'&&!run.cleared)actions.push({id:key,label:run.brushEquipped?'刷去石粉':run.hammer&&(run.mission!=='key'||run.hammerEquipped)?'用锤子破开石障':'查看石障'});
   else if(key==='V'&&run.powered)actions.push({id:key,label:'转动阀门'});
   else if(key==='P'&&!run.prism&&run.cleared&&!run.powered)actions.push({id:key,label:'拿起琥珀棱镜'});
   else if(key==='S'&&run.prism)actions.push({id:key,label:'从楼梯带出棱镜'});
@@ -177,10 +179,14 @@ export function interact(run,id) {
  case 'r':run.phase='failed';return '机关落锁，月亮门封闭了。';
  case 'B':run.doorOpen=true;return '门闩滑开了。';
  case 'K':run.key=true;return '钥匙已放进背包。告诉教练你的发现。';
+ case 'J':run.brush=true;return '刷子已收入工具箱。';
  case 'H':run.hammer=true;return run.mission==='key'?'锤子已收入工具箱。':'锤子已放进背包。';
  case 'R':
+  if(run.mission==='key'&&run.brushEquipped){
+   run.crackVisible=true;return '灰尘被扫开，石面露出一道裂缝。';
+  }
+  if(run.mission==='key'&&!run.hammerEquipped)return run.crackVisible?'裂缝露出来了。可以打开工具箱，或向教练描述你的发现。':'石面盖着灰白色的粉尘。你可以看看工具箱。';
   if(!run.hammer)return '石块上有裂缝。附近也许有能敲开它的工具。';
-  if(run.mission==='key'&&!run.hammerEquipped)return '石障挡住了路。打开工具箱，选择要拿在手里的工具。';
   run.cleared=true;return '石障碎开了，通道打开。';
  case 'V':run.powered=false;return '阀门关闭了。通电门已经可以穿过。';
  case 'P':run.prism=true;run.phase='return';return '已找到琥珀棱镜。沿走过的路回楼梯。';
