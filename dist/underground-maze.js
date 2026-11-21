@@ -67,10 +67,14 @@ export function restoreRun(raw, mission=raw?.mission) {
    for(const cell of surveyTiles({...run,x,y}))surveyed.add(trailKey(cell.x,cell.y));
   }
  }
- return {...run, ...(mission==='key'?{hammerEquipped:raw.hammer&&raw.hammerEquipped===true,dialStep:raw.key?3:raw.cleared&&Array.isArray(raw.clues)&&raw.clues.includes('keeper-order')&&Number.isInteger(raw.dialStep)&&raw.dialStep>=0&&raw.dialStep<=3?raw.dialStep:0,starAwake:raw.doorOpen||raw.starAwake===true,leversReady:raw.doorOpen||(raw.starAwake===true&&raw.leversReady===true),askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
-  clues:Array.isArray(raw.clues)?[...new Set(raw.clues.filter(key=>(mission==='key'?['moon-route','star-awake','levers-ready','lever-rule','keeper-order'].includes(key):Object.hasOwn(words,key))))]:[],
+ const clues=Array.isArray(raw.clues)?[...new Set(raw.clues.filter(key=>(mission==='key'?['moon-route','star-awake','levers-ready','lever-rule','keeper-order'].includes(key):Object.hasOwn(words,key))))]:[];
+ const starAwake=raw.doorOpen||raw.starAwake===true||clues.includes('star-awake')||clues.includes('moon-route');
+ return {...run, ...(mission==='key'?{hammerEquipped:raw.hammer&&raw.hammerEquipped===true,dialStep:raw.key?3:raw.cleared&&clues.includes('keeper-order')&&Number.isInteger(raw.dialStep)&&raw.dialStep>=0&&raw.dialStep<=3?raw.dialStep:0,starAwake,leversReady:raw.doorOpen||(starAwake&&raw.leversReady===true),askedAboutSymbol:raw.askedAboutSymbol===true,doorOpen:raw.doorOpen,key:raw.key}:{}), phase:raw.phase, x:raw.x, y:raw.y, hammer:raw.hammer, cleared:raw.cleared, powered:raw.powered, prism:raw.prism,
+  clues,
   seen:Array.isArray(raw.seen)?[...new Set(raw.seen.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
-  announced:raw.audioVersion===1&&Array.isArray(raw.announced)?[...new Set(raw.announced.filter(id=>typeof id==='string'&&'abcHTRVGPD'.includes(id)&&id.length===1))]:[],
+  announced:raw.audioVersion===1&&Array.isArray(raw.announced)?[...new Set(raw.announced.filter(id=>
+   mission==='key'?id==='keeper-ask':typeof id==='string'&&id.length===1&&'abcHTRVGPD'.includes(id)
+  ))]:[],
   trail,surveyed:[...surveyed],
   resets:Number.isSafeInteger(raw.resets)&&raw.resets>=0?raw.resets:0};
 }

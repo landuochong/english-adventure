@@ -152,13 +152,17 @@ test('terrain beside the route remains surveyed after leaving and refreshing',as
 
 test('moon door needs three local exchanges and survives a refresh',async()=>{
  const {keyScene,keyAnswer,talkToKeyRoom}=await import('../dist/underground-maze-dialogue.js');
+ const doorQuestion='Yes, how can I open the door?';
  let run=newRun('key');
  run.phase='search';
  for(let i=0;i<3;i++)move(run,1,0);
  for(const text of ['Which way?','Key?'])assert.equal(keyAnswer(keyScene(run),text,run),'moon-route');
  assert.equal(keyAnswer(keyScene(run),'Star?',run),'key-clarify');
  for(let i=0;i<4;i++)move(run,1,0);
- for(const text of ['Star?', 'I see a star.', 'What is this?'])assert.equal(keyAnswer(keyScene(run),text,run),'star-hint');
+ const starQuestion='What does the star mark mean?';
+ for(const text of ['Star?', 'I see a star.', 'What is this?', starQuestion, 'What does this star symbol mean?', 'Star mark?']){
+  assert.equal(keyAnswer(keyScene(run),text,run),'star-hint');
+ }
  assert.equal(keyAnswer(keyScene(run),'Not a star.',run),'key-clarify');
  for(let i=0;i<4;i++)move(run,-1,0);
  assert.equal(interact(run,'B'),null);
@@ -167,15 +171,37 @@ test('moon door needs three local exchanges and survives a refresh',async()=>{
  assert.match(move(run,1,0),/锁/);
  assert.equal(interact(run,'K'),null);
  interact(run,'B');assert.equal(run.doorOpen,false);
- assert.equal(talkToKeyRoom(run,'Open the door.'),'find-star');
+ assert.equal(talkToKeyRoom(run,'How can I open the door?'),'find-star');
+ assert.equal(run.leversReady,false);
+ talkToKeyRoom(run,starQuestion);assert.equal(run.starAwake,false);
  const atDoor={x:run.x,y:run.y};
+ for(const clues of [['moon-route'],['star-awake']]){
+  const resumed=restoreRun({...run,clues},'key');
+  assert.equal(resumed.starAwake,true);
+  assert.equal(talkToKeyRoom(resumed,'How can I open the door?'),'levers-ready');
+  assert.equal(resumed.doorOpen,false);
+ }
  Object.assign(run,{x:8,y:1});
- talkToKeyRoom(run,'Not a star.');assert.equal(run.starAwake,false);
- assert.equal(talkToKeyRoom(run,'Which way?'),'star-awake');
+ for(const text of ['Not a star.','What does the moon mark mean?','What does the star mark?', "I don't need help finding the key."]){
+  talkToKeyRoom(run,text);assert.equal(run.starAwake,false);
+ }
+ const askingForKey=structuredClone(run);
+ assert.equal(talkToKeyRoom(askingForKey,'Where can I find the key?'),'star-awake');
+ assert.equal(askingForKey.starAwake,true);
+ assert.equal(talkToKeyRoom(run,starQuestion),'star-awake');
+ talkToKeyRoom(run,doorQuestion);assert.equal(run.leversReady,false);
  run=restoreRun(run,'key');Object.assign(run,atDoor);
- for(const text of ['Do not open the door.','Star?','Blue?','Hello'])talkToKeyRoom(run,text);
+ for(const text of ['Do not open the door.',"Yes, how can I not open the door?",'Yes, how can I?','How can I open the toolbox?','Star?','Blue?','Hello']){
+  talkToKeyRoom(run,text,'door-request');assert.equal(run.leversReady,false);
+ }
  interact(run,'B');assert.equal(run.doorOpen,false);
- assert.equal(talkToKeyRoom(run,'Which one?'),'levers-ready');
+ for(const text of ['Open the door.','Which one?','Yes.','How can I open the door?','How do I open it?','How can we unlock the moon door?']){
+  const trial=structuredClone(run);
+  assert.equal(talkToKeyRoom(trial,text,'door-request'),'levers-ready');
+  assert.equal(trial.leversReady,true);
+ }
+ assert.equal(talkToKeyRoom(run,doorQuestion,'door-request'),'levers-ready');
+ assert.equal(run.doorOpen,false);
  assert.equal(interact(run,'B'),null);
  const step=(dx,dy,n)=>{for(let i=0;i<n;i++)assert.equal(move(run,dx,dy),'');};
  step(-1,0,1);step(0,-1,2);step(-1,0,3);step(0,1,5);step(1,0,1);
@@ -207,7 +233,12 @@ test('moon door needs three local exchanges and survives a refresh',async()=>{
  assert.match(interact(run,'sun'),/值守人/);assert.equal(run.dialStep,0);
  step(-1,0,1);step(0,-1,2);
  assert.equal(talkToKeyRoom(run,"I don't want the order."),'keeper-ask');
- assert.equal(talkToKeyRoom(run,"What's the order?"),'keeper-order');
+ for(const text of ["What's the order?",'Order?','Which symbol should I press first?','Again?']){
+  assert.equal(talkToKeyRoom(run,text),'keeper-order');
+ }
+ run.announced.push('keeper-ask');
+ run=restoreRun(run,'key');
+ assert.ok(run.announced.includes('keeper-ask'));
  step(0,1,2);step(1,0,1);
  interact(run,'sun');interact(run,'leaf');assert.equal(run.dialStep,0);
  interact(run,'sun');run=restoreRun(run,'key');assert.equal(run.dialStep,1);

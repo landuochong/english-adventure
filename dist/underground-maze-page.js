@@ -27,7 +27,7 @@ const discoveryQueue=[];
 try{run=restoreRun(JSON.parse(localStorage.getItem(saveKey)),mission);}catch{}
 const canvas=$('maze'), view=createMazeView(canvas);
 const hoverLabel=$('maze-word');
-const vocabulary={N:'keeper',W:'dial',S:'stairs',M:'moon door','*':'star',B:'marked lever',r:'marked lever',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
+const vocabulary={N:'keeper',W:'dial',S:'stairs',M:'moon door','*':'star',B:'diamond mark',r:'triangle mark',K:'key',a:'triangle carved in stone',b:'diamond carved in stone',c:'spiral carved in stone',
  H:'hammer',T:'pressure plate',D:'dangerous pressure plate',R:'rubble',V:'valve',G:'powered gate',P:'amber prism'};
 let pointer=null;
 function sceneTarget(event){
@@ -168,8 +168,14 @@ function commit(message){
 }
 function operate(id){
  if(keyRoom){
+  const wasCleared=run.cleared;
   const message=interact(run,id);
-  if(message!==null){stopWalking();commit(message);if(id==='K')discover();if(['complete','failed'].includes(run.phase)){stopVoice();focusOn(null);}}
+  if(message!==null){
+   stopWalking();commit(message);
+   if(['complete','failed'].includes(run.phase)){stopVoice();focusOn(null);}
+   else if(id==='K')discover();
+   else if(!wasCleared&&run.cleared)speak('keeper-find');
+  }
   return;
  }
  discover();
@@ -302,7 +308,17 @@ function playDiscovery(){
  });
 }
 function discover(){
- if(keyRoom){focusOn(keyScene(run));return;}
+ if(keyRoom){
+  const wasAtKeeper=mark==='keeper';
+  focusOn(keyScene(run));
+  if(mark==='keeper'&&(!wasAtKeeper||!speaking)&&!turn&&!bagOpen&&!run.clues.includes('keeper-order')&&!run.announced.includes('keeper-ask')){
+   speak('keeper-ask',()=>{
+    run.announced.push('keeper-ask');
+    save();
+   });
+  }
+  return;
+ }
  const around=encounterTiles(run);
  const newlyFound=around.filter(id=>!run.seen.includes(id));
  focusOn(newlyFound[0]||(around.includes(mark)?mark:around[0]));
@@ -374,12 +390,14 @@ function render(){
   if(run.phase==='search'){
    if(run.dialStep===3)$('goal').textContent='通道门开了，进去取钥匙。';
    else if(run.clues.includes('keeper-order'))$('goal').textContent='按值守人说的顺序点亮轮盘。已点亮 '+run.dialStep+' / 3。';
-   else if(run.cleared)$('goal').textContent='找到值守人，用英语问出轮盘的点亮顺序。';
+   else if(run.cleared)$('goal').textContent=keyScene(run)==='keeper'
+    ?'问罗宾轮盘的点亮顺序。可以说 “What’s the order?”，只说 “Order?” 也可以。'
+    :'要打开通道门，得按顺序点亮轮盘。到北边的支路找值守人罗宾，问他先点亮哪个图案。';
    else if(run.doorOpen)$('goal').textContent=run.hammer?'带锤子回到石障。':'月亮门已开。探索门后的通道，寻找清除石障的工具。';
-   else if(run.clues.includes('lever-rule'))$('goal').textContent='根据线索选择拉杆。拉错会封住月亮门，本轮结束。';
+   else if(run.clues.includes('lever-rule'))$('goal').textContent='数一数拉杆上方图案的角，再选择对应的拉杆。拉错会结束本轮。';
    else if(run.leversReady)$('goal').textContent='寻找拉杆，询问刻纹。拉错会结束本轮。';
    else if(run.starAwake)$('goal').textContent='找到月亮门，开口请它启动拉杆。';
-   else $('goal').textContent='找到墙上的星纹，开口问路。';
+   else $('goal').textContent='到入口走廊尽头找星纹，问 “Which way?”。听完线索再去月亮门。';
   }
   if(run.key)$('goal').textContent=run.phase==='complete'?'钥匙已带回出发点。':run.phase==='return'?'带着钥匙回到出发时的楼梯。':'向教练 Jalor 汇报你找到了什么。';
   $('bag').textContent=[run.hammer?'锤子':'',run.key?'钥匙':''].filter(Boolean).join('、')||'空';

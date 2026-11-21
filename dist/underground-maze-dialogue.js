@@ -44,16 +44,16 @@ export function mazeAnswers(mark,run){
 
 export const keyLines = {
  'key-brief': ['Find the lost key and tell your coach. Look at the shapes on the walls. Ask the star to show you the way.', '找到遗失的钥匙并向教练汇报。留意墙上的图案，先向星纹问路。'],
- 'keeper-order': ['First, what shines in the sky. Next, what falls from a cloud. Last, what grows on a tree.', '先点在天空中发光的，再点从云里落下的，最后点长在树上的。'],
- 'keeper-ask': ['I look after the dial. What would you like to know?', '我看守这个轮盘。你想问什么？'],
- 'keeper-find': ['Find the keeper in the north passage.', '去北边的支路找值守人。'],
+ 'keeper-order': ['First, press the sun. Then press the water drop. Last, press the leaf.', '先按太阳，再按水滴，最后按叶子。'],
+ 'keeper-ask': ["Hi, I'm Robin. I look after the dial. Ask me which symbol to press first.", '你好，我是罗宾，负责看守轮盘。你可以问我先按哪个图案。'],
+ 'keeper-find': ['The dial opens the gate. Find Robin in the north passage. Ask him what order to press the symbols in.', '轮盘可以打开通道门。去北边的支路找罗宾，问他按什么顺序点亮图案。'],
  'hammer-find': ['Look for a tool in the south passage.', '去南边的支路找工具。'],
  'hammer-use': ['Try your hammer on the cracked stones.', '试试用锤子敲有裂缝的石头。'],
- 'lever-rule': ['Count the corners. You need four.', '数数角。你要找的那个有四个角。'],
+ 'lever-rule': ['Look at the symbols above the levers. Find the symbol with four corners, then pull that lever.', '看拉杆上方的图案。找到有四个角的图案，再拉动对应的拉杆。'],
  'lever-prompt': ['Ask about the marks.', '可以问问这些刻纹。'],
  'door-first': ['Ask the moon door first.', '先去问问月亮门。'],
  'door-request': ['Do you need the door open?', '你想打开这扇门吗？'],
- 'find-star': ['Ask the star on the wall.', '向墙上的星纹问路。'],
+ 'find-star': ['Find the star at the end of the first hallway. Ask it, “Which way?” Then go to the moon door.', '先到入口走廊的尽头找星纹，问它 “Which way?”，听完线索再去月亮门。'],
  'star-awake': ['Follow the moon. Ask the moon door to turn on the levers.', '去找月亮。请月亮门启动拉杆。'],
  'levers-ready': ['Take the west passage. Ask about the marks on the levers.', '走西侧通道，问问拉杆上的刻纹。'],
  'key-report': ['What did you find?', '你找到了什么？'],
@@ -83,7 +83,11 @@ export function keyAnswer(scene,text,run,previous='key-ask'){
  const words=text.toLowerCase().replace(/[’']/g,"'").replace(/[^a-z' ]/g,' ').replace(/\s+/g,' ').trim();
  if(/\b(again|repeat|pardon|slower)\b/.test(words))return previous;
  const askingAboutShape=/^(?:what(?:'s| is) (?:this|that)(?: (?:shape|symbol|sign))?|what shape is (?:this|that)|what does (?:this|that) mean)$/.test(words);
- if(scene==='star'&&(askingAboutShape||/^(?:(?:i see|i can see|is (?:it|this|that)|this is|it is|it's|there is|there's) )?(?:(?:a|the) )?(?:five pointed )?star(?: on the wall)?$/.test(words)))return 'star-hint';
+ if(scene==='star'){
+  const namingStar=/^(?:(?:i see|i can see|is (?:it|this|that)|this is|it is|it's|there is|there's) )?(?:(?:a|the|this|that) )?(?:five pointed )?star(?: (?:mark|symbol|shape|sign))?(?: on the wall)?$/.test(words);
+  const askingAboutStar=/^what does (?:(?:the|this|that) )?star(?: (?:mark|symbol|shape|sign))?(?: on the wall)? mean(?: please)?$/.test(words);
+  if(askingAboutShape||namingStar||askingAboutStar)return 'star-hint';
+ }
  if(scene==='door'){
   if(run.doorOpen)return 'key-open';
   return run.leversReady?'levers-ready':'door-request';
@@ -103,10 +107,11 @@ export function talkToKeyRoom(run,text,previous){
   run.phase=tileAt(run.x,run.y,run)==='S'?'complete':'return';
   return 'key-return';
  }
- const routeRequest=/^(?:please )?(?:which way(?: should i go)?|where(?: is|'s) the key|where (?:do|should) i go|(?:can you )?(?:show|tell) me the way|key|help)(?: please)?$/.test(words);
+ const routeRequest=/^(?:please )?(?:which way(?: (?:can|do|should) i go)?|where (?:can|could|do|should) i go(?: next)?|where(?: is|'s) (?:the )?(?:lost )?key|(?:where|how) (?:can|could|do|should) i find (?:the )?(?:lost )?key|(?:can you )?(?:show|tell) me the way|key|help)(?: please)?$/.test(words);
  if(scene==='keeper'){
   if(/^(repeat|again|say that again|slower|pardon)$/.test(words)&&run.clues.includes('keeper-order'))return 'keeper-order';
-  if(/^(?:(?:what(?:'s| is) (?:the )?(?:right |correct )?(?:order|sequence)|(?:which (?:one|light|symbol) (?:comes |is )?first|which goes first|what comes first|what order|in what order)|how (?:does (?:the|this) dial work|do i (?:use the dial|light (?:it|them)|open the gate))|(?:can|could) you (?:tell|show) me the order|order|sequence|dial)(?: please)?)$/.test(words)){
+  const askingWhichFirst=/^(?:which|what)(?: (?:one|light|symbol))? (?:should i |do i )?(?:press|light) first(?: please)?$/.test(words);
+  if(askingWhichFirst||/^(?:(?:what(?:'s| is) (?:the )?(?:right |correct )?(?:order|sequence)|(?:which (?:one|light|symbol) (?:comes |is )?first|which goes first|what comes first|what order|in what order)|how (?:does (?:the|this) dial work|do i (?:use the dial|light (?:it|them)|open the gate))|(?:can|could) you (?:tell|show) me the order|order|sequence|dial)(?: please)?)$/.test(words)){
    if(!run.clues.includes('keeper-order'))run.clues.push('keeper-order');
    return 'keeper-order';
   }
@@ -131,10 +136,12 @@ export function talkToKeyRoom(run,text,previous){
   run.starAwake=true;
   return 'star-awake';
  }
+ if(scene==='star'&&reply==='moon-route')return run.starAwake?'star-awake':'key-clarify';
  if(scene==='door'&&!run.doorOpen){
   if(!run.starAwake)return 'find-star';
   const leverRequest=/^(?:please )?(?:(?:can|could|would) you )?(?:open(?: (?:the |this )?door)?|(?:turn on|activate|unlock|start) (?:the )?levers?|which (?:one|lever)(?: should i pull)?)(?: please)?$/.test(words);
-  if(!run.leversReady&&(leverRequest||(previous==='door-request'&&/^(yes|yes please)$/.test(words)))){
+  const askingHowToOpen=/^(?:(?:yes|yeah|okay|ok|sure) )?how (?:(?:can|could|do|should) (?:i|we)|to) (?:open|unlock) (?:(?:the |this |that )?(?:moon )?door|it)(?: please)?$/.test(words);
+  if(!run.leversReady&&(leverRequest||askingHowToOpen||(previous==='door-request'&&/^(yes|yes please)$/.test(words)))){
    run.leversReady=true;
    return 'levers-ready';
   }

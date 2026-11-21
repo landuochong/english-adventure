@@ -77,8 +77,14 @@ export function createMazeView(canvas){
   if(glyphs[tile])return plate(x,y,tile,run);
   if(tile==='r'||tile==='B'){
    const color='#ccb187';
-   return [...plate(x,y,tile==='B'?'b':'a',run),...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
+   const faces=[...box(x-.23,y-.19,.46,.38,5,stone),...box(x-.035,y-.04,.07,.09,21,stone),
     ...box(x-.15,y-.07,.30,.14,6,{top:color,front:color,side:color},18)];
+   const [cx,cy]=point(x,y,49), radius=16*scale;
+   ctx.beginPath();ctx.arc(cx,cy,radius,0,2*Math.PI);ctx.fillStyle='#151b24';ctx.fill();
+   ctx.strokeStyle=color;ctx.stroke();
+   const corners=tile==='B'?[[0,-10],[10,0],[0,10],[-10,0]]:[[0,-10],[10,8],[-10,8]];
+   poly(corners.map(([dx,dy])=>[cx+dx*scale,cy+dy*scale]),'#ffe4a0',null);
+   return [...faces,[[cx-radius,cy-radius],[cx+radius,cy-radius],[cx+radius,cy+radius],[cx-radius,cy+radius]]];
   }
   if(tile==='K'&&!run.key){
    const base=box(x-.26,y-.24,.52,.48,11,stone);
