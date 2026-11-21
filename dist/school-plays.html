@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>开学第一天 · 校园剧场</title><link rel="stylesheet" href="school-plays.css"></head>
+<body><header><a href="./">← 校园地图</a><span>Campus Quest · 校园剧场</span></header>
+<main><h1>开学第一天</h1><nav id="lessons" aria-label="选择剧本"></nav>
+<section class="spread"><article class="stage">
+<p id="place"></p><canvas id="stage" role="img"></canvas><div id="prop"></div><p id="inventory"></p></article>
+<article class="dialog"><small id="role"></small><h2 id="title"></h2><p id="goal"></p>
+<strong id="speaker"></strong><div id="actions"></div>
+<button id="talk" hidden>开始录音</button> <button id="cancel" hidden>取消录音</button>
+<p role="status" id="status"></p><p id="heard"></p><button hidden id="offline">使用离线英语音色并重听</button><audio id="audio" preload="none"></audio>
+<div id="listen" hidden><button id="repeat">重听台词</button> <button id="brief">重听开场</button>
+<details><summary>查看字幕</summary><p lang="en" id="caption"></p></details></div>
+</article></section>
+<details><summary>语音设置</summary><label>英语音色 <select id="voice"></select></label>
+<label>语速 <input type="range" min="0.5" max="1.5" step="0.05" id="rate"></label>
+<p id="provider"></p></details></main><script type="module" src="school-plays-page.js"></script></body></html>

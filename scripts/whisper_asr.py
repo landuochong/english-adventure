@@ -13,6 +13,8 @@ MODEL=Path(os.environ.get('WHISPER_MODEL',Path.home()/'whb/music/models/ggml-sma
 CLI=os.environ.get('WHISPER_CLI',shutil.which('whisper-cli') or '')
 LOCK=threading.Lock()
 PROMPTS={
+ 'play-pen':'An English conversation in a classroom about reading, a bookmark, a name and a school exhibition.',
+ 'play-fine':'Students introduce themselves, discuss their drawings and report on their first lesson in English.',
  'campus-welcome':'An English conversation welcoming a new student to Future Campus. Vocabulary: nickname, my name is, I like, library, cafe, sports area, meet, explore. People: Mia, Lisa, Kai, Sue, Jalor.',
  'campus-picnic':'An English conversation at a campus cafe about lunch for a picnic. Vocabulary: menu, chicken sandwich, cheese sandwich, sold out, instead, onions, with, without, water, juice, lunch, picnic.',
  'campus-level-one':'An English conversation at a school science fair. Vocabulary: science fair, robot, information desk, laboratory, battery check, bring back, light, colour.',
@@ -24,11 +26,14 @@ PROMPTS={
  'hobbies':'An English conversation about sports and invitations. Vocabulary: favourite sport, basketball, swimming, invite, join.',
  'pip':'An English conversation at a school technology festival about looking for a missing robot. Vocabulary: robot, library, gym, playground.'
 }
+PROMPTS['play-welcome'] = PROMPTS['campus-welcome']
+
 def health():
  return {'ok':bool(CLI and Path(CLI).is_file() and MODEL.is_file()),'asr_provider':'whisper_cpp_small','model':'Whisper small','language':'en'}
 def transcribe(audio,scene=''):
  with wave.open(io.BytesIO(audio),'rb') as wav:
   if wav.getnchannels()!=1 or wav.getsampwidth()!=2 or wav.getframerate()!=16000 or not 0<wav.getnframes()<=16000*60: raise ValueError('Invalid WAV')
+  samples = wav.getnframes()
   if len(wav.readframes(wav.getnframes())) != wav.getnframes()*2: raise ValueError('Truncated WAV')
  if not health()['ok']: raise RuntimeError('Whisper installation missing')
  if not LOCK.acquire(blocking=False): raise BlockingIOError('Whisper busy; retry')
@@ -38,6 +43,9 @@ def transcribe(audio,scene=''):
   with tempfile.TemporaryDirectory(prefix='campus-whisper-') as folder:
    path=Path(folder)/'speech.wav';path.write_bytes(audio)
    args=[CLI,'-m',str(MODEL),'-l','en','-ng','-nt','-f',str(path)]
+   # A 20 ms encoder step covers one token. Pad short classroom turns by one second.
+   if scene in ('play-welcome', 'play-pen', 'play-fine'):
+    args += ['-ac',str(min(1500, (samples + 319) // 320 + 50))]
    if scene in PROMPTS: args+=['--prompt',PROMPTS[scene]]
    result=subprocess.run(args,capture_output=True,text=True,timeout=25,check=True)
   text=result.stdout.strip()
