@@ -11,9 +11,13 @@ function paperLeaf(color, painted) {
   pen.strokeStyle='#96734a'; pen.lineWidth=2; pen.beginPath();
   pen.moveTo(64,8); pen.quadraticCurveTo(50,70,65,145); pen.stroke();
   if (painted) {
-    pen.translate(65,83); pen.rotate(.55); pen.fillStyle='#554239';
-    pen.fillRect(-4,-10,8,48); pen.fillStyle='#24536a'; pen.beginPath();
-    pen.moveTo(0,-38); pen.quadraticCurveTo(22,-13,0,-6); pen.quadraticCurveTo(-15,-10,0,-38); pen.fill();
+    pen.fillStyle='#24536a';
+    pen.beginPath(); pen.ellipse(61,86,24,17,-.18,0,2*Math.PI); pen.fill();
+    pen.beginPath(); pen.arc(79,72,12,0,2*Math.PI); pen.fill();
+    pen.beginPath(); pen.moveTo(46,84); pen.lineTo(25,69); pen.lineTo(37,92); pen.fill();
+    pen.fillStyle='#e5a145'; pen.beginPath(); pen.moveTo(88,69); pen.lineTo(99,74); pen.lineTo(88,76); pen.fill();
+    pen.fillStyle='#80b8c5'; pen.beginPath(); pen.ellipse(57,84,13,6,-.35,0,2*Math.PI); pen.fill();
+    pen.fillStyle='#fff'; pen.beginPath(); pen.arc(82,70,2,0,2*Math.PI); pen.fill();
   }
   const texture=new T.CanvasTexture(canvas); texture.colorSpace=T.SRGBColorSpace;
   return new T.Mesh(new T.PlaneGeometry(.42,.54),new T.MeshStandardMaterial({map:texture,alphaTest:.45,side:T.DoubleSide}));

@@ -5,8 +5,8 @@ export const scripts = [
     "title": "愿望树旁的空位",
     "goal": "校园地点、自我介绍和愿望表达。学生已准备姓名与学科词汇。",
     "opening": "庭院的愿望树旁。Mia 把最后一片空叶子递给学生：“Each leaf on our tree is someone's wish. This one is for the new student in the library. Ask his name and what he wants to learn. Then bring him back and introduce him to me. We can hang his wish here together.”",
-    "explore": "学生来到图书馆，问：“Are you new here?” Ben 回答：“Yes. I’m Ben. I want to learn to draw.” 学生邀请他一起返回：“Come with me. Let’s add your wish.”",
-    "delivery": "学生挂上画笔图案的叶子，向 Mia 介绍：“This is Ben. He wants to learn to draw.” Mia 回应：“Welcome, Ben. Your leaf belongs here.”",
+    "explore": "学生来到图书馆，问：“Are you new here?” Ben 回答：“I’m Ben. It’s my first day.” 学生邀请他一起返回，Ben 犹豫：“I don’t know what to put on my leaf.” 学生询问他的爱好，Ben 展示本子上的小动物，说自己画的小鸟像长翅膀的土豆。学生建议：“Would you like to learn to draw birds?” Ben 认下愿望，在叶子上画第一只小鸟。",
+    "delivery": "学生带 Ben 回庭院，向 Mia 介绍：“This is Ben. He wants to learn to draw birds.” 然后把小鸟愿望叶挂上树。 Mia 回应：“Welcome, Ben. Your leaf belongs here.”",
     "check": "学生认对伙伴，向 Mia 说清姓名和愿望。若只说姓名，Mia 追问：“What does he want to learn?”"
   },
   {

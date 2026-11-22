@@ -45,9 +45,9 @@ function createMissionCore(id){
 
 
 // Optional conversation never grants clues or changes task state.
-export function createMission(id,difficulty=1){
+export function createMission(id,difficulty=1,wishEdition=2){
  if(id==='wish'){
-  const base=createWishMission(environmentLayout);
+  const base=createWishMission(environmentLayout,wishEdition);
   return difficulty===2?withAdvancedStory(base,{...environmentLayout,people:wishPeople}):base;
  }
  if(id==='hobbies')return createInvitationMission(missions.find(m=>m.id===id),environmentLayout,difficulty);

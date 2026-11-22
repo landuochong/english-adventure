@@ -3,6 +3,7 @@ import {createMission} from './campus-missions.js?v=difficulty-1';
 // Replay accepted interactions so hidden dialogue slots and visible state resume together.
 export function createMissionSession(id,storage,notify=()=>{},fresh=false,difficulty=1){
  const key='campus-session-v1-'+id+(difficulty===2?'-l2':'');
+ let wishEdition=2;
  let controller=createMission(id,difficulty),events=[],restored=false,writable=true,briefing=null;
  const clues=[];
  let original=controller.act;
@@ -26,11 +27,14 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
   if(raw){
    const saved=JSON.parse(raw);
    if(saved.version!==1||saved.id!==id||!Array.isArray(saved.events)||saved.events.length>10000)throw Error('invalid save');
+   if(id==='wish' && (saved.wishEdition??1)===1 && saved.events.length){
+    wishEdition=1;controller=createMission(id,difficulty,wishEdition);original=controller.act;
+   }
    for(const e of saved.events){
     if(!e||!['mission','say','invitation-turn','greet','discover','pickup','deliver','take-part','install-part','test-lamp'].includes(e.type)||typeof e.npc!=='string'||typeof e.text!=='string'||e.text.length>(e.type==='invitation-turn'?8000:2000)||!Number.isFinite(e.pos?.x)||!Number.isFinite(e.pos?.z))throw Error('invalid event');
     apply(e.npc,e.type,e.text,e.pos);
    }
-   if(controller.state.complete){clearCompletedSession();controller=createMission(id,difficulty);briefing=null;clues.length=0;}
+   if(controller.state.complete){clearCompletedSession();wishEdition=2;controller=createMission(id,difficulty);briefing=null;clues.length=0;}
    else {events=saved.events;restored=events.length>0;}
   }
  }catch{controller=createMission(id,difficulty);events=[];briefing=null;clues.length=0;writable=false;notify('上次进度无法读取，原记录已保留；本次进度暂不能保存。');}
@@ -43,7 +47,7 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
    if(writable)try{
     if(events.length>10000)throw Error('save too large');
     if(controller.state.complete)clearCompletedSession();
-    else storage.setItem(key,JSON.stringify({version:1,id,events}));
+    else storage.setItem(key,JSON.stringify({version:1,id,events,wishEdition:id==='wish'?wishEdition:undefined}));
    }catch{writable=false;notify('本次进度未能保存，请勿刷新或关闭页面。');}
   }
   return reply;
@@ -57,7 +61,7 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
   data.zh=reply.zh;event.text=JSON.stringify(data);
   const clue=clues.findLast(c=>c.npc===npc&&c.en===reply.en);
   if(clue)clue.zh=reply.zh;
-  try{storage.setItem(key,JSON.stringify({version:1,id,events}));}catch{notify('本次释义未能保存。');}
+  try{storage.setItem(key,JSON.stringify({version:1,id,events,wishEdition:id==='wish'?wishEdition:undefined}));}catch{notify('本次释义未能保存。');}
  },review(npc){
   if(controller.state.complete&&npc===controller.config.giver)return controller.config.thanks;
   return clues.findLast(clue=>clue.npc===npc)||
