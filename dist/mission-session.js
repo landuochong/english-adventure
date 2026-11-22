@@ -8,7 +8,7 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
  const clues=[];
  let original=controller.act;
  function clearCompletedSession(){
-  if(['hobbies','wish'].includes(id)&&!finishLevel(storage,id,difficulty))throw Error('Could not save completion');
+  if((id==='hobbies'||id==='wish'||controller.config.voiceOnly)&&!finishLevel(storage,id,difficulty))throw Error('Could not save completion');
   storage.removeItem(key);
  }
  function apply(npc,type,text,pos,clearLine){
@@ -31,7 +31,7 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
     wishEdition=1;controller=createMission(id,difficulty,wishEdition);original=controller.act;
    }
    for(const e of saved.events){
-    if(!e||!['mission','say','invitation-turn','greet','discover','pickup','deliver','take-part','install-part','test-lamp'].includes(e.type)||typeof e.npc!=='string'||typeof e.text!=='string'||e.text.length>(e.type==='invitation-turn'?8000:2000)||!Number.isFinite(e.pos?.x)||!Number.isFinite(e.pos?.z))throw Error('invalid event');
+    if(!e||!['mission','say','invitation-turn','greet','discover','pickup','deliver','take-part','install-part','test-lamp','inspect-photo'].includes(e.type)||typeof e.npc!=='string'||typeof e.text!=='string'||e.text.length>(e.type==='invitation-turn'?8000:2000)||!Number.isFinite(e.pos?.x)||!Number.isFinite(e.pos?.z))throw Error('invalid event');
     apply(e.npc,e.type,e.text,e.pos);
    }
    if(controller.state.complete){clearCompletedSession();wishEdition=2;controller=createMission(id,difficulty);briefing=null;clues.length=0;}

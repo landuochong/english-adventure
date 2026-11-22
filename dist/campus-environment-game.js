@@ -1,7 +1,7 @@
 import {workshopBench,workshopParts} from './campus-workshop.js?v=workshop-20261118';
 import {createMissionSession} from './mission-session.js?v=difficulty-1';
 import {createBackpack} from './campus-backpack.js?v=bag-clues-20261118';
-import {levels,readProgress,finishLevel,nextLevel} from './campus-level-catalog.js?v=difficulty-1';
+import {levels,levelStarts,readProgress,finishLevel,nextLevel} from './campus-level-catalog.js?v=difficulty-1';
 import {createExhibit} from './campus-exhibit.js?v=click-pickup-1';
 import * as T from './vendor/three/three.module.js';
 import {createMission,missions} from './campus-missions.js?v=difficulty-1';
@@ -12,8 +12,10 @@ import {createLocalVoiceTurn} from './local-voice-turn.js?v=campus-silence-3';
 import {createVoiceTurn} from './voice-turn.js';
 import {createBrowserVAD} from './vad-loader.js';
 import {englishVoices,chooseVoice,voiceKey,loadVoices} from './speech.js';
+import {createGradeSevenProps,playRehearsal} from './campus-grade-seven-props.js';
 export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clearLine=()=>true){
  const layout={...environmentLayout,people:{...environmentLayout.people}};
+ const chapterProps=createGradeSevenProps(scene,actor);
  const wishTree=createWishTree(scene,actor);
  const encountered=new Set(),mapNodes=new Map();
  const params=new URLSearchParams(location.search);const difficulty=params.get('difficulty')==='2'?2:1;let exploring=params.get('explore')==='1';
@@ -85,13 +87,15 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
  function cancel(){stopReply();voiceState();$('voice-status').textContent='';const pending=turn;turn=null;pending?.abort();$('cancel').hidden=true;$('talk').disabled=false;$('talk').textContent=talkLabel();}
  function close(){showKeyword('');cancel();++token;speechSynthesis.cancel();$('note').hidden=true;selected=null;focusId=null;conversationMode='task';offeredMission=null;root.dataset.conversing='false';}
  function adapt(r){if(r?.en.includes('Go through the glass doorway'))return {en:'Yes, the robot was moved to the laboratory display on the right side of the science centre for a battery check. Ask Leo there.',zh:'机器人被移到科学中心右侧实验展示区检查电池了，去那里问 Leo。'};return r;}
- function show(r,id,mode='task'){if(!r)return;stopReply();conversationMode=mode;$('status').textContent='';last=adapt(r);selected=id;root.dataset.conversing='true';$('replay').disabled=$('slow').disabled=false;$('person').textContent=id==='nova'?'Jalor · 机器狗教练':layout.people[id]?.name||controller.config.title;$('en').textContent=last.en;$('zh').textContent=last.zh;$('help').open=false;$('note').hidden=false;$('talk').hidden=mode==='review'||(mode==='task'&&(id==='nova'||!controller.config.people.includes(id)||exploring));$('form').hidden=mode==='review'||controller.config.id==='wish';if(mode==='briefing')$('talk').hidden=true;$('chat').hidden=mode!=='review';$('new-task').hidden=mode!=='review'||!offeredMission;$('voice-status').textContent='';$('talk').textContent=talkLabel();if($('goodbye').open){
+ function show(r,id,mode='task'){if(!r)return;stopReply();conversationMode=mode;$('status').textContent='';last=adapt(r);selected=id;root.dataset.conversing='true';$('replay').disabled=$('slow').disabled=false;$('person').textContent=id==='nova'?'Jalor · 机器狗教练':layout.people[id]?.name||controller.config.title;$('en').textContent=last.en;$('zh').textContent=last.zh;$('help').open=false;$('note').hidden=false;$('talk').hidden=mode==='review'||(mode==='task'&&(id==='nova'||!controller.config.people.includes(id)||exploring));$('form').hidden=mode==='review'||controller.config.id==='wish'||controller.config.voiceOnly===true;if(mode==='briefing')$('talk').hidden=true;$('chat').hidden=mode!=='review';$('new-task').hidden=mode!=='review'||!offeredMission;$('voice-status').textContent='';$('talk').textContent=talkLabel();if($('goodbye').open){
    $('goodbye-line').textContent=last.en;void speak(last.en,false,endGoodbye);
+  }else if(controller.config.id==='u2'&&mode==='task'&&(r===controller.config.brief||r===controller.config.steps[0].reply)){
+   const part=id==='mei'?'erhu':'guitar';void speak(last.en,false,()=>playRehearsal(part));
   }else void speak(last.en);}
  function act(id,type,text=''){const reply=controller.act(id,type,text,actor.position,clearLine);if(type==='mission'&&reply)briefing={...reply};return reply;}
  const backpack=createBackpack({getContext:()=>({config:controller.config,state:s,briefing,exploring,clues:controller.clues.map(clue=>({...adapt(clue),name:layout.people[clue.npc]?.name||clue.npc}))}),speak,pause:()=>{close();setPlaying(false);},resume:()=>setPlaying(true),stop:()=>{++token;speechSynthesis.cancel();voiceState();}});
  $('bag').onclick=()=>backpack.open();
- $('briefing').onclick=()=>{if(briefing&&!turn)show(briefing,controller.config.giver,controller.config.id==='wish'?'briefing':'task');};
+ $('briefing').onclick=()=>{if(briefing&&!turn)show(briefing,controller.config.giver,(controller.config.voiceOnly||controller.config.id==='wish')?'briefing':'task');};
  let keywordTimer=null;
  function showKeyword(text){clearTimeout(keywordTimer);$('keyword').textContent=text;}
  $('keyword-hint').onclick=()=>{showKeyword(controller.keyword||(s.stage==='brief'?'listen':s.stage==='pickup'?'collect':s.stage==='handover'?'deliver':'ask'));keywordTimer=setTimeout(()=>showKeyword(''),4500);};
@@ -170,6 +174,8 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
  function renderWords(){ $('words').replaceChildren();for(const word of [...controller.config.words,...controller.config.phrases]){const b=document.createElement('button');b.textContent='🔊 '+word;b.onclick=()=>speak(word);$('words').append(b);}}
  for(const mission of missions)$('mission').add(new Option(mission.title,mission.id));
  function chooseMission(id,fresh=false){close();briefing=null;exploring=false;if(audioUrl){URL.revokeObjectURL(audioUrl);audioUrl=null;}$('recording').removeAttribute('src');$('recording').hidden=true;controller=session(id,fresh);s=controller.state;briefing=controller.briefing;
+  if(controller.config.voiceOnly){const point=controller.resumePosition||levelStarts[id];actor.position.set(point.x,actor.position.y,point.z);}
+
   {const url=new URL(location.href);url.searchParams.set('mission',id);url.searchParams.delete('explore');history.replaceState(null,'',url);updateMapLinks();}
   renderWords();$('mission').value=id;}
  $('mission').onchange=()=>chooseMission($('mission').value);renderWords();
@@ -189,7 +195,7 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
  document.querySelector('#hud h1').textContent=exploring?'未来校园 · 自由探索':controller.config.title;
   $('mission-label').hidden=true;$('ready-title').textContent=begun?'声音设置':exploring?'和 Jalor 出发':(difficulty===2?'Level 2 · '+controller.config.title:levels.find(l=>l.id===controller.config.id).title);$('ready-caption').textContent=canResume?'有一局做了一半，你可以接着玩。':!exploring&&controller.config.id==='picnic'?'尚未领取委托。进入校园后，去咖啡馆露台找 Lily。':'先熟悉这些表达，进入场景后认真听取委托。';$('ready-caption').hidden=begun;$('words').hidden=begun||exploring;$('audio-settings').open=begun||!voice;cancel();++token;speechSynthesis.cancel();setPlaying(false);$('ready').showModal();}
  $('settings').onclick=settings;$('ready').addEventListener('cancel',e=>e.preventDefault());
- $('begin').onclick=()=>{remember();if(!voice){$('ready-status').textContent='英语音色仍在加载，请稍后选择。';voices();return;}$('ready').close();begun=true;setPlaying(true);$('controls').hidden=false;if(controller.restored&&briefing){show(briefing,controller.config.giver,controller.config.id==='wish'?'briefing':'task');}else hint();};
+ $('begin').onclick=()=>{remember();if(!voice){$('ready-status').textContent='英语音色仍在加载，请稍后选择。';voices();return;}$('ready').close();begun=true;setPlaying(true);$('controls').hidden=false;if(controller.restored&&briefing){show(briefing,controller.config.giver,(controller.config.voiceOnly||controller.config.id==='wish')?'briefing':'task');}else hint();};
  function interact(id){
    if(!running||turn)return;if(selected)close();
    if(id==='nova'){
@@ -228,14 +234,14 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
    }
    if(mode==='ask'&&controller.config.id==='welcome'){show(act(id,'greet'),id);return;}
    if(mode==='ask'){
-     selected=id;$('form').hidden=controller.config.id==='wish';$('chat').hidden=$('new-task').hidden=true;root.dataset.conversing='true';$('talk').textContent=talkLabel();last=s.records[id]?adapt(s.records[id]):null;
+     selected=id;$('form').hidden=controller.config.id==='wish'||controller.config.voiceOnly===true;$('chat').hidden=$('new-task').hidden=true;root.dataset.conversing='true';$('talk').textContent=talkLabel();last=s.records[id]?adapt(s.records[id]):null;
      $('person').textContent=p.name;$('note').hidden=false;$('help').open=false;$('talk').hidden=false;
      $('en').textContent=last?.en||'';$('zh').textContent=last?.zh||'';$('raw').textContent='';
      $('replay').disabled=$('slow').disabled=!last;void talk();
    }else if(controller.config.people.includes(id)){show(act(id,'greet'),id);}
    else show({en:'Hello! Let us finish the current task first. Your coach can help you decide what to do next.',zh:'你好，先完成当前任务吧。不清楚下一步可以问教练。'},id);
  }
- if(controller.config.id==='wish'&&controller.resumePosition){
+ if((controller.config.voiceOnly||controller.config.id==='wish')&&controller.resumePosition){
   const {x,z}=controller.resumePosition;actor.position.set(x,actor.position.y,z);
  }
  const labels={};for(const [id,p] of Object.entries(layout.people)){
@@ -346,28 +352,39 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
   $('goodbye').close();showCompletion();
  }
  $('goodbye').oncancel=e=>{e.preventDefault();endGoodbye();};
+ function useChapterProp(id){
+  if(id!==controller.config.id||!controller.config.voiceOnly||!running||turn)return false;
+  const target=controller.config.positions[controller.config.giver];
+  if(Math.hypot(actor.position.x-target.x,actor.position.z-target.z)>layout.interactionRadius||!clearLine(target))return false;
+  if(!exploring&&s.stage==='handover'){deliver();return true;}
+  if(!exploring&&s.stage==='inspect'){act(controller.config.giver,'inspect-photo');close();}
+  const back=id==='u3'&&s.stage==='interview'&&s.index===0;
+  chapterProps.read(id,s.complete?'complete':back?'back':'front');
+  return true;
+ }
  function deliver(){
   if(!running||turn||s.stage!=='handover')return;
   const reply=act(controller.config.giver,'deliver');
-  if(reply&&s.complete){showCompletion();void speak(reply.en);}
+  if(reply&&s.complete){showCompletion();void speak(reply.en,false,controller.config.id==='u2'?()=>playRehearsal('both'):undefined);}
  }
- $('action').onclick=deliver;
+ $('action').onclick=()=>s.stage==='inspect'?useChapterProp(controller.config.id):deliver();
  $('thanks').onclick=()=>speak(controller.config.thanks.en);
  function restartMission(id){$('win').close();chooseMission(id,id===controller.config.id);begun=false;settings();}
  $('again').onclick=()=>restartMission(controller.config.id);
  $('next').onclick=()=>{const next=nextLevel(controller.config.id,progress);if(next)restartMission(next.id);};
  $('view').onclick=()=>{$('win').close();exploring=true;setPlaying(true);};
  addEventListener('pagehide',()=>{cancel();++token;speechSynthesis.cancel();if(audioUrl)URL.revokeObjectURL(audioUrl);});
- return {people:layout.people,get canHangWish(){return controller.config.id==='wish'&&!exploring&&s.stage==='handover'&&!$('action').hidden;},hangWish(){if(controller.config.id==='wish'&&!exploring&&s.stage==='handover')deliver();},pickWorkshopPart,pickItem,canPickItem,get workshopState(){return controller.config.id==='workshop'?s:null;},get movementLocked(){return turn!==null||$('goodbye').open;},get focus(){
+ return {useChapterProp,people:layout.people,get canHangWish(){return controller.config.id==='wish'&&!exploring&&s.stage==='handover'&&!$('action').hidden;},hangWish(){if(controller.config.id==='wish'&&!exploring&&s.stage==='handover')deliver();},pickWorkshopPart,pickItem,canPickItem,get workshopState(){return controller.config.id==='workshop'?s:null;},get movementLocked(){return turn!==null||$('goodbye').open;},get focus(){
    if(!focusId||$('note').hidden)return null;
    const p=focusId==='nova'?scene.getObjectByName('campus-coach')?.userData.interactionPosition:layout.people[focusId];
    return p?{x:p.x,z:p.z,y:focusId==='nova'?.75:1.35}:null;
  },get conversing(){return selected!==null&&!$('note').hidden;},interact,closeConversation:close,begin(){if(begun)setPlaying(true);else settings();},update(active){if(running&&!active&&!s.complete)close();running=active;
    const wish=controller.config.id==='wish'&&(!exploring||s.complete);
    wishTree.update(wish?s:null,progress.completed.includes('wish'));
-   layout.people.mia=wish?wishPeople.mia:environmentLayout.people.mia;
-   layout.people.ben=wish?wishTree.companion:environmentLayout.people.ben;
-   for(const id of ['mia','ben']){
+   const chapter=controller.config.voiceOnly&&(!exploring||s.complete)?controller.config:null;
+   chapterProps.update(chapter?.id,s,progress.completed);
+   for(const id of ['mia','ben','mei']){
+     layout.people[id]=chapter?.positions[id]||(wish&&id==='ben'?wishTree.companion:wish&&id==='mia'?wishPeople.mia:environmentLayout.people[id]);
      const p=layout.people[id];mapNodes.get(id).group.setAttribute('transform','translate('+p.x+' '+p.z+')');
    }
    $('save-status').textContent=sessionNotice;
@@ -378,6 +395,11 @@ export function createEnvironmentGame(scene,camera,setPlaying,actor=camera,clear
    for(const [id,p] of Object.entries(layout.people)){const button=labels[id],mode=campusMarker(s,id);projected.set(p.x,2.35,p.z).project(camera);const distance=Math.hypot(actor.position.x-p.x,actor.position.z-p.z);if(active&&distance<=layout.interactionRadius)encountered.add(id);const pin=mapNodes.get(id);pin.group.style.display=encountered.has(id)||(exploring?missions.some(m=>m.giver===id):id===controller.config.giver)?'':'none';const state=mode==='ask'?'当前任务':mode==='done'?'已完成':'已认识';pin.dot.setAttribute('fill',state==='当前任务'?'#f16c64':state==='已完成'?'#71d5aa':'#82cafa');pin.group.setAttribute('aria-label',p.name+' · '+state);button.hidden=!active||distance>14||projected.z>1||projected.z< -1||(distance>layout.interactionRadius&&(Math.abs(projected.x)>1||Math.abs(projected.y)>1))||mode==='idle';button.style.left=Math.max(28,Math.min(innerWidth-28,(projected.x+1)*innerWidth/2))+'px';button.style.top=Math.max(108,Math.min(innerHeight-100,(-projected.y+1)*innerHeight/2))+'px';button.textContent=mode==='ask'?'?':mode==='done'?'✓':'▤';button.dataset.mode=mode;button.setAttribute('aria-label',p.name+(mode==='ask'?' 交流':' 查看对话'));}
    const d=controller.config.device?Math.hypot(actor.position.x-controller.config.device.x,actor.position.z-controller.config.device.z):Infinity;if(active&&!exploring&&s.stage==='pickup'&&!s.discovered&&d<2.3)act('device','discover');for(const [id,exhibit] of exhibits)exhibit.update(!exploring&&id===controller.config.id?s:progress.completed.includes(id)&&!(id==='restaurant'&&progress.completed.includes('picnic'))?{owner:'display',complete:true,displayOnly:true}:{visible:false},performance.now());
    const canPick=canPickItem(controller.config.id),canGive=!exploring&&s.stage==='handover'&&Math.hypot(actor.position.x-layout.people[controller.config.giver].x,actor.position.z-layout.people[controller.config.giver].z)<layout.interactionRadius;$('action').hidden=!canGive;$('action').textContent=controller.config.kind==='none'?(controller.config.finishLabel||'确认汇报'):'交给 '+layout.people[controller.config.giver].name;
+   if(active&&!exploring&&s.stage==='inspect'){
+    const target=layout.people[controller.config.giver];
+    $('action').hidden=Math.hypot(actor.position.x-target.x,actor.position.z-target.z)>layout.interactionRadius||!clearLine(target);
+    $('action').textContent='翻看旧照片';
+   }
    showPickupLabel(active,canPick);
    renderWorkshop(active);
    if(!exploring&&s.owner==='student')$('status').textContent='正在携带'+controller.config.item;else if(s.complete||exploring)$('status').textContent='';

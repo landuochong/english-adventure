@@ -199,6 +199,7 @@ renderer.domElement.onpointerup=e=>{
  if(!active||game.movementLocked)return;
  if(!click){renderer.domElement.onpointermove(e);return;}
  const object=pickSceneObject(e);const part=findObjectTag(object,'workshopPart');
+ const chapterProp=findObjectTag(object,'storyProp');if(chapterProp&&game.useChapterProp(chapterProp.userData.storyProp))return;
  if(findObjectTag(object,'wishTree')&&game.canHangWish){game.hangWish();return;}
  if(part&&game.pickWorkshopPart(part.userData.workshopPart)){keys.clear();route=[];clearHover();return;}
  const item=findObjectTag(object,'pickupMission');

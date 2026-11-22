@@ -74,3 +74,8 @@ body #reticle{display:none}
 .workshop-collect{position:fixed;transform:translate(-50%,-100%);padding:6px 10px;background:#fff0cc;color:#143647;font-size:13px;border-radius:7px;z-index:8}
 
 #quest-pickup-label:not(:disabled){pointer-events:auto;cursor:pointer}
+
+.chapter-prop-reader{width:min(92vw,640px);padding:12px;border:0;border-radius:8px;background:#f3ead7;text-align:right}
+.chapter-prop-reader::backdrop{background:#192a32aa}
+.chapter-prop-reader canvas{display:block;width:100%;height:auto}
+.chapter-prop-reader button{margin-top:8px;padding:8px 16px;background:#314e50;color:white;border:0;border-radius:5px}

@@ -13,6 +13,9 @@ MODEL=Path(os.environ.get('WHISPER_MODEL',Path.home()/'whb/music/models/ggml-sma
 CLI=os.environ.get('WHISPER_CLI',shutil.which('whisper-cli') or '')
 LOCK=threading.Lock()
 PROMPTS={
+ 'campus-u1':'English conversation about a weekly plan at school. Names: Ben, Mei, Mia. Vocabulary: library, poster, meeting, after school.',
+ 'campus-u2':'English conversation at music rehearsal. Names: Ben, Mei. Vocabulary: erhu, guitar, melody, instrument, voice, invitation.',
+ 'campus-u3':'An English lesson at a family photo album. Vocabulary: whose, coat, cold morning, belonging, sleeves, family, photo, label. Mei answers questions about the coat.',
  'campus-wish':'An English conversation at a campus wish tree and library. Students meet, invite a classmate and introduce a friend. People: Mia and Ben.',
  'play-pen':'An English conversation in a classroom about reading, a bookmark, a name and a school exhibition.',
  'play-fine':'Students introduce themselves, discuss their drawings and report on their first lesson in English.',
@@ -45,10 +48,11 @@ def transcribe(audio,scene=''):
    path=Path(folder)/'speech.wav';path.write_bytes(audio)
    args=[CLI,'-m',str(MODEL),'-l','en','-ng','-nt','-f',str(path)]
    # A 20 ms encoder step covers one token. Pad short classroom turns by one second.
-   if scene in ('play-welcome', 'play-pen', 'play-fine', 'campus-wish'):
+   if scene in ('play-welcome', 'play-pen', 'play-fine', 'campus-wish', 'campus-u1', 'campus-u2', 'campus-u3'):
     args += ['-ac',str(min(1500, (samples + 319) // 320 + 50))]
-   if scene == 'campus-wish':
-    args += ['-t','2','-bs','1','-bo','1','-nf']
+   if scene in ('campus-wish','campus-u1','campus-u2','campus-u3'):
+    choices='3' if scene=='campus-u3' else '1'
+    args += ['-t','2','-bs',choices,'-bo',choices,'-nf']
    if scene in PROMPTS: args+=['--prompt',PROMPTS[scene]]
    result=subprocess.run(args,capture_output=True,text=True,timeout=25,check=True)
   text=result.stdout.strip()

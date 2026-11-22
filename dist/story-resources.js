@@ -7,7 +7,7 @@ export const sceneTemplates=[
  {id:'garden',name:'校园草坪',theme:'park',description:'天气、野餐、活动邀请与计划调整',cast:['bob','ranger','mary'],roles:['发起活动的同学','提供天气信息的人','受邀的同伴']},
  {id:'sports',name:'校园运动区',theme:'sports',description:'爱好、运动邀请、时间安排与合作',cast:['tim','sue'],roles:['发起运动的同学','参加运动的同伴']}
 ];
-const roles={alex:'手工坊伙伴',mia:'科技展组织者',ben:'校园服务人员',leo:'实验室伙伴',lily:'校园同学',waiter:'咖啡馆店员',tom:'校园同学',lisa:'图书馆伙伴',jack:'校园同学',seller:'商店店员',anna:'出行伙伴',driver:'校车司机',librarian:'图书管理员',bob:'活动组织者',ranger:'户外活动指导员',mary:'活动伙伴',tim:'运动伙伴',sue:'运动伙伴'};
+const roles={mei:'音乐社伙伴',alex:'手工坊伙伴',mia:'科技展组织者',ben:'校园服务人员',leo:'实验室伙伴',lily:'校园同学',waiter:'咖啡馆店员',tom:'校园同学',lisa:'图书馆伙伴',jack:'校园同学',seller:'商店店员',anna:'出行伙伴',driver:'校车司机',librarian:'图书管理员',bob:'活动组织者',ranger:'户外活动指导员',mary:'活动伙伴',tim:'运动伙伴',sue:'运动伙伴'};
 export const builtInCharacters=Object.entries(environmentLayout.people).map(([id,p])=>({id,name:p.name,identity:roles[id],personality:'友善，使用清楚的英语短句。',worldCharacterId:id,archived:false}));
 export const resourceKey='campus-character-library-v1';
 export function validateCharacter(p){return !!p&&typeof p.id==='string'&&/^[a-z0-9-]{1,80}$/.test(p.id)&&['name','identity','personality'].every(k=>typeof p[k]==='string'&&p[k].trim()&&p[k].length<=(k==='name'?60:200));}

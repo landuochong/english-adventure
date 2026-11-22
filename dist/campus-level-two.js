@@ -4,6 +4,15 @@ const line=(en,zh)=>({en,zh});
 const step=(npc,facts,prompt,reply,zh)=>({npc,facts,prompt,reply:line(reply,zh)});
 const story=(title,brief,zh,steps)=>({title,brief:line(brief,zh),steps});
 export const advancedStories={
+ u1:story('别把两个约会贴在一起','The art club already has a sticker. Ask me which day is taken before you see Ben.','美术社已经有一张贴纸。先问清哪天被占用了，再去见 Ben。',[
+  step('mia','which day|when','What do you need to check?','Thursday is art club. Which day must stay free for art?','周四是美术社。哪天要留给他们？'),
+  step('mia','thursday','Which day is for art?','Exactly. Now find out which day Ben actually picked.','对。现在去问清 Ben 选的是哪天。')]),
+ u2:story('留给旋律的位置','Ask me what my guitar will play before you look for a partner.','找搭档前，先问我吉他负责哪部分。',[
+  step('ben','guitar|part','What do you want to know about the guitar?','I play the beat. We need someone to play the melody. Which part is missing?','我打节拍。我们缺人拉旋律。缺的是哪部分？'),
+  step('ben','melody','Which part do we still need?','Yes. Listen to Mei in the courtyard.','对。去庭院听听 Mei 的演奏。')]),
+ u3:story('照片的两个名字','Before you turn the picture over, ask who took it.','翻看照片前，先问这张照片是谁拍的。',[
+  step('mei','who|took','What would you like to know about the photographer?','My aunt took it. Who should get credit for the photo?','姑姑拍的。摄影者那栏应该写谁？'),
+  step('mei','aunt','Who took the photo?','Right. Now find out about the person who owned the coat.','对。接下来查清外套的主人。')]),
  wish:story('给愿望树选一片叶子','Before you go, help me choose the paper for our new student.','出发前，帮我选一片纸叶。',[
   step('mia','colour|color|which','What would you like to know about the leaf?','The green leaves are for new students. Which colour will you take?','绿色纸叶留给新同学。你要拿哪种颜色？'),
   step('mia','green','Which colour is for a new student?','Take the green one. He was looking at art books in the library.','拿绿色的。他刚才在图书馆看美术书。')]),
@@ -76,7 +85,7 @@ export function withAdvancedStory(base,layout){
  const story=advancedStories[base.config.id];
  const people=[...new Set([...base.config.people,...story.steps.map(s=>s.npc)])];
  const newWords={
-  wish:['green','paper'],welcome:['quiet','library hours'],science:['star label','space team'],school:['timetable','spare copy'],
+  u1:['art club'],u2:['beat','melody'],u3:['photographer'],wish:['green','paper'],welcome:['quiet','library hours'],science:['star label','space team'],school:['timetable','spare copy'],
   restaurant:['lunch bag','to go'],shopping:['waterproof','cotton'],directions:['temporary stop','east gate'],
   weather:['shower','noon'],hobbies:['book a time','afternoon'],picnic:['west gate','leaf label'],workshop:['socket','warm light','handle']
  };

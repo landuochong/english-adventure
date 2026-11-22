@@ -24,7 +24,7 @@ export function createCampusCharacters(scene, camera, canWalk, actor=camera, pos
   // Swap a model here without changing NPC identity, tasks, or world coordinates.
   const localCast=['localhost','127.0.0.1'].includes(location.hostname);
   const asset=(file,fallback,height,idle)=>({file:localCast?'../local-characters/'+file:fallback,fallback,height,idle});
-  const assets={mia:{file:'vanguard-mixamo.glb',fallback:'mia-riley.glb',height:1.8,idle:'Idle'},ben:asset('ben-service.glb','coach-sam.glb',1.78,'Idle_Standing'),leo:asset('mia-scan.glb','leo-theo.glb',1.73)};
+  const assets={mei:{file:'mia-riley.glb',height:1.64},mia:{file:'vanguard-mixamo.glb',fallback:'mia-riley.glb',height:1.8,idle:'Idle'},ben:asset('ben-service.glb','coach-sam.glb',1.78,'Idle_Standing'),leo:asset('mia-scan.glb','leo-theo.glb',1.73)};
   const status=document.createElement('div');status.setAttribute('role','status');status.style.cssText='position:fixed;left:30px;top:90px;background:#163447dd;color:white;padding:8px 12px;border-radius:6px;font:13px system-ui';document.body.append(status);
   let pending=0;const failures=[];const requested=new Set();
   const report=()=>{status.textContent=pending?'正在加载附近人物…':failures.length?'人物加载未完成：'+failures.join('、')+'；刷新可重试':'';status.hidden=!pending&&!failures.length;};report();

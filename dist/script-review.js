@@ -39,7 +39,10 @@ function updateEntry(record) {
 }
 function openScript(record) {
   current = record;
-  document.querySelector('#wish-preview').hidden = record.id !== 'starter';
+  const mission={starter:'wish',u1:'u1',u2:'u2',u3:'u3'}[record.id];
+  const preview=document.querySelector('#wish-preview');
+  preview.hidden=!mission;
+  if(mission){preview.href='campus-environment.html?mission='+mission;preview.textContent='进入校园试玩《'+scripts.find(s=>s.id===record.id).title+'》';}
   document.querySelector('#unit').textContent = record.unit;
   for (const control of editor.querySelectorAll('textarea,input,select')) control.value = record[control.id];
   records.forEach(updateEntry);
