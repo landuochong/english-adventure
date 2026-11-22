@@ -7,7 +7,7 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
  const clues=[];
  let original=controller.act;
  function clearCompletedSession(){
-  if(id==='hobbies'&&!finishLevel(storage,id,difficulty))throw Error('Could not save invitation completion');
+  if(['hobbies','wish'].includes(id)&&!finishLevel(storage,id,difficulty))throw Error('Could not save completion');
   storage.removeItem(key);
  }
  function apply(npc,type,text,pos,clearLine){
@@ -49,7 +49,7 @@ export function createMissionSession(id,storage,notify=()=>{},fresh=false,diffic
   return reply;
  };
  Object.defineProperty(controller,'briefing',{get:()=>briefing});
- return Object.assign(controller,{restored,clues,translateLastTurn(npc,reply){
+ return Object.assign(controller,{restored,resumePosition:restored?events.at(-1)?.pos:null,clues,translateLastTurn(npc,reply){
   const event=events.at(-1);
   if(!writable||controller.state.complete||event?.type!=='invitation-turn'||event.npc!==npc)return;
   const data=JSON.parse(event.text);

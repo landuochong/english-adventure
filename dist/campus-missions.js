@@ -8,10 +8,11 @@ import {cafeState,cafeAct,cafeMarker,cafeHint} from './cafe-game.js?v=counter-de
 import {picnicConfig} from './campus-picnic-config.js?v=counter-details-20261118';
 import {environmentLayout} from './campus-environment-layout.js?v=workshop-20261118';
 import {requireWorld} from './campus-world.js?v=workshop-20261118';
+import {createWishMission,wishMission,wishPeople} from './campus-wish.js';
 export const missions=[
  {id:'welcome',world:'campus',region:'science',title:'入学仪式',giver:'mia',people:['mia','lisa','waiter','sue'],kind:'none',item:'入学确认',finishLabel:'确认入学',device:null,display:null,asrScene:'campus-welcome',words:['welcome','nickname','school','library','cafe','sports area','meet','explore'],phrases:['My name is …','You can call me …','I like …','Nice to meet you.','What can I do here?'],thanks:welcomeThanks,summary:'你介绍了自己，认识了校园同伴，完成了入学仪式。'},
  {id:'science',world:'campus',region:'science',title:'科技展：找回机器人',giver:'mia',people:['mia','ben','leo'],device:{x:8,z:-11},display:{x:-.8,z:-1.2},item:'机器人',kind:'robot',asrScene:'campus-level-one',phrases:['Have you seen …?','What colour is …?','I need it for …','Here is …'],words:['robot','blue light','information desk','laboratory','battery check','science fair','bring back'],thanks,summary:'你亲自找回了机器人，科技展可以开始了。'},
- {id:'picnic',world:'campus',region:'cafe',title:'咖啡馆：野餐午餐的小变化',giver:'lily',people:['lily','waiter'],device:{x:5,z:51},display:{x:-4.5,z:43},item:'午餐',kind:'lunch',asrScene:'campus-picnic',phrases:['Could I see the menu?','What else do you have?','I would like …, please.','Without …, please.','Here you are.'],words:['menu','chicken sandwich','sold out','what else','instead','cheese sandwich','without onions','water','picnic'],thanks:picnicConfig.actions.at(-1).reply,summary:'你商量了替代餐点，亲自领取并送回午餐。'},...dailyMissions,workshopMission
+ {id:'picnic',world:'campus',region:'cafe',title:'咖啡馆：野餐午餐的小变化',giver:'lily',people:['lily','waiter'],device:{x:5,z:51},display:{x:-4.5,z:43},item:'午餐',kind:'lunch',asrScene:'campus-picnic',phrases:['Could I see the menu?','What else do you have?','I would like …, please.','Without …, please.','Here you are.'],words:['menu','chicken sandwich','sold out','what else','instead','cheese sandwich','without onions','water','picnic'],thanks:picnicConfig.actions.at(-1).reply,summary:'你商量了替代餐点，亲自领取并送回午餐。'},...dailyMissions,workshopMission,wishMission
 ];
 // One controller owns progression; renderers, coaches and map markers cannot award progress.
 function createMissionCore(id){
@@ -45,6 +46,10 @@ function createMissionCore(id){
 
 // Optional conversation never grants clues or changes task state.
 export function createMission(id,difficulty=1){
+ if(id==='wish'){
+  const base=createWishMission(environmentLayout);
+  return difficulty===2?withAdvancedStory(base,{...environmentLayout,people:wishPeople}):base;
+ }
  if(id==='hobbies')return createInvitationMission(missions.find(m=>m.id===id),environmentLayout,difficulty);
  const controller=createMissionCore(id),taskAct=controller.act;
  const pair=(en,zh)=>({en,zh});

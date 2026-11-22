@@ -188,8 +188,8 @@ renderer.domElement.onpointermove=e=>{
  const person=findObjectTag(object,'npcId');
  const learningWord=findObjectTag(object,'learningWord')?.userData.learningWord||'';
  dispatchEvent(new CustomEvent('campus-hover-word',{detail:learningWord}));
- if(!person){interactionHint.hidden=true;renderer.domElement.style.cursor=(game.canPickItem(findObjectTag(object,'pickupMission')?.userData.pickupMission)||findObjectTag(object,'workshopPart'))?'pointer':'default';return;}
- const id=person.userData.npcId,p=id==='nova'?person.userData.interactionPosition:environmentLayout.people[id],name=id==='nova'?'Jalor':p.name;
+ if(!person){interactionHint.hidden=true;renderer.domElement.style.cursor=(game.canPickItem(findObjectTag(object,'pickupMission')?.userData.pickupMission)||findObjectTag(object,'workshopPart')||(game.canHangWish&&findObjectTag(object,'wishTree')))?'pointer':'default';return;}
+ const id=person.userData.npcId,p=id==='nova'?person.userData.interactionPosition:game.people[id],name=id==='nova'?'Jalor':p.name;
  const near=Math.hypot(player.position.x-p.x,player.position.z-p.z)<=environmentLayout.interactionRadius&&clearLine(p);
  interactionHint.textContent=near?'点击与 '+name+' 交谈':'走近 '+name+' 后交谈';interactionHint.hidden=false;renderer.domElement.style.cursor=near?'pointer':'default';
 };
@@ -199,6 +199,7 @@ renderer.domElement.onpointerup=e=>{
  if(!active||game.movementLocked)return;
  if(!click){renderer.domElement.onpointermove(e);return;}
  const object=pickSceneObject(e);const part=findObjectTag(object,'workshopPart');
+ if(findObjectTag(object,'wishTree')&&game.canHangWish){game.hangWish();return;}
  if(part&&game.pickWorkshopPart(part.userData.workshopPart)){keys.clear();route=[];clearHover();return;}
  const item=findObjectTag(object,'pickupMission');
  if(item&&game.pickItem(item.userData.pickupMission)){keys.clear();route=[];destination.visible=false;clearHover();return;}
@@ -207,7 +208,7 @@ renderer.domElement.onpointerup=e=>{
 renderer.domElement.onpointercancel=()=>{drag=false;pointerStart=null;};
 for(const b of document.querySelectorAll('[data-dir]')){b.onpointerdown=e=>{if(!active||game.movementLocked)return;e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.dir);};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.dir);}
 function valid(x,z){
- if(Object.values(environmentLayout.people).some(p=>Math.hypot(x-p.x,z-p.z)<.75))return false;
+ if(Object.values(game.people).some(p=>Math.hypot(x-p.x,z-p.z)<.75))return false;
  if(missions.flatMap(m=>[m.device,m.display]).filter(Boolean).some(p=>Math.hypot(x-p.x,z-p.z)<.85))return false;
  const b=campusWorld.bounds;return x>b.minX&&x<b.maxX&&z>b.minZ&&z<b.maxZ&&!obstacles.some(o=>Math.abs(x-o.x)<o.w&&Math.abs(z-o.z)<o.d);}
 // North-up map: reuse the collision footprints so buildings stay aligned with the world.
@@ -226,8 +227,8 @@ const sightRay=new T.Raycaster();
 function clearLine(point){const origin=player.position.clone().add(new T.Vector3(0,1.3,0)),end=new T.Vector3(point.x,1.3,point.z),delta=end.sub(origin);sightRay.set(origin,delta.clone().normalize());sightRay.far=Math.max(0,delta.length()-.15);return sightRay.intersectObjects(solidMeshes,false).length===0;}
 const destination=new T.Mesh(new T.RingGeometry(.25,.34,32),new T.MeshBasicMaterial({color:'#5de5d4',side:T.DoubleSide}));destination.rotation.x=-Math.PI/2;destination.visible=false;scene.add(destination);
 const initialMission=new URLSearchParams(location.search).get('mission');if(levelStarts[initialMission]){const start=levelStarts[initialMission];player.position.set(start.x,0,start.z);}
-const updateCharacters=createCampusCharacters(scene,camera,valid,player);
 const game=createEnvironmentGame(scene,camera,value=>{active=value;keys.clear();route=[];drag=false;},player,clearLine);
+const updateCharacters=createCampusCharacters(scene,camera,valid,player,game.people);
 const requestedMode=new URLSearchParams(location.search);if(requestedMode.has('mission')||requestedMode.get('explore')==='1'){entry.hidden=true;game.begin();}else location.replace('./');
 const fadeRay=new T.Raycaster();
 function fadeBuildings(dt){const target=player.position.clone().add(new T.Vector3(0,1,0)),direction=target.clone().sub(camera.position);fadeRay.set(camera.position,direction.clone().normalize());fadeRay.far=direction.length();const hits=new Set(fadeRay.intersectObjects(occluders,false).map(h=>h.object));for(const o of occluders){const f=o.userData.fade,roof=f.overhead&&Math.abs(player.position.x-f.x)<f.w/2+2&&Math.abs(player.position.z-f.z)<f.d/2+2;const faded=hits.has(o)||roof||(f.canopy&&Math.abs(player.position.x)<7&&Math.abs(player.position.z)<5);o.material.transparent=true;o.material.opacity+=( (faded?.07:f.opacity)-o.material.opacity)*Math.min(1,dt*10);o.material.depthWrite=!faded&&f.opacity===1;o.userData.cameraFaded=o.material.opacity<.15;}}

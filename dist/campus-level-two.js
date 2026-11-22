@@ -4,6 +4,9 @@ const line=(en,zh)=>({en,zh});
 const step=(npc,facts,prompt,reply,zh)=>({npc,facts,prompt,reply:line(reply,zh)});
 const story=(title,brief,zh,steps)=>({title,brief:line(brief,zh),steps});
 export const advancedStories={
+ wish:story('给愿望树选一片叶子','Before you go, help me choose the paper for our new student.','出发前，帮我选一片纸叶。',[
+  step('mia','colour|color|which','What would you like to know about the leaf?','The green leaves are for new students. Which colour will you take?','绿色纸叶留给新同学。你要拿哪种颜色？'),
+  step('mia','green','Which colour is for a new student?','Take the green one. He was looking at art books in the library.','拿绿色的。他刚才在图书馆看美术书。')]),
  welcome:story('替新同学选一个午休去处','A new student needs a quiet place at lunch. Ask Lisa where she can read.','新同学想找安静的午休地点。问 Lisa 哪里能阅读。',[
   step('lisa','read|reading|quiet','What does the student need?','The library is quiet and opens at one. Check with Kai when lunch finishes.','图书馆很安静，一点开门。去问 Kai 午餐什么时候结束。'),
   step('waiter','lunch|finish|time','What do you want to know about lunch?','Lunch ends at twelve thirty. Tell Mia when the library opens.','午餐十二点半结束。告诉 Mia 图书馆何时开门。'),
@@ -73,7 +76,7 @@ export function withAdvancedStory(base,layout){
  const story=advancedStories[base.config.id];
  const people=[...new Set([...base.config.people,...story.steps.map(s=>s.npc)])];
  const newWords={
-  welcome:['quiet','library hours'],science:['star label','space team'],school:['timetable','spare copy'],
+  wish:['green','paper'],welcome:['quiet','library hours'],science:['star label','space team'],school:['timetable','spare copy'],
   restaurant:['lunch bag','to go'],shopping:['waterproof','cotton'],directions:['temporary stop','east gate'],
   weather:['shower','noon'],hobbies:['book a time','afternoon'],picnic:['west gate','leaf label'],workshop:['socket','warm light','handle']
  };

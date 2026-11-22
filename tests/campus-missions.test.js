@@ -91,7 +91,7 @@ test('school explains physical collection and accepts contextual handover only a
 
 test('task characters remain conversational without granting unearned progress',()=>{
  for(const config of missions){
-  const m=createMission(config.id),pos=id=>layout.people[id];
+  const m=createMission(config.id),pos=id=>(config.positions||layout.people)[id];
   const other=config.people.find(id=>id!==config.giver);
   const before=JSON.stringify(m.state);
   if(other){

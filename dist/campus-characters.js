@@ -4,7 +4,7 @@ import {environmentLayout} from './campus-environment-layout.js?v=workshop-20261
 import { createRobotCoach } from './robot-coach.js?v=jalor-8';
 
 // Stylized campus cast. Characters provide presence only; they never complete tasks.
-export function createCampusCharacters(scene, camera, canWalk, actor=camera) {
+export function createCampusCharacters(scene, camera, canWalk, actor=camera, positions=environmentLayout.people) {
   const material = color => new T.MeshStandardMaterial({color, roughness:.82});
   const skin = material('#dca981'), hair = material('#302c30'), shoes = material('#eff2ed');
   function person({name, role, x, z, shirt, trousers='#334354', scale=1, backpack=false}) {
@@ -47,6 +47,7 @@ export function createCampusCharacters(scene, camera, canWalk, actor=camera) {
   return function update(dt,time,active){
     updateCoach(dt,active);
     for(const p of people){
+      const point=positions[p.id];p.root.position.set(point.x,0,point.z);p.rangeRing.position.set(point.x,.09,point.z);
       const distance=p.root.position.distanceTo(actor.position);
       if(p.mixer){const next=active&&p.speaking?'Talking':'Idle';if(next!==p.current){p.actions[next].reset().play().crossFadeFrom(p.actions[p.current],.25,false);p.current=next;}p.mixer.update(dt);}
       p.rangeRing.material.color.set(p.listening?'#ffd18b':p.speaking?'#65bfff':'#79e1cf');

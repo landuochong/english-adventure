@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>七年级上册 · 剧本审核</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f1;color:#213d33;font:16px/1.65 system-ui,sans-serif}
+main{max-width:1160px;margin:auto;padding:24px}header,.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+header{border-bottom:1px solid #b9c9be;padding-bottom:12px}a{color:#275642}h1{font-size:clamp(26px,4vw,38px);margin:28px 0 0}
+.intro{margin:4px 0 24px;color:#435d50}.layout{display:grid;grid-template-columns:minmax(225px,1fr) minmax(0,2.5fr);gap:24px;align-items:start}
+nav,article{background:white;border:1px solid #d3ded5;border-radius:16px;padding:20px}nav h2{font-size:16px;margin:12px 0 6px}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}nav button{display:block;text-align:left;width:100%;border:0;border-radius:7px;background:white;padding:8px 10px}
+nav button[aria-current=true]{background:#e0eee4;box-shadow:inset 3px 0 #286348}small{display:block;color:#52685d}
+label{display:block;font-weight:650;margin:18px 0 4px}input,textarea,select{width:100%;border:1px solid #bccfc1;border-radius:7px;padding:9px;background:#fcfdfa}
+textarea{resize:vertical;min-height:88px;line-height:1.6}input{font-size:20px}#unit{font-weight:700;color:#365f49}
+.bar button{background:#28573f;color:white;border:0;border-radius:8px;padding:9px 16px}.bar{margin-top:18px}#message{font-size:14px}
+@media(max-width:700px){main{padding:14px}.layout{grid-template-columns:1fr;gap:12px}nav{max-height:190px;overflow:auto}article{padding:16px}}
+</style>
+<main>
+<header><strong>Campus Quest</strong><a href="course-entry.html">课程素材</a></header>
+<h1>七年级上册 · 剧本审核</h1>
+<p class="intro">英语主线按外研版 Starter 至 Unit 6 排列。人物台词均为原创语音示例，学生可用自己的话回应。修改自动保存在当前浏览器。</p>
+<div class="layout"><nav id="list" aria-label="剧本目录"></nav>
+<article aria-label="剧本编辑"><div id="unit"></div><a id="wish-preview" href="campus-environment.html?mission=wish">进入庭院试玩《愿望树旁的空位》</a><div id="fields"></div>
+<label for="status">审核状态</label><select id="status"><option>待审核</option><option>需修改</option><option>已通过</option></select>
+<label for="notes">审核意见</label><textarea id="notes" placeholder="记录需要核对的教材内容、台词或完成条件"></textarea>
+<div class="bar"><span id="message" role="status"></span><button id="download" type="button">导出全册审核稿</button></div></article></div>
+</main><script type="module" src="script-review.js"></script>
+</html>
