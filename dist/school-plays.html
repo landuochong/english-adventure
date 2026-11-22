@@ -2,7 +2,13 @@
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>开学第一天 · 校园剧场</title><link rel="stylesheet" href="school-plays.css"></head>
 <body><header><a href="./">← 校园地图</a><span>Campus Quest · 校园剧场</span></header>
-<main><h1>开学第一天</h1><nav id="lessons" aria-label="选择剧本"></nav>
+<main>
+<section id="theatre-map" aria-labelledby="map-title">
+<div class="map-heading"><div><p id="map-context">开学第一天</p><h1 id="map-title" tabindex="-1">开学剧场地图</h1></div><button id="all-plays" hidden>选择其他剧本</button></div>
+<div class="map-paper"><canvas id="grounds" aria-hidden="true"></canvas><nav id="map-pins" aria-label="剧本与地点"></nav></div>
+<p id="map-help">从报到处、早读教室或教室门外进入剧本。</p>
+</section>
+<section id="performance" hidden><div class="play-heading"><button id="to-map">← 剧场地图</button><span id="chapter-name"></span></div>
 <section class="spread"><article class="stage">
 <p id="place"></p><canvas id="stage" role="img"></canvas><div id="prop"></div><p id="inventory"></p></article>
 <article class="dialog"><small id="role"></small><h2 id="title"></h2><p id="goal"></p>
@@ -14,4 +20,4 @@
 </article></section>
 <details><summary>语音设置</summary><label>英语音色 <select id="voice"></select></label>
 <label>语速 <input type="range" min="0.5" max="1.5" step="0.05" id="rate"></label>
-<p id="provider"></p></details></main><script type="module" src="school-plays-page.js"></script></body></html>
+<p id="provider"></p></details></section></main><script type="module" src="school-plays-page.js"></script></body></html>

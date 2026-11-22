@@ -1,3 +1,4 @@
+import {createTheatreMap,mapDestinations} from './school-plays-map.js';
 import {recordedLine,retryLine} from './school-plays-audio.js';
 import {drawStage} from './school-plays-stage.js';
 import {plays,newPlay,currentScene,advance} from './school-plays.js';
@@ -21,6 +22,25 @@ function restore(key){
   return newPlay();
 }
 let state=restore(id);
+const drawMap=createTheatreMap($('grounds'),$('map-pins'));
+let onMap=!keys.includes(location.hash.slice(1)),journey=false;
+function displayMap(inStory=false){
+  cancel();onMap=true;journey=inStory;active=false;
+  if(!inStory&&location.hash!=='#map')location.hash='map';
+  render();
+  $('map-title').focus({preventScroll:true});
+}
+function resumeHere(){
+  cancel();onMap=false;active=true;render();speak(currentScene(id,state).line);
+}
+function travel(label){
+  cancel();
+  if(!advance(id,state,label,true)){render();return;}
+  onMap=false;active=true;finishTurn();
+}
+$('to-map').onclick=()=>displayMap(active&&state.stage!=='done');
+$('all-plays').onclick=()=>displayMap(false);
+
 function save(){write('school-play-v1-'+id,JSON.stringify(state));}
 const audio=$('audio');
 function stopAudio(){generation++;audio.onended=null;audio.pause();window.speechSynthesis?.cancel();}
@@ -72,15 +92,20 @@ function prop(){
   return 'Learning without thinking is of no use. — '+author;
 }
 function select(key){
-  cancel();id=key;state=restore(id);active=false;location.hash=id;$('heard').textContent='';render();
+  cancel();id=key;state=restore(id);onMap=false;journey=false;active=false;location.hash=id;$('heard').textContent='';render();
 }
 function render(){
   const node=currentScene(id,state);
-  $('lessons').replaceChildren();
-  for(const key of keys){
-    const b=button($('lessons'),plays[key].title+(restore(key).stage==='done'?' ✓':''),()=>select(key));
-    b.setAttribute('aria-pressed',String(key===id));
+  $('theatre-map').hidden=!onMap;$('performance').hidden=onMap;
+  if(onMap){
+    $('map-title').textContent=journey?plays[id].title:'开学剧场地图';
+    $('map-context').textContent=journey?'剧中路线':'开学第一天';
+    $('map-help').textContent=journey?(mapDestinations(id,state).length?'选择要前往的地点，继续这一幕。':'你在'+node.place+'。回到人物身边，接着演这一幕。'):'从报到处、早读教室或教室门外进入剧本。';
+    $('all-plays').hidden=!journey;
+    drawMap({id,state,journey,restore,open:select,go:travel,resume:resumeHere});
+    return;
   }
+  $('chapter-name').textContent=id==='welcome'?'七上 · 入学序章':'七上 · Unit 1';
   drawStage($('stage'),id,state,node);
   $('place').textContent=node.place;$('prop').textContent=prop();
   let role=plays[id].role;
@@ -97,12 +122,17 @@ function render(){
     button($('actions'),state.stage==='start'?'进入并听取开场':'继续这一课',()=>{active=true;render();speak(node.line);});
     return;
   }
-  for(const a of node.actions)button($('actions'),a.label,()=>{cancel();advance(id,state,a.label,true);finishTurn();});
+  const destinations=mapDestinations(id,state);
+  for(const a of node.actions){
+    if(destinations.some(d=>d.label===a.label))continue;
+    button($('actions'),a.label,()=>travel(a.label));
+  }
+  if(destinations.length)button($('actions'),'在地图上前往下一处',()=>displayMap(true));
   if(state.stage==='done'){
     const next=keys[keys.indexOf(id)+1];
     if(next)button($('actions'),'下一课',()=>select(next));
     button($('actions'),'再演一次',()=>{cancel();state=newPlay();save();$('heard').textContent='';render();speak(currentScene(id,state).line);});
-    button($('actions'),'返回校园地图',()=>location.assign('./'));
+    button($('actions'),'返回剧场地图',()=>displayMap(false));
   }
 }
 function finishTurn(){save();render();speak(currentScene(id,state).line);}
@@ -140,5 +170,5 @@ $('rate').onchange=()=>write('campus-speech-rate',$('rate').value);
 $('provider').textContent=local?'本机 Whisper small · 固定英语':'浏览器英语语音识别';
 window.speechSynthesis?.addEventListener('voiceschanged',voices);
 window.addEventListener('pagehide',cancel);
-window.addEventListener('hashchange',()=>{const key=location.hash.slice(1);if(keys.includes(key)&&key!==id)select(key);});
+window.addEventListener('hashchange',()=>{const key=location.hash.slice(1);if(keys.includes(key)&&(key!==id||onMap))select(key);else if(!keys.includes(key))displayMap(false);});
 voices();render();
